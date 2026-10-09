@@ -600,3 +600,36 @@ def test_unevaluable_fallback_reach_fails_ci_through_main(tmp_path):
     res = E.phase5(t)
     assert res.returncode == 1 and "new WARNING [5.2]" in res.stdout, res.stdout[-2000:]
     assert "whether observed codes reach it cannot be evaluated" in res.stdout
+
+
+# -- a deleted spec is lost data, not a fix (gate review B3) ------------------------------------
+
+def test_deleting_a_spec_with_an_entry_does_not_go_green_through_plain_prune(tmp_path):
+    """Delete a spec file that carries a known issue. The entry is reported as REMOVED, and the
+    command the old message printed (a plain prune) refuses instead of turning the deletion
+    green. Only the acknowledged prune removes it, and its summary names the entry."""
+    t = _fhs_tree(tmp_path)
+    t.list_as_known(E.phase5(t), 882)
+    assert E.phase5(t, mode="update").returncode == 0
+    run = _runner(t, {"phase1": 0, "phase2": 0, "phase3": 0})
+    assert run().returncode == 0
+    (t.dir / "afib.yaml").unlink()
+    before = _files(t)
+
+    red = run()
+    assert red.returncode == 1
+    assert "file removed: FHS-ingest/afib.yaml" in red.stdout and "not a fix" in red.stdout
+    assert "the issue is fixed here" not in red.stdout
+
+    plain = run("prune")
+    assert plain.returncode == 1, plain.stdout[-2000:]
+    assert "Prune REFUSED, nothing written" in plain.stdout and "REMOVED" in plain.stdout
+    assert _files(t) == before
+    assert run().returncode == 1                                # still red
+
+    acked = E.run_all_stubbed(t, {"phase1": 0, "phase2": 0, "phase3": 0}, mode="prune",
+                              extra_env={K.PRUNE_REMOVED_ENV: "1"})
+    assert acked.returncode == 0, acked.stdout[-2000:]
+    assert "REMOVED, not fixed (HVLINT_PRUNE_REMOVED=1): 1 entry/row(s)" in acked.stdout
+    assert "FHS-ingest/afib.yaml" in acked.stdout.split("REMOVED, not fixed")[1]
+    assert K.load_entries(t.ki) == [] and run().returncode == 0

@@ -27,6 +27,9 @@ is rejected when the file is read. What keeps the list honest, each an ERROR:
 
 * **stale entry** (check ``KI``): an entry for a rule this component ran, on a file it scanned
   (or a cohort it ran in full), that matched nothing -- the defect was fixed, so the entry goes;
+* **removed entry/row** (``KI`` / ``RATCHET``): one that matches nothing because its file or its
+  block no longer exists. That is lost data, not a fix: :data:`PRUNE_CMD` refuses it, and only
+  :data:`PRUNE_REMOVED_CMD` removes it, naming each one in the run log;
 * **new WARNING** (``RATCHET``): a WARNING fingerprint that ``hv-lint/warning_baseline.json``
   does not list. Fixing one WARNING and adding another fails: the ratchet compares fingerprints,
   not counts;
@@ -71,8 +74,13 @@ UPDATE_ENV = "HVLINT_UPDATE_BASELINE"
 # run_all.py points STAGE_ENV at a file: in prune mode each component appends what it would
 # remove (or why it refuses) there, and run_all.py writes nothing unless every phase was clean.
 STAGE_ENV = "HVLINT_PRUNE_STAGE"
+# A prune removes an entry or row whose FILE or BLOCK no longer exists only with this set too:
+# deleting a spec is not fixing it, and the prune would otherwise turn lost data green.
+PRUNE_REMOVED_ENV = "HVLINT_PRUNE_REMOVED"
 PRUNE_CMD = "HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all"
 UPDATE_CMD = "HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all"
+PRUNE_REMOVED_CMD = ("HVLINT_PRUNE=1 HVLINT_PRUNE_REMOVED=1 python hv-lint/run_all.py "
+                     "--cohort all")
 
 BOTH_MODES_MESSAGE = (
     f"refusing to run with both {PRUNE_ENV}=1 and {UPDATE_ENV}=1: the update would write the "
@@ -237,6 +245,13 @@ class _Identities:
             return "cohort"
         if not isinstance(index, int) or isinstance(index, bool) or index < 0:
             return "file"
+        ids = self.all(rel)
+        if ids is None or index >= len(ids):
+            return f"index:{index}"
+        return ids[index]
+
+    def all(self, rel: str) -> list[str] | None:
+        """Every block identity of a scanned file, or None when it was not scanned or parsed."""
         if rel not in self._cache:
             self._cache[rel] = None
             p = self._abs.get(rel)
@@ -247,10 +262,7 @@ class _Identities:
                     data = None
                 if data is not None:
                     self._cache[rel] = file_identities(data if isinstance(data, list) else [data])
-        ids = self._cache[rel]
-        if ids is None or index >= len(ids):
-            return f"index:{index}"
-        return ids[index]
+        return self._cache[rel]
 
 
 def fingerprints(findings: list, identities: _Identities) -> dict[int, Key]:
@@ -407,10 +419,13 @@ def _stage(record: dict) -> bool:
 
 
 def _prune_or_stage(stale: list[Entry], gone: list[tuple[str, str, str]],
-                    base: dict[str, dict[str, list[str]]]) -> bool:
-    """Stage the removals for run_all.py (True), or, with no stage, write them now (False)."""
+                    base: dict[str, dict[str, list[str]]], removed: Iterable[str] = ()) -> bool:
+    """Stage the removals for run_all.py (True), or, with no stage, write them now (False).
+
+    ``removed`` describes the entries and rows whose file or block no longer exists; run_all.py
+    prints each in its summary, so the PR log names every one."""
     record = {"entries": [list(astuple(e.key)) for e in stale],
-              "rows": [list(g) for g in gone]}
+              "rows": [list(g) for g in gone], "removed": list(removed)}
     if _stage(record):
         return True
     if stale:
@@ -420,6 +435,15 @@ def _prune_or_stage(stale: list[Entry], gone: list[tuple[str, str, str]],
         write_baseline({r: {c: [t for t in v if (r, c, t) not in drop] for c, v in by_c.items()}
                         for r, by_c in base.items()})
     return False
+
+
+def staged_removed(stage: Path | str) -> list[str]:
+    """The removed-file/block entries and rows a stage file would prune, described."""
+    p = Path(stage)
+    if not p.is_file():
+        return []
+    return [d for x in p.read_text(encoding="utf-8").splitlines() if x.strip()
+            for d in json.loads(x).get("removed", [])]
 
 
 def apply_staged_prune(stage: Path | str) -> tuple[int, int, list[str]]:
@@ -492,12 +516,13 @@ def finalize(
         if rel:
             scanned_abs[rel] = Path(f)
     scanned = set(scanned_abs)
-    keys = fingerprints(findings, _Identities(scanned_abs))
+    idents = _Identities(scanned_abs)
+    keys = fingerprints(findings, idents)
     cohorts = {cohort_of(r) for r in scanned}
     cohorts |= {cohort_of(k.file) for k in keys.values() if k.file.endswith("/")}
     # The transform directory the scanned files sit in: a file of a covered cohort that is no
     # longer there (deleted or renamed) is never scanned again, so its entries and rows are in
-    # scope as fixed rather than kept forever.
+    # scope -- as REMOVED (removed_why), never as fixed.
     roots = {Path(str(p)[: -len(rel)]) for rel, p in scanned_abs.items()
              if str(p).replace("\\", "/").endswith(rel)}
 
@@ -510,6 +535,31 @@ def finalize(
             return True
         return (not partial and cohort_of(rel) in cohorts and bool(roots)
                 and not any((root / rel).exists() for root in roots))
+
+    def removed_why(rel: str, block: str) -> str | None:
+        """Why an in-scope entry or row that matches nothing is not a fix: its file or its block
+        is gone. Deleting data must not read as fixing it, so these prune only when
+        acknowledged (PRUNE_REMOVED_ENV)."""
+        if rel.endswith("/"):
+            return None
+        if rel not in scanned:
+            return f"file removed: {rel} no longer exists"
+        if block in ("file", "cohort") or block.startswith("index:"):
+            return None
+        ids = idents.all(rel)
+        if ids is None or block in ids:
+            return None
+        # A block is REMOVED when no block of the file still has its class and table. Its value
+        # phvs are not the test: fixing a cross-table read (3.5) swaps a phv and re-keys the
+        # block, and that is a fix. Deleting one of several blocks on one table still reads as
+        # fixed here; only a base-vs-head inventory can see that.
+        if block.startswith("block:"):
+            return f"block removed: {rel} has no block {block} any more"
+        head = block.split(":", 1)[0]
+        if any(i.split(":", 1)[0] == head for i in ids):
+            return None
+        return (f"block removed: {rel} has no {head} block any more (deleted, moved to "
+                f"another file, or its class or table changed)")
 
     # Known issues: exact fingerprint match.
     entries = load_entries() if entries is None else entries
@@ -525,6 +575,7 @@ def finalize(
         f.message = (f"{f.message} [known issue #{e.issue}, {e.status}"
                      + (f": {e.note}" if e.note else "") + "]")
     stale = [e for e in entries if e.key not in matched and in_scope(e.rule, e.file)]
+    stale_removed = {e.key: why for e in stale if (why := removed_why(e.file, e.block))}
 
     # WARNING ratchet: exact fingerprint sets per rule and cohort.
     current: dict[str, dict[str, set[str]]] = {}
@@ -541,6 +592,8 @@ def finalize(
     gone = sorted((r, c, t) for r, by_c in base.items() for c, rows in by_c.items()
                   for t in rows
                   if row_in_scope(r, t) and t not in current.get(r, {}).get(c, set()))
+    gone_removed = {g: why for g in gone
+                    if (why := removed_why(*g[2].split(" | ", 2)[:2]))}
     new = sorted((r, c, t) for r, by_c in current.items() for c, rows in by_c.items()
                  for t in rows if t not in set(base.get(r, {}).get(c, [])))
     unlisted = sorted((keys[id(f)] for f in findings
@@ -551,10 +604,16 @@ def finalize(
     # did not run is one) or a new WARNING in the run, an entry that matches nothing may be a
     # defect still present under a new message, or a row whose check never ran: removing it
     # first leaves the run red on a line nobody re-adds.
-    if mode == "prune" and (unlisted or new):
+    # A removed file or block is lost data, not a fix: prune it only when the run says so.
+    ack_removed = os.environ.get(PRUNE_REMOVED_ENV) == "1"
+    n_removed = len(stale_removed) + len(gone_removed)
+    if mode == "prune" and (unlisted or new or (n_removed and not ack_removed)):
         why = "; ".join(x for x in (
             f"{len(unlisted)} ERROR finding(s) not in {meta}" if unlisted else "",
-            f"{len(new)} new WARNING(s)" if new else "") if x)
+            f"{len(new)} new WARNING(s)" if new else "",
+            f"{n_removed} entry/row(s) whose file or block was REMOVED, not fixed (each is "
+            f"listed; if the removal is intended, prune with {PRUNE_REMOVED_CMD})"
+            if n_removed and not ack_removed else "") if x)
         msg = (f"refusing to prune: this run has {why}. Fix or list those first (each prints the "
                f"line to add), then prune; nothing was removed")
         extra.append(make_finding(meta, -1, "KI", "ERROR", msg))
@@ -562,25 +621,45 @@ def finalize(
         mode = "check"
 
     if mode == "prune" and (stale or gone):
-        staged = _prune_or_stage(stale, gone, base)
+        removed = ([f"known-issue entry {e.describe()} (#{e.issue}) -- {stale_removed[e.key]}"
+                    for e in stale if e.key in stale_removed]
+                   + [f"baseline row [{g[0]}] {g[2]} -- {gone_removed[g]}"
+                      for g in gone if g in gone_removed])
+        staged = _prune_or_stage(stale, gone, base, removed)
         verb = "staged for prune" if staged else "pruned"
         for e in stale:
-            extra.append(make_finding(meta, -1, "KI", "INFO",
-                                      f"{verb}: stale known-issue entry {e.describe()} "
-                                      f"(#{e.issue})"))
-        for r, c, t in gone:
+            if e.key in stale_removed:
+                text = (f"{verb} ({PRUNE_REMOVED_ENV}=1): REMOVED known-issue entry "
+                        f"{e.describe()} (#{e.issue}) -- {stale_removed[e.key]}")
+            else:
+                text = f"{verb}: stale known-issue entry {e.describe()} (#{e.issue})"
+            extra.append(make_finding(meta, -1, "KI", "INFO", text))
+        for g in gone:
+            r, c, t = g
+            text = (f"{verb} ({PRUNE_REMOVED_ENV}=1): REMOVED baseline row [{r}] {t} -- "
+                    f"{gone_removed[g]}" if g in gone_removed
+                    else f"{verb}: fixed WARNING [{r}] {t}")
             extra.append(make_finding("hv-lint/warning_baseline.json", -1, "RATCHET", "INFO",
-                                      f"{verb}: fixed WARNING [{r}] {t}"))
+                                      text))
     elif mode != "prune":
         for e in stale:
-            extra.append(make_finding(
-                meta, -1, "KI", "ERROR",
-                f"stale known-issue entry {e.describe()} (#{e.issue}): it matches no finding any "
-                f"more, so the issue is fixed here. Remove it (and every other fixed entry or "
-                f"WARNING row) with: {PRUNE_CMD}"))
+            if e.key in stale_removed:
+                text = (f"known-issue entry {e.describe()} (#{e.issue}) matches no finding "
+                        f"because its {stale_removed[e.key]}. That is lost data, not a fix: "
+                        f"restore it; or, if the removal is intended and reviewed, prune it "
+                        f"with {PRUNE_REMOVED_CMD}")
+            else:
+                text = (f"stale known-issue entry {e.describe()} (#{e.issue}): it matches no "
+                        f"finding any more, so the issue is fixed here. Remove it (and every "
+                        f"other fixed entry or WARNING row) with: {PRUNE_CMD}")
+            extra.append(make_finding(meta, -1, "KI", "ERROR", text))
 
     if mode == "update":
-        rows = {r: {c: [t for t in v if not row_in_scope(r, t)] for c, v in by_c.items()}
+        # An update rewrites in-scope rows from this run, but a row whose file or block was
+        # removed stays: dropping it is a prune of removed data, which needs PRUNE_REMOVED_ENV.
+        rows = {r: {c: [t for t in v if not row_in_scope(r, t)
+                        or ((r, c, t) in gone_removed and not ack_removed)]
+                    for c, v in by_c.items()}
                 for r, by_c in base.items()}
         for r, by_c in current.items():
             for c, ts in by_c.items():
@@ -593,11 +672,18 @@ def finalize(
                 f"new WARNING [{r}] in {c}: {t}. Fix it; or, if it is accepted, add it to the "
                 f"baseline in this PR ({UPDATE_CMD}) and say why"))
         if mode != "prune":
-            for r, c, t in gone:
-                extra.append(make_finding(
-                    "hv-lint/warning_baseline.json", -1, "RATCHET", "ERROR",
-                    f"WARNING [{r}] in {c} is fixed: {t}. Remove it from the baseline (and every "
-                    f"other fixed row or entry) with: {PRUNE_CMD}"))
+            for g in gone:
+                r, c, t = g
+                if g in gone_removed:
+                    text = (f"WARNING [{r}] in {c} matches no finding because its "
+                            f"{gone_removed[g]}: {t}. That is lost data, not a fix: restore it; "
+                            f"or, if the removal is intended and reviewed, prune it with "
+                            f"{PRUNE_REMOVED_CMD}")
+                else:
+                    text = (f"WARNING [{r}] in {c} is fixed: {t}. Remove it from the baseline "
+                            f"(and every other fixed row or entry) with: {PRUNE_CMD}")
+                extra.append(make_finding("hv-lint/warning_baseline.json", -1, "RATCHET",
+                                          "ERROR", text))
 
     if unlisted:
         print(f"\n{len(unlisted)} ERROR finding(s) not in {meta}. Fix them; or, when one is "

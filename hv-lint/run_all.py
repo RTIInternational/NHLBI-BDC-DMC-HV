@@ -12,6 +12,8 @@ Usage:
     python hv-lint/run_all.py --cohort WHI --no-report
     HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all            # drop fixed known issues
     HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all  # accept WARNING changes
+    HVLINT_PRUNE=1 HVLINT_PRUNE_REMOVED=1 python hv-lint/run_all.py --cohort all
+                                     # also drop entries whose file/block was removed (listed)
 """
 
 from __future__ import annotations
@@ -244,9 +246,17 @@ def main() -> int:
         skipped = [n for n in PHASES if n in args.skip]
         if skipped:
             refusals.append(f"{len(skipped)} phase(s) skipped ({', '.join(skipped)})")
+        removed = _known_issues.staged_removed(stage)
         if not refusals:
             n_entries, n_rows, refusals = _known_issues.apply_staged_prune(stage)
         stage.unlink(missing_ok=True)
+        # Every entry or row pruned because its file or block is gone is named in the log: a
+        # removal must read as a removal in the PR, never as a fix.
+        if removed and not refusals:
+            summary.write(f"\nREMOVED, not fixed ({_known_issues.PRUNE_REMOVED_ENV}=1): "
+                          f"{len(removed)} entry/row(s) whose file or block no longer exists:\n")
+            for d in removed:
+                summary.write(f"  - {d}\n")
         if refusals:
             summary.write("\nPrune REFUSED, nothing written: " + "; ".join(dict.fromkeys(refusals))
                           + ". A prune removes only what a run where every phase passes proves "

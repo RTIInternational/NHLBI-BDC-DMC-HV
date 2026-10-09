@@ -53,10 +53,12 @@ class Tree:
         return p
 
     def run(self, script: str, *args: str, mode: str | None = None,
-            run_all: bool | None = None) -> subprocess.CompletedProcess:
+            run_all: bool | None = None,
+            extra_env: dict[str, str] | None = None) -> subprocess.CompletedProcess:
         env = {k: v for k, v in os.environ.items() if not k.startswith("HVLINT_")}
         env.update(HV_ROOT=str(self.root), HVLINT_KNOWN_ISSUES=str(self.ki),
                    HVLINT_WARNING_BASELINE=str(self.baseline), PYTHONIOENCODING="utf-8")
+        env.update(extra_env or {})
         if mode == "prune":
             env["HVLINT_PRUNE"] = "1"
         elif mode == "update":
@@ -102,7 +104,8 @@ sys.exit(run_all.main())
 
 
 def run_all_stubbed(tree: Tree, stubs: dict[str, int], *args: str,
-                    mode: str | None = None) -> subprocess.CompletedProcess:
+                    mode: str | None = None,
+                    extra_env: dict[str, str] | None = None) -> subprocess.CompletedProcess:
     """``run_all.py --cohort <cohort>`` with every phase run, the ``stubs`` phases replaced by a
     script that exits with the given code.
 
@@ -114,4 +117,4 @@ def run_all_stubbed(tree: Tree, stubs: dict[str, int], *args: str,
     driver.write_text(_DRIVER.format(hvlint=str(HVLINT), stubs=stubs, tmp=str(tree.tmp)),
                       encoding="utf-8")
     return tree.run(str(driver), "--cohort", tree.cohort, "--no-report", "--cache-dir",
-                    str(CACHE), *args, mode=mode, run_all=False)
+                    str(CACHE), *args, mode=mode, run_all=False, extra_env=extra_env)

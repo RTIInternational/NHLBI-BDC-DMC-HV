@@ -374,6 +374,25 @@ def test_a_test_sees_neither_the_committed_files_nor_a_mode():
 
 # -- a deleted or renamed file (review round 2 B F6) --------------------------------------------
 
+def test_a_deleted_block_is_removed_not_fixed(tree, monkeypatch):
+    """The file is still there but no block has the entry's class and table: REMOVED, not
+    fixed. A block on the same table whose value phv changed (a 3.5 fix) is a fix."""
+    e = _at(tree["afib"], 1)
+    _list(tree, e)
+    blocks = yaml.safe_load(tree["afib"].read_text(encoding="utf-8"))
+    tree["afib"].write_text(yaml.safe_dump([blocks[0], _block("phv00000005")]),
+                            encoding="utf-8")
+    extra = _run([], tree)
+    assert len(extra) == 1 and "the issue is fixed here" in extra[0].message
+    tree["afib"].write_text(yaml.safe_dump([_block("phv00000001", pht="pht000013")]),
+                            encoding="utf-8")
+    extra = _run([], tree)
+    assert len(extra) == 1 and "block removed: FHS-ingest/afib.yaml" in extra[0].message
+    monkeypatch.setenv("HVLINT_RUN_ALL", "1")
+    assert [x for x in _run([], tree, mode="prune") if "refusing to prune" in x.message]
+    assert len(K.load_entries()) == 1
+
+
 def test_every_baseline_row_points_at_a_file_that_exists(committed):
     if not TREE.is_dir():
         pytest.skip("no spec tree")
@@ -383,8 +402,10 @@ def test_every_baseline_row_points_at_a_file_that_exists(committed):
     assert missing == []
 
 
-def test_a_deleted_files_row_and_entry_are_fixed_and_pruned(tree, monkeypatch):
-    """A file deleted or renamed is never scanned again; its rows and entries must still go."""
+def test_a_deleted_files_row_and_entry_are_removed_not_fixed(tree, monkeypatch):
+    """A file deleted or renamed is never scanned again. Its rows and entries are reported as
+    REMOVED (lost data), not fixed: a plain prune refuses them, and only an acknowledged prune
+    (PRUNE_REMOVED_ENV) removes them, naming each one (gate review B3)."""
     gone = tree["other"].parent / "gone.yaml"
     gone.write_text(tree["other"].read_text(encoding="utf-8"), encoding="utf-8")
     w, e = _at(gone, 0, "5.11", "WARNING", "w"), _at(gone, 0)
@@ -392,10 +413,24 @@ def test_a_deleted_files_row_and_entry_are_fixed_and_pruned(tree, monkeypatch):
     _list(tree, e)
     gone.unlink()
     extra = _run([], tree)
-    assert sorted(x.check for x in extra if x.severity == "ERROR") == ["KI", "RATCHET"]
+    errors = [x for x in extra if x.severity == "ERROR"]
+    assert sorted(x.check for x in errors) == ["KI", "RATCHET"]
+    assert all("file removed: FHS-ingest/gone.yaml" in x.message and "not a fix" in x.message
+               and K.PRUNE_REMOVED_CMD in x.message and "is fixed" not in x.message
+               for x in errors)
     monkeypatch.setenv("HVLINT_RUN_ALL", "1")
-    _run([], tree, mode="prune")
+    ki, bl = tree["ki"].read_text(encoding="utf-8"), tree["bl"].read_text(encoding="utf-8")
+    refused = _run([], tree, mode="prune")
+    assert [x for x in refused if "refusing to prune" in x.message and "REMOVED" in x.message]
+    assert tree["ki"].read_text(encoding="utf-8") == ki
+    assert tree["bl"].read_text(encoding="utf-8") == bl
+    _run([], tree, mode="update")                              # an update keeps the row too
+    assert tree["bl"].read_text(encoding="utf-8") == bl
+    monkeypatch.setenv(K.PRUNE_REMOVED_ENV, "1")
+    pruned = _run([], tree, mode="prune")
+    assert len([x for x in pruned if "REMOVED" in x.message and x.severity == "INFO"]) == 2
     assert K.load_entries() == [] and K.load_baseline().get("5.11", {}).get("FHS", []) == []
+    monkeypatch.delenv(K.PRUNE_REMOVED_ENV)
     # a --file run still leaves another file's rows alone
     _baseline(_at(tree["other"], 0, "5.11", "WARNING", "w"))
     assert _run([], tree, scanned=[tree["afib"]], partial=True) == []
