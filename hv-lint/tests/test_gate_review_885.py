@@ -171,3 +171,66 @@ def test_yamllint_truthy_is_an_error():
     """yamllint exits 0 on a warning and run_yamllint.py never ratchets one."""
     cfg = yaml.safe_load((HVLINT / ".yamllint").read_text(encoding="utf-8"))
     assert cfg["rules"]["truthy"]["level"] == "error"
+
+
+# -- Follow-up F1 / F2: 2.6 runs on CURIE slots only, and on value_mappings targets --------------
+
+def _condition(extra: str) -> str:
+    return ("- class_derivations:\n"
+            "    Condition:\n"
+            "      populated_from: pht001452\n"
+            "      slot_derivations:\n"
+            "        condition_concept:\n"
+            "          populated_from: phv00100001\n"
+            "          value_mappings:\n"
+            "            '1': MONDO:0005015\n" + extra +
+            "        condition_status:\n"
+            "          populated_from: phv00100001\n"
+            "          value_mappings:\n"
+            "            '0': ABSENT\n"
+            "            '1': PRESENT\n")
+
+
+def _phase2(tmp_path, text: str):
+    pytest.importorskip("linkml_runtime")
+    pytest.importorskip("linkml_map")
+    t = E.Tree(tmp_path, "CHS")
+    (t.dir / "diabetes.yaml").write_text(text, encoding="utf-8")
+    res = t.run("phase-2/validate_model_conformance.py", "--cohort", "CHS")
+    if "Failed to load BDCHM schema" in res.stderr:
+        pytest.skip("the pinned BDC-HM schema could not be fetched")
+    return res
+
+
+@pytest.mark.parametrize("evidence", ["Questionnaire: self-report", "Questionnaire:self-report"])
+def test_a_colon_in_free_text_passes_phase2_through_main(tmp_path, evidence):
+    """associated_evidence is a string slot: a colon in it is text, not a malformed CURIE."""
+    res = _phase2(tmp_path, _condition(f"        associated_evidence:\n"
+                                       f"          value: '{evidence}'\n"))
+    assert "[2.6]" not in res.stdout, res.stdout[-1500:]
+    control = _phase2(tmp_path / "control", _condition(""))
+    assert res.returncode == control.returncode
+
+
+@pytest.mark.parametrize("target,message", [
+    ("MOND:0006920", "Unknown CURIE prefix 'MOND'"),
+    ("MONDO:000692", "Invalid MONDO identifier '000692'"),
+])
+def test_a_malformed_value_mappings_target_fails_phase2_through_main(tmp_path, target, message):
+    res = _phase2(tmp_path, _condition("").replace("'1': MONDO:0005015", f"'2': {target}"))
+    assert res.returncode == 1, res.stdout[-1500:]
+    assert "[2.6]" in res.stdout and message in res.stdout
+
+
+def test_a_nested_value_mappings_target_is_checked():
+    """The walk recurses, so a Quantity.unit target under an observation is checked too."""
+    ctx = vmc.ValidationContext(prefixes=PREFIXES, curie_slots={
+        "MeasurementObservation": {"observation_type"}, "Quantity": {"unit"}})
+    cd = {"MeasurementObservation": {"populated_from": "pht001452", "slot_derivations": {
+        "observation_type": {"value": "OMOP:3004249"},
+        "value_quantity": {"class_derivations": [{"Quantity": {"slot_derivations": {
+            "unit": {"populated_from": "phv00100001",
+                     "value_mappings": {"1": "OMOP:8876", "2": "OMOP: 8876"}}}}}]}}}}
+    found = [f for f in vmc.validate_class_derivations(cd, 0, "CHS-ingest/x.yaml", ctx)
+             if f.check == "2.6"]
+    assert [f.message.split(":")[0] for f in found] == ["CURIE has space after colon"]

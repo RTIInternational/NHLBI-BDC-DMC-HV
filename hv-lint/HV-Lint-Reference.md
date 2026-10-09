@@ -389,7 +389,9 @@ Validate that the class nested inside an `object_derivations` block matches the 
 
 ### 2.6 CURIE Format Validation
 
-Validate all ontology reference values matching `PREFIX:IDENTIFIER` against per-prefix format rules. Applied to both static `value` fields and CURIEs embedded in `expr` fields.
+Validate ontology reference values matching `PREFIX:IDENTIFIER` against per-prefix format rules. Applied to static `value` fields, quoted CURIEs in `expr` fields, and every string `value_mappings` target, at every nesting depth.
+
+- **Scope**: only a slot whose BDC-HM range takes a CURIE -- a `uriorcurie`/`uri`/`curie` type, or an enum that is open (`reachable_from`, or inherits one) or whose values are CURIEs (`condition_concept`, `observation_type`, `unit`, `visit_category`, ...). A free-text `string` slot is not checked: `Questionnaire: self-report` in `associated_evidence` is text, not a malformed CURIE.
 
 - **Known prefix rules**:
 

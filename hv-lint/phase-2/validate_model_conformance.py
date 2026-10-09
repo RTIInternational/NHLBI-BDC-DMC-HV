@@ -216,6 +216,14 @@ class ValidationContext:
     slot_enum_values: dict[str, dict[str, frozenset[str]]] = field(default_factory=dict)
     # Check 2.6: the schema's declared CURIE prefixes, plus HV_EXTRA_PREFIXES
     prefixes: frozenset[str] = frozenset()
+    # Check 2.6 runs only on these {class: {slot}}: a slot whose range takes a CURIE. None (a
+    # context built without the schema) checks every slot -- over-reporting, never silence.
+    curie_slots: dict[str, set[str]] | None = None
+
+    def takes_curie(self, class_name: str, slot_name: str) -> bool:
+        if self.curie_slots is None:
+            return True
+        return slot_name in self.curie_slots.get(class_name, ())
 
 
 # ---------------------------------------------------------------------------
@@ -314,6 +322,35 @@ def load_bdchm_schema(bdchm_ref: str, bdchm_schema: str | None) -> ValidationCon
                     if cls_name not in ctx.slot_enum_values:
                         ctx.slot_enum_values[cls_name] = {}
                     ctx.slot_enum_values[cls_name][s.name] = pvs
+
+    # Check 2.6 scope: a slot takes a CURIE when its range is a uriorcurie/uri/curie type, or an
+    # enum that is open (no static values: reachable_from, or inherits one) or whose values are
+    # CURIEs. A free-text string slot is out of scope: `Questionnaire: self-report` in
+    # associated_evidence is correct text, not a malformed CURIE.
+    curie_types = {"uriorcurie", "uri", "curie"}
+    all_types = sv.all_types()
+
+    def _is_curie_type(name: str) -> bool:
+        seen = set()
+        while name and name not in seen:
+            if name in curie_types:
+                return True
+            seen.add(name)
+            tdef = all_types.get(name)
+            name = getattr(tdef, "typeof", None) if tdef is not None else None
+        return False
+
+    def _enum_takes_curie(name: str) -> bool:
+        pvs = enum_pvs.get(name)
+        return pvs is None or any(_CURIE_PREFIX_RE.match(v) for v in pvs)
+
+    ctx.curie_slots = {}
+    for cls_name in ctx.valid_classes:
+        ctx.curie_slots[cls_name] = {
+            s.name for s in sv.class_induced_slots(cls_name)
+            if (s.range in enum_names and _enum_takes_curie(s.range))
+            or (s.range in all_types and _is_curie_type(s.range))
+        }
 
     ctx.prefixes = frozenset(sv.schema.prefixes or {}) | HV_EXTRA_PREFIXES
 
@@ -616,19 +653,26 @@ def validate_class_derivations(
                 block_idx, rel_path, path_prefix
             ))
 
-            # -- Check 2.6: CURIE format on value --
-            value = slot_def.get("value")
-            if isinstance(value, str):
-                findings.extend(check_curie_value(
-                    value, class_name, slot_name, block_idx, rel_path, ctx.prefixes or None
-                ))
-
-            # -- Check 2.6: CURIEs in expr --
-            expr = slot_def.get("expr")
-            if isinstance(expr, str):
-                findings.extend(check_curies_in_expr(
-                    expr, class_name, slot_name, block_idx, rel_path, ctx.prefixes or None
-                ))
+            # -- Check 2.6: CURIE format on value, expr and value_mappings targets, on a slot
+            # whose range takes a CURIE. A mapping target is how a coded variable reaches a
+            # concept slot, so it is checked like a static value. Nested derivations are reached
+            # by this function's own recursion below.
+            if ctx.takes_curie(class_name, slot_name):
+                prefixes = ctx.prefixes or None
+                value = slot_def.get("value")
+                if isinstance(value, str):
+                    findings.extend(check_curie_value(
+                        value, class_name, slot_name, block_idx, rel_path, prefixes))
+                expr = slot_def.get("expr")
+                if isinstance(expr, str):
+                    findings.extend(check_curies_in_expr(
+                        expr, class_name, slot_name, block_idx, rel_path, prefixes))
+                vm_targets = slot_def.get("value_mappings")
+                if isinstance(vm_targets, dict):
+                    for target in vm_targets.values():
+                        if isinstance(target, str):
+                            findings.extend(check_curie_value(
+                                target, class_name, slot_name, block_idx, rel_path, prefixes))
 
             # -- Check 2.12: bare None as a value_mappings target --
             vm = slot_def.get("value_mappings")
