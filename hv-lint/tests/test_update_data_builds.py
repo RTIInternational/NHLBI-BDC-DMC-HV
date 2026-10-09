@@ -328,8 +328,9 @@ def test_a_mixed_release_directory_publishes_nothing_at_all(tmp_path):
     out = tmp_path / "out"
     out.mkdir()
 
-    assert build_phv_index.build_one(cache / "mixed", out, cache) is None
-    assert build_phv_detail_index.build_one(cache / "mixed", out, cache) is None
+    for builder in (build_phv_index, build_phv_detail_index):
+        with pytest.raises(_cohorts.ReleaseUnestablished, match="MORE THAN ONE release"):
+            builder.build_one(cache / "mixed", out, cache)
     assert list(out.glob("*.json.gz")) == [], "a union must not be written under ANY name"
 
 
@@ -527,4 +528,26 @@ def test_the_standalone_builders_publish_nothing_over_an_unreadable_data_diction
                                       "--output-dir", str(source)])
     assert builder.main() == 1
     assert "Publishing nothing" in capsys.readouterr().err
+    _unchanged(source, prior)
+
+
+@pytest.mark.parametrize("module", ["build_phv_index", "build_phv_detail_index"])
+def test_the_standalone_builders_fail_when_no_data_dictionary_is_release_stamped(
+        tmp_path, monkeypatch, capsys, module):
+    """No release, no artifact: the cohort-named fallback wrote `<dir>.json.gz` with no
+    provenance and exited 0, and Phases 3 and 5 then rejected it as unverifiable."""
+    import importlib
+    builder = importlib.import_module(module)
+    source = _stage(tmp_path, "fhs", "phs009999", "v3")
+    ftp = source / "fhs" / "pheno_variable_summaries"
+    for dd in sorted(ftp.glob("*.data_dict.xml")):
+        dd.replace(ftp / dd.name.split(".", 2)[2])  # drop the phs######.v#. stamp
+    prior = _seed_prior_cache(source)
+    before = {p.name: p.read_bytes() for p in source.iterdir() if p.is_file()}
+    monkeypatch.setattr(sys, "argv", [f"{module}.py", "--source-cache", str(source),
+                                      "--output-dir", str(source)])
+    assert builder.main() == 1
+    err = capsys.readouterr().err
+    assert "fhs: no single release" in err and "Publishing nothing" in err
+    assert {p.name: p.read_bytes() for p in source.iterdir() if p.is_file()} == before
     _unchanged(source, prior)

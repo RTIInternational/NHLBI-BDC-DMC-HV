@@ -100,9 +100,10 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
     wrote ``<cohort>.json.gz`` and recorded no provenance, so the documented onboarding command
     produced a cache the mandatory release check then rejected.
 
-    The returned entry carries ``study``/``study_version`` only when the data dictionaries name
-    one release; callers must treat their ABSENCE as "provenance unknown" rather than filling it
-    in from what a cohort declares, which would make the release check confirm itself.
+    The returned entry always carries ``study``/``study_version``, read from the data
+    dictionaries and never from what a cohort declares, which would make the release check
+    confirm itself. Dictionaries naming no single release raise
+    :class:`_cohorts.ReleaseUnestablished`; ``None`` means there was nothing to index.
 
     **Only inputs attributable to the recorded release contribute.** Every PHV here comes from a
     ``*.data_dict.xml`` whose ``phs######.v#.`` stamp matches the release this artifact is keyed
@@ -122,22 +123,11 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
       manifest claimed one specific release.
     """
     # The release is decided FIRST, because it selects the inputs. Deciding it afterwards is
-    # what allowed inputs from other releases to be counted into the artifact it names.
-    accession, version, seen = _cohorts.study_from_data_dicts(cohort_dir)
-    # AMBIGUITY IS A REFUSAL, NOT A FALLBACK. That function returns no accession for two
-    # different reasons and they are not interchangeable: nothing stamped at all (`seen == 0`),
-    # or several releases stamped and it declines to choose (`seen > 0`). Falling back to an
-    # unprefixed build in the second case merges every release present into one artifact named
-    # by directory -- a union, the thing keying by release exists to prevent, and a mid-bump
-    # staging tree is routinely in exactly that state.
-    if seen and not accession:
-        print(
-            f"  WARNING: {cohort_dir.name}: its {seen} data dictionaries name MORE THAN ONE "
-            f"release -- writing nothing, because an index over all of them is a union",
-            file=sys.stderr,
-        )
+    # what allowed inputs from other releases to be counted into the artifact it names. Data
+    # dictionaries naming no single release raise here; there is no directory-named fallback.
+    prefix = _cohorts.release_prefix(cohort_dir)
+    if prefix is None:
         return None
-    prefix = f"{accession}.{version}." if accession else None
     mapping = build_mapping_from_ftp(cohort_dir, prefix)
     ftp_count = len(mapping)
 
@@ -145,26 +135,17 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
         return None
 
     phts = len(set(mapping.values()))
-    # Name the artifact by the STUDY, not by the source directory. A directory name is a
-    # local convention (`aric`, `aric-v8`, `aric-v9`) that nothing validates and that cannot
-    # hold two releases of one study at once; `phs000280.v8` can, and carries its own
-    # provenance. Falls back to the directory name, loudly, when no accession is parseable.
-    entry: dict = {"phvs": len(mapping), "phts": phts, "source_dir": cohort_dir.name}
-    if accession:
-        key = f"{accession}.{version}"
-        entry.update({
-            "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name, source),
-            "study": accession,
-            "study_version": version,
-            "built": _dt.datetime.now(tz=_dt.UTC).date().isoformat(),
-        })
-    else:
-        key = cohort_dir.name.lower()
-        print(
-            f"  WARNING: {cohort_dir.name}: no single phs######.v# accession in its data "
-            f"dictionaries -- naming by directory ('{key}') and recording NO provenance",
-            file=sys.stderr,
-        )
+    # Named by the STUDY, not by the source directory: a directory name is a local convention
+    # (`aric`, `aric-v8`) that nothing validates and that cannot hold two releases at once.
+    accession, version = prefix[:-1].split(".")
+    key = f"{accession}.{version}"
+    entry: dict = {
+        "phvs": len(mapping), "phts": phts, "source_dir": cohort_dir.name,
+        "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name, source),
+        "study": accession,
+        "study_version": version,
+        "built": _dt.datetime.now(tz=_dt.UTC).date().isoformat(),
+    }
 
     # Write compressed JSON
     json_bytes = json.dumps(mapping, separators=(",", ":")).encode("utf-8")
