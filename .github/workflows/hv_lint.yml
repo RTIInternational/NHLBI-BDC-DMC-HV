@@ -237,6 +237,16 @@ jobs:
             fi
           done
 
+      # Every known_issues.yaml entry, warning_baseline.json row and removed.yaml line the PR
+      # adds over its merge base (what `git diff origin/<base>...HEAD` shows), so a reviewer
+      # sees "this PR silences N findings" without reading those files' diffs. fetch-depth: 0
+      # above makes origin/<base> and the merge base available.
+      - name: Silencing summary
+        if: always() && github.event_name == 'pull_request'
+        run: |
+          python hv-lint/silencing_summary.py --base "origin/${{ github.base_ref }}" \
+            >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload full findings
         if: always()
         uses: actions/upload-artifact@v4
