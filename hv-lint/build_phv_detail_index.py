@@ -24,6 +24,7 @@ import argparse
 import datetime as _dt
 import gzip
 import json
+import shutil
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -39,18 +40,23 @@ def parse_data_dict(path: Path) -> dict[str, dict]:
     -------
     dict mapping ``base_phv`` -> record dict with keys:
         name, pht, type, unit, description, codes
+
+    Raises :class:`_cohorts.DataDictUnreadable` on the same inputs the basic builder refuses
+    (unreadable, unparseable, or no ``pht`` table id), so the pair fails together.
     """
     try:
         tree = ET.parse(path)
-    except ET.ParseError as exc:
-        print(f"  WARN: XML parse error in {path.name}: {exc}", file=sys.stderr)
-        return {}
+    except (ET.ParseError, OSError) as exc:
+        raise _cohorts.DataDictUnreadable(f"{path}: XML parse error: {exc}") from exc
 
     root = tree.getroot()
 
     # Extract table-level PHT from <data_table id="phtNNNNNN.vN">
     table_id_raw = root.get("id", "")
     base_pht = table_id_raw.split(".")[0] if table_id_raw else ""
+    if not base_pht.startswith("pht"):
+        raise _cohorts.DataDictUnreadable(
+            f"{path}: root element names no pht table (id={table_id_raw!r})")
 
     records: dict[str, dict] = {}
 
@@ -145,12 +151,10 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
     for dd_file in data_dict_files:
         cohort_index.update(parse_data_dict(dd_file))
 
-    # `parse_data_dict` turns an XML parse error into `{}`, so a wholly corrupt fetch reaches
-    # here with files on disk and no records. Writing that produces an EMPTY detail index
-    # carrying valid provenance, which every consumer then treats as present -- check 5.8 reads
-    # it as "this cohort has no collection intervals" and skips, the one reading the absent-file
-    # guard was added to prevent. The basic builder has refused an empty mapping all along;
-    # this is the same refusal, and its absence here was an asymmetry between the two.
+    # Well-formed dictionaries that declare no variables reach here with no records. Writing
+    # that produces an EMPTY detail index carrying valid provenance, which every consumer then
+    # treats as present -- check 5.8 reads it as "this cohort has no collection intervals" and
+    # skips. The basic builder refuses an empty mapping too, so the pair agrees.
     if not cohort_index:
         print(
             f"  WARNING: {cohort_dir.name}: {len(data_dict_files)} data dictionaries parsed to "
@@ -249,7 +253,7 @@ def main() -> int:
 
     output = Path(args.output_dir)
     output.mkdir(parents=True, exist_ok=True)
-    # Checked BEFORE any index is written: the build loop writes straight into `output`, and an
+    # Checked BEFORE any index is published: indexes land before the manifest does, and an
     # index left there by a run whose manifest write is then refused has no recorded release.
     try:
         _cohorts.read_manifest_for_update(output)
@@ -263,16 +267,28 @@ def main() -> int:
 
     total_phvs = 0
     manifest: dict[str, dict] = {}
-
-    for cohort_dir in sorted(source.iterdir()):
-        if not cohort_dir.is_dir():
-            continue
-        entry = build_one(cohort_dir, output, source)
-        if entry is None:
-            continue
-        total_phvs += entry["phvs"]
-        if entry.get("study"):
-            manifest[f"{entry['study']}.{entry['study_version']}"] = entry
+    # Same scratch-then-publish shape as `build_phv_index.main`; see the reasons there.
+    cohort_dirs = [d for d in sorted(source.iterdir())
+                   if d.is_dir() and not d.name.startswith(".")]
+    scratch = output / ".build-phv-detail-index"
+    shutil.rmtree(scratch, ignore_errors=True)
+    scratch.mkdir()
+    try:
+        for cohort_dir in cohort_dirs:
+            entry = build_one(cohort_dir, scratch, source)
+            if entry is None:
+                continue
+            total_phvs += entry["phvs"]
+            if entry.get("study"):
+                manifest[f"{entry['study']}.{entry['study_version']}"] = entry
+        for built in sorted(scratch.glob("*.json.gz")):
+            built.replace(output / built.name)
+    except _cohorts.DataDictUnreadable as exc:
+        print(f"ERROR: {exc}\nPublishing nothing: no index or {_cohorts.MANIFEST_NAME} "
+              f"entry was written.", file=sys.stderr)
+        return 1
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
 
     print(f"\nTotal: {total_phvs:,} PHVs indexed with detail metadata")
     if manifest:

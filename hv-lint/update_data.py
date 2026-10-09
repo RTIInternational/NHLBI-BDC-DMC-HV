@@ -457,6 +457,12 @@ def process_cohort(
             else:
                 print(f"  ERROR: {cohort_key}: {exc} Publishing nothing.", file=sys.stderr)
             ok = False
+        except _cohorts.DataDictUnreadable as exc:
+            # Raised while building into scratch, so nothing has been moved: neither index of
+            # the pair nor its manifest entry is published, and the prior cache stands.
+            print(f"  ERROR: {cohort_key}: {exc}. Publishing nothing; re-fetch the data "
+                  f"dictionary (--force --cohort {cohort_key}) and rebuild.", file=sys.stderr)
+            ok = False
         finally:
             shutil.rmtree(scratch, ignore_errors=True)
 

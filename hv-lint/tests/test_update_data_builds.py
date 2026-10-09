@@ -462,3 +462,69 @@ def test_a_manifest_refusal_after_publishing_does_not_claim_nothing_was_publishe
     assert "release is NOT recorded" in err
     assert sorted(p.name for p in staged.glob("*.json.gz")) == [
         "phs009999.v3.json.gz", "phs009999.v3_detail.json.gz"]
+
+
+# -- An unreadable data dictionary aborts the build (PR #831 review) --------------------------
+
+CORRUPT_DATA_DICTS = {
+    "truncated": DATA_DICT.format(phs="phs009999", ver="v3", pht="pht0010001",
+                                  phv="phv00000001", name="var1")[:120],
+    "no-pht-table": '<?xml version="1.0"?>\n<data_table id="" study_id="phs009999.v3">'
+                    '<variable id="phv00000001.v1"><name>var1</name></variable></data_table>',
+}
+
+
+def _corrupt_second_table(cache: Path, cohort: str, content: str) -> None:
+    ftp = cache / cohort / "pheno_variable_summaries"
+    (ftp / "phs009999.v3.pht0010001.v1.TABLE1.data_dict.xml").write_text(content,
+                                                                          encoding="utf-8")
+
+
+def _seed_prior_cache(cache: Path) -> dict[str, bytes]:
+    """Sentinel bytes standing in for a prior good build; anything published overwrites them."""
+    prior = {
+        "phs009999.v3.json.gz": b"prior-index",
+        "phs009999.v3_detail.json.gz": b"prior-detail",
+        _cohorts.MANIFEST_NAME: json.dumps({"manifest_version": 1, "entries": {}}).encode(),
+    }
+    for name, data in prior.items():
+        (cache / name).write_bytes(data)
+    return prior
+
+
+def _unchanged(cache: Path, prior: dict[str, bytes]) -> None:
+    for name, data in prior.items():
+        assert (cache / name).read_bytes() == data, f"{name} must be left as found"
+    assert sorted(p.name for p in cache.glob("*.json.gz")) == sorted(
+        n for n in prior if n.endswith(".json.gz")), "no other index is published"
+    assert list(cache.glob(".build-*")) == [], "the scratch directory is cleaned up"
+
+
+@pytest.mark.parametrize("content", CORRUPT_DATA_DICTS.values(), ids=CORRUPT_DATA_DICTS.keys())
+def test_update_data_publishes_nothing_over_an_unreadable_data_dictionary(staged, capsys,
+                                                                          content):
+    """A skipped table gave an index missing it while the manifest recorded a valid digest."""
+    _corrupt_second_table(staged, "newcohort", content)
+    prior = _seed_prior_cache(staged)
+    assert _build() is False
+    assert "TABLE1.data_dict.xml" in capsys.readouterr().err
+    _unchanged(staged, prior)
+
+
+@pytest.mark.parametrize("module", ["build_phv_index", "build_phv_detail_index"])
+@pytest.mark.parametrize("content", CORRUPT_DATA_DICTS.values(), ids=CORRUPT_DATA_DICTS.keys())
+def test_the_standalone_builders_publish_nothing_over_an_unreadable_data_dictionary(
+        tmp_path, monkeypatch, capsys, module, content):
+    """A good cohort sorted BEFORE the bad one must not be published either."""
+    import importlib
+    builder = importlib.import_module(module)
+    source = _stage(tmp_path, "newcohort", "phs009999", "v3")
+    good = _stage(tmp_path / "other", "acohort", "phs008888", "v1")
+    (good / "acohort").replace(source / "acohort")
+    _corrupt_second_table(source, "newcohort", content)
+    prior = _seed_prior_cache(source)
+    monkeypatch.setattr(sys, "argv", [f"{module}.py", "--source-cache", str(source),
+                                      "--output-dir", str(source)])
+    assert builder.main() == 1
+    assert "Publishing nothing" in capsys.readouterr().err
+    _unchanged(source, prior)

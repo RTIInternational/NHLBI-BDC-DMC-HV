@@ -315,6 +315,10 @@ def main():
         sys.exit(2)
 
     # Determine targets
+    # `--cohort` is normalised here as well as in the managers, because this script is also
+    # run directly: `ALL` must mean every cohort, and an alias such as `hchs_sol` must name
+    # the `HCHS-ingest` directory, not `hchs_sol-ingest`.
+    args.cohort = _cohorts.cohort_arg(args.cohort, TRANSFORM_DIR)
     if args.file:
         target_path = Path(args.file).resolve()
         if not target_path.exists():
