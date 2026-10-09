@@ -8,6 +8,8 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+
 HVLINT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HVLINT))
 import build_phv_stats_index as bsi  # noqa: E402
@@ -93,3 +95,41 @@ def test_a_coded_variable_with_no_stat_has_no_n_and_is_not_empty(tmp_path):
     nonnull = css.load_nonnull_counts(tmp_path, "k")
     assert "phv00100001" not in nonnull and nonnull["phv00101324"] == 5531
     assert css.load_stats_index(tmp_path, "k")["phv00100001"].counts == {"1": 3}
+
+
+TRUNCATED_DATA_DICT = '<?xml version="1.0"?>\n<data_table id="pht001474.v1"><descr'
+
+
+@pytest.mark.parametrize("tables", [False, True], ids=["stats", "tables"])
+def test_main_publishes_nothing_over_a_truncated_xml(tmp_path, monkeypatch, capsys, tables):
+    """A skipped file gave an index missing it while the manifest recorded a valid digest."""
+    src = tmp_path / "src"
+    src.mkdir()
+    report = src / "phs000287.v7.pht001474.v1.p1.YR10.var_report.xml"
+    report.write_text(VAR_REPORT, encoding="utf-8")
+    ddict = src / "phs000287.v7.pht001474.v1.YR10.data_dict.xml"
+    ddict.write_text("<data_table><description>Year 10</description></data_table>",
+                     encoding="utf-8")
+    out = tmp_path / "out"
+    bsi.build_stats_index("k", src, out, study_prefix="phs000287.v7.")
+    bsi.build_tables_index("k", src, out, study_prefix="phs000287.v7.")
+    prior = {p.name: p.read_bytes() for p in out.iterdir()}
+    assert {"k_stats.json.gz", "k_tables.json.gz", "manifest.json"} <= prior.keys()
+
+    # A good file sorted BEFORE the bad one must not be published either.
+    (src / "phs000287.v7.pht000001.v1.p1.A.var_report.xml").write_text(
+        VAR_REPORT.replace("phv00101487", "phv09999999"), encoding="utf-8")
+    (src / "phs000287.v7.pht000001.v1.A.data_dict.xml").write_text(
+        "<data_table><description>A</description></data_table>", encoding="utf-8")
+    if tables:
+        ddict.write_text(TRUNCATED_DATA_DICT, encoding="utf-8")
+    else:
+        report.write_text(VAR_REPORT[: len(VAR_REPORT) // 2], encoding="utf-8")
+    monkeypatch.setattr(sys, "argv", ["build_phv_stats_index.py", "--cohort", "k",
+                                      "--source-dir", str(src), "--output-dir", str(out),
+                                      "--study-prefix", "phs000287.v7."]
+                        + (["--tables"] if tables else []))
+    assert bsi.main() == 1
+    err = capsys.readouterr().err
+    assert "Publishing nothing" in err and ("data_dict" if tables else "var_report") in err
+    assert {p.name: p.read_bytes() for p in out.iterdir()} == prior

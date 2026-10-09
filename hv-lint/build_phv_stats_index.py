@@ -75,12 +75,15 @@ def parse_var_report(path: Path) -> dict[str, dict]:
     ``code`` attribute is an uncoded integer value whose text is the value
     itself (CARDIA endpoint flags are published this way), so the text is
     used as the key.
+
+    Raises :class:`_cohorts.DataDictUnreadable` when the file cannot be read or parsed:
+    returning ``{}`` would drop the table's variables from an index whose manifest digest then
+    vouches for it.
     """
     try:
         root = ET.parse(path).getroot()
-    except ET.ParseError as exc:
-        print(f"  WARN: XML parse error in {path.name}: {exc}", file=sys.stderr)
-        return {}
+    except (ET.ParseError, OSError) as exc:
+        raise _cohorts.DataDictUnreadable(f"{path}: XML parse error: {exc}") from exc
 
     records: dict[str, dict] = {}
     for var in root.iter("variable"):
@@ -176,15 +179,20 @@ _DATA_DICT_NAME_RE = re.compile(r"^phs\d{6}\.v\d+\.(pht\d{6})\.v\d+\.(.+)\.data_
 
 
 def _table_description(path: Path) -> str:
-    """The ``<data_table>``'s own ``<description>`` (the first one, before any variable)."""
+    """The ``<data_table>``'s own ``<description>`` (the first one, before any variable).
+
+    Raises :class:`_cohorts.DataDictUnreadable` when the file cannot be parsed up to that
+    point: an empty description would be published as the table's real one. A file that is
+    damaged only after its description still yields the correct entry, so it is not refused.
+    """
     try:
         for _event, elem in ET.iterparse(path, events=("end",)):
             if elem.tag == "description":
                 return " ".join((elem.text or "").split())
             if elem.tag == "variable":
                 return ""
-    except ET.ParseError:
-        return ""
+    except (ET.ParseError, OSError) as exc:
+        raise _cohorts.DataDictUnreadable(f"{path}: XML parse error: {exc}") from exc
     return ""
 
 
@@ -254,6 +262,10 @@ def main() -> int:
         n = builder(args.cohort, source, Path(args.output_dir), study_prefix=args.study_prefix)
     except _cohorts.ManifestUnreadable as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+    except _cohorts.DataDictUnreadable as exc:
+        print(f"ERROR: {exc}\nPublishing nothing: no index or {_cohorts.MANIFEST_NAME} "
+              f"entry was written.", file=sys.stderr)
         return 1
     return 0 if n else 1
 
