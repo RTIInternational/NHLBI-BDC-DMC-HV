@@ -374,6 +374,30 @@ def study_from_data_dicts(cohort_dir: Path) -> tuple[str | None, str | None, int
     return accession, version, seen
 
 
+def release_prefix(cohort_dir: Path) -> str | None:
+    """The ``phs######.v#.`` stamp a build of ``cohort_dir`` is keyed by, or ``None``.
+
+    ``None`` means the directory holds no ``*.data_dict.xml`` at all: there is nothing to index
+    and nothing is claimed. Data dictionaries that name no single release raise
+    :class:`ReleaseUnestablished` instead -- whether none carries a stamp or several releases
+    are stamped. There is no fallback name: an artifact keyed by directory carries no release,
+    no manifest entry can vouch for it, and Phases 3 and 5 reject it as unverifiable.
+    """
+    ftp_dir = cohort_dir / "pheno_variable_summaries"
+    if not ftp_dir.is_dir() or not any(ftp_dir.glob("*.data_dict.xml")):
+        return None
+    accession, version, seen = study_from_data_dicts(cohort_dir)
+    if accession:
+        return f"{accession}.{version}."
+    if seen:
+        why = (f"its {seen} release-stamped data dictionaries name MORE THAN ONE release, "
+               f"and an index over all of them is a union")
+    else:
+        why = ("none of its data dictionaries carries a phs######.v#. release stamp in its "
+               "filename, so no release can be recorded for what they contain")
+    raise ReleaseUnestablished(f"{cohort_dir.name}: no single release -- {why}")
+
+
 def manifest_path(cache_dir: Path | str) -> Path:
     return Path(cache_dir) / MANIFEST_NAME
 
@@ -414,6 +438,15 @@ class DataDictUnreadable(RuntimeError):
     Builders raise it instead of skipping the file: a skipped table yields an index that lacks
     it while the manifest records a valid digest for that thinner index, so the loss is
     invisible to every consumer. Callers abort the build and publish nothing.
+    """
+
+
+class ReleaseUnestablished(DataDictUnreadable):
+    """A source directory's data dictionaries name no single ``phs######.v#`` release.
+
+    A subclass so that every caller already aborting on an unreadable dictionary aborts here
+    too, publishing nothing: the alternative was an artifact named by directory with no
+    provenance, which the build reported as success and lint later rejected.
     """
 
 

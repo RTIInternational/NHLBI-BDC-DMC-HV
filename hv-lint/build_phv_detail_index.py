@@ -126,21 +126,13 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
     # it cannot parse -- so without this filter a hand-written or legacy-named dictionary adds
     # records to an artifact whose manifest claims one specific release. The basic builder had
     # the identical hole; both are closed here rather than one at a time.
-    accession, version, seen = _cohorts.study_from_data_dicts(cohort_dir)
-    # Ambiguity is a refusal, not a fallback -- see the same guard in `build_phv_index.build_one`.
-    # Several stamped releases in one directory (`seen > 0`, no accession) would otherwise build
-    # a detail union named by directory. `update_data` happens to reject the returned entry, but
-    # the standalone builder publishes whatever is written, so the refusal belongs here.
-    if seen and not accession:
-        print(
-            f"  WARNING: {cohort_dir.name}: its {seen} data dictionaries name MORE THAN ONE "
-            f"release -- writing nothing, because an index over all of them is a union",
-            file=sys.stderr,
-        )
+    # Data dictionaries naming no single release raise here (see `_cohorts.release_prefix`);
+    # there is no directory-named fallback.
+    prefix = _cohorts.release_prefix(cohort_dir)
+    if prefix is None:
         return None
-    prefix = f"{accession}.{version}." if accession else None
     all_files = sorted(ftp_dir.glob("*.data_dict.xml"))
-    data_dict_files = [p for p in all_files if not prefix or p.name.startswith(prefix)]
+    data_dict_files = [p for p in all_files if p.name.startswith(prefix)]
     if len(all_files) != len(data_dict_files):
         print(f"  {cohort_dir.name}: skipped {len(all_files) - len(data_dict_files)} data "
               f"dictionaries not stamped {prefix[:-1]}", file=sys.stderr)
@@ -163,32 +155,20 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
         )
         return None
 
-    # Name the artifact by the STUDY, not by the source directory. A directory name is a local
-    # convention (`aric`, `aric-v8`, `aric-v9`) that nothing validates and that cannot hold two
-    # releases of one study at once; `phs000280.v8` can, and carries its own provenance. Falls
-    # back to the directory name, loudly, when no accession is parseable.
-    accession, version, _seen = _cohorts.study_from_data_dicts(cohort_dir)
+    # Named by the STUDY, not by the source directory: a directory name is a local convention
+    # (`aric`, `aric-v8`) that nothing validates and that cannot hold two releases at once.
+    accession, version = prefix[:-1].split(".")
+    key = f"{accession}.{version}"
     entry: dict = {
         "phvs": len(cohort_index),
         "phts": len({r.get("pht") for r in cohort_index.values() if r.get("pht")}),
         "data_dicts": len(data_dict_files),
         "source_dir": cohort_dir.name,
+        "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name, source),
+        "study": accession,
+        "study_version": version,
+        "built": _dt.datetime.now(tz=_dt.UTC).date().isoformat(),
     }
-    if accession:
-        key = f"{accession}.{version}"
-        entry.update({
-            "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name, source),
-            "study": accession,
-            "study_version": version,
-            "built": _dt.datetime.now(tz=_dt.UTC).date().isoformat(),
-        })
-    else:
-        key = cohort_dir.name.lower()
-        print(
-            f"  WARNING: {cohort_dir.name}: no single phs######.v# accession in its data "
-            f"dictionaries -- naming by directory ('{key}') and recording NO provenance",
-            file=sys.stderr,
-        )
 
     # Write compressed JSON
     json_bytes = json.dumps(

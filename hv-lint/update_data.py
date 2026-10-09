@@ -410,8 +410,8 @@ def process_cohort(
                     missing.append(label)
             if missing:
                 print(f"  ERROR: {cohort_key}: built no {' and no '.join(missing)} -- the data "
-                      f"dictionaries in {cohort_dir} name no single phs######.v#, or parsed to "
-                      f"zero records. Publishing nothing.", file=sys.stderr)
+                      f"dictionaries in {cohort_dir} are absent or parsed to zero records. "
+                      f"Publishing nothing.", file=sys.stderr)
                 ok = False
             else:
                 # Checked BEFORE publishing: an index published next to a manifest that then
