@@ -537,3 +537,69 @@ def test_an_undecodable_artifact_is_an_integrity_error_not_a_traceback(
     assert f"{KEY}.json.gz cannot be read as a cache artifact" in text
     assert "update_data.py --build-only --cohort hchs_sol" in text
     assert "Traceback" not in text
+
+
+# -- Phase 1 components invoked directly: the `all` sentinel and aliases (PR #831 review) ----
+
+
+def _phase1_targets(monkeypatch, tmp_path: Path, module: str, token: str) -> list[str]:
+    """The ingest directories a Phase 1 component's main() selects for ``--cohort token``."""
+    transform = tmp_path / "priority_variables_transform"
+    for cohort in ("FHS", "HCHS"):
+        (transform / f"{cohort}-ingest").mkdir(parents=True)
+    sys.path.insert(0, str(_HV_LINT / "phase-1"))
+    try:
+        import importlib
+        mod = importlib.import_module(module)
+    finally:
+        sys.path.remove(str(_HV_LINT / "phase-1"))
+    monkeypatch.setattr(mod, "TRANSFORM_DIR", transform)
+    seen: list[str] = []
+
+    def record(targets, *a, **k):
+        seen.extend(t.name for t in targets)
+        return [] if module == "check_quoting_rules" else 0
+
+    monkeypatch.setattr(mod, "run_yamllint" if module == "run_yamllint" else "collect_yaml_files",
+                        record)
+    monkeypatch.setattr(sys, "argv", [f"{module}.py", "--cohort", token])
+    with pytest.raises(SystemExit) as exit_info:
+        mod.main()
+    assert exit_info.value.code == 0
+    return sorted(seen)
+
+
+@pytest.mark.parametrize("module", ["run_yamllint", "check_quoting_rules"])
+@pytest.mark.parametrize("token, expect", [
+    ("ALL", ["FHS-ingest", "HCHS-ingest"]),
+    (" All ", ["FHS-ingest", "HCHS-ingest"]),
+    ("hchs_sol", ["HCHS-ingest"]),
+    ("HCHS-SOL", ["HCHS-ingest"]),
+])
+def test_phase_1_components_resolve_all_and_aliases_when_run_directly(
+        tmp_path, monkeypatch, module, token, expect):
+    assert _phase1_targets(monkeypatch, tmp_path, module, token) == expect
+
+
+@pytest.mark.parametrize("manager", ["run_all", "run_phase1"])
+@pytest.mark.parametrize("token", ["ALL", " all ", "All"])
+def test_the_managers_forward_the_all_sentinel_lowercase(monkeypatch, capsys, manager, token):
+    """Driven through each manager's main(), recording what it dispatches to its children."""
+    import importlib
+    sys.path.insert(0, str(_HV_LINT / "phase-1"))
+    try:
+        mod = importlib.import_module(manager)
+    finally:
+        sys.path.remove(str(_HV_LINT / "phase-1"))
+    seen: list[str] = []
+    if manager == "run_all":
+        monkeypatch.setattr(mod, "run_phase",
+                            lambda name, args, cache: (seen.append(args.cohort), (0, ""))[1])
+        argv = ["run_all.py", "--cohort", token, "--no-report"]
+    else:
+        monkeypatch.setattr(mod, "run_component",
+                            lambda name, cohort, fail_on: (seen.append(cohort), 0)[1])
+        argv = ["run_phase1.py", "--cohort", token]
+    monkeypatch.setattr(sys, "argv", argv)
+    assert mod.main() == 0
+    assert seen and set(seen) == {"all"}

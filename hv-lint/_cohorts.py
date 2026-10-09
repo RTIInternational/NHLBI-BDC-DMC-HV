@@ -300,6 +300,19 @@ def canonical_cohort(cohort: str, transform_dir: Path | str | None = None) -> st
     return cohort
 
 
+def cohort_arg(cohort: str, transform_dir: Path | str | None = None) -> str:
+    """A ``--cohort`` value normalised for dispatch: ``all`` in any case or padding is ``all``.
+
+    Every other value goes through :func:`canonical_cohort`. Managers forward the result to
+    components that compare with exactly ``"all"`` and join a named cohort onto ``-ingest``, so
+    ``ALL`` passed through would be read as a cohort named ``ALL``, and an alias as a directory.
+    """
+    token = (cohort or "").strip()
+    if token.lower() == "all":
+        return "all"
+    return canonical_cohort(token, transform_dir)
+
+
 def cohorts_to_load(
     cohort: str, cache_dir: Path | str, transform_dir: Path | str | None = None
 ) -> list[tuple[str, str]]:

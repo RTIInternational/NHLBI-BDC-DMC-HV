@@ -167,8 +167,9 @@ def main() -> int:
     # run through this entry point. Upper-casing is independently wrong now that the choices are
     # gone: `get_ingest_dir` joins the token onto a path, and `COPDGENE-ingest` resolves on a
     # case-insensitive filesystem but not on the ubuntu-latest runner CI uses.
-    if args.cohort.lower() != "all":
-        args.cohort = _cohorts.canonical_cohort(args.cohort)
+    # `all` in any case is forwarded as lowercase `all`: run_yamllint and check_quoting_rules
+    # compare with exactly "all", and would otherwise look for an `ALL-ingest` directory.
+    args.cohort = _cohorts.cohort_arg(args.cohort)
 
     # Report directory
     report_dir = Path(args.report_dir) if args.report_dir else REPORTS_DIR

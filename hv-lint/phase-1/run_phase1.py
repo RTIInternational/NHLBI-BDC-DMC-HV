@@ -127,8 +127,9 @@ def main() -> int:
 
     # Canonicalise the cohort to the casing its ingest directory actually uses, BEFORE any
     # component runs -- see run_all.py for the COPDGene casing defect this guards against.
-    if args.cohort.lower() != "all":
-        args.cohort = _cohorts.canonical_cohort(args.cohort)
+    # `all` in any case is forwarded as lowercase `all`: run_yamllint and check_quoting_rules
+    # compare with exactly "all", and would otherwise look for an `ALL-ingest` directory.
+    args.cohort = _cohorts.cohort_arg(args.cohort)
 
     print("=" * 70)
     print("HV-Lint Phase 1: YAML Structural & Formatting")
