@@ -653,7 +653,7 @@ def test_18_overlap_names_the_smallest_identity_not_the_first_file_through_main(
     t.write("b.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568901", p12)])
     t.write("c.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568902", p23)])
     t.write("d.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568908", p12)])
-    first = t.run(P1, "--cohort", "COPDGene", mode="update")
+    first = E.seed_baseline(t, lambda **kw: t.run(P1, "--cohort", "COPDGene", **kw))
     assert "in b.yaml block" in first.stdout, first.stdout[-1500:]
     t.write("0.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568905", p12)])
     res = t.run(P1, "--cohort", "COPDGene")

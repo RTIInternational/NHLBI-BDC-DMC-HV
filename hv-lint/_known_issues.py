@@ -42,7 +42,9 @@ or single-component run can never rewrite rows it did not see):
   Every stale-entry and fixed-WARNING message prints it.
 * :data:`UPDATE_CMD` rewrites the WARNING baseline rows in scope from this run (adds and removes),
   so the baseline can rise as well as fall: accepting a new WARNING is a reviewed diff of
-  ``warning_baseline.json``, line by line.
+  ``warning_baseline.json``, line by line. It never adds a row for a rule in
+  :data:`NO_BASELINE_RULES` (lost or unlinked records): such a finding is accepted only as a
+  ``known_issues.yaml`` entry naming its issue.
 
 Entry fields: ``rule``, ``file``, ``block``, ``message`` (the fingerprint), ``issue`` (int),
 ``status``, ``note`` (optional). An unlisted ERROR prints the entry line to add.
@@ -81,6 +83,22 @@ PRUNE_CMD = "HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all"
 UPDATE_CMD = "HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all"
 PRUNE_REMOVED_CMD = ("HVLINT_PRUNE=1 HVLINT_PRUNE_REMOVED=1 python hv-lint/run_all.py "
                      "--cohort all")
+
+# Rules whose finding means a record is lost or unlinked: a file with no blocks (1.0, 2.0), a
+# visit label another block of the table contradicts (1.8), a required slot some rows are
+# emitted without (2.4), observed codes value_mappings drops or a declared code it never maps
+# (3.9, 3.15), a visit label visit.yaml does not define (5.2), and an id expression the visit
+# checks could not read (5.12). The baseline update never ADDS a row for one: accepting such a
+# finding is a known_issues.yaml entry that names its issue. Existing rows stay (#885 gate v2).
+# The severities the ratchet holds to the baseline.
+RATCHETED = ("WARNING",)
+NO_BASELINE_RULES = frozenset({"1.0", "1.8", "2.0", "2.4", "3.9", "3.15", "5.2", "5.12"})
+
+
+def _row_key(rule: str, text: str) -> Key:
+    file, block, message = (text.split(" | ", 2) + ["", ""])[:3]
+    return Key(rule, file, block, message)
+
 
 BOTH_MODES_MESSAGE = (
     f"refusing to run with both {PRUNE_ENV}=1 and {UPDATE_ENV}=1: the update would write the "
@@ -581,7 +599,7 @@ def finalize(
     current: dict[str, dict[str, set[str]]] = {}
     for f in findings:
         k = keys.get(id(f))
-        if k is None or f.severity != "WARNING" or k.rule not in checks:
+        if k is None or f.severity not in RATCHETED or k.rule not in checks:
             continue
         current.setdefault(k.rule, {}).setdefault(str(cohort_of(k.file)), set()).add(k.text())
     base = load_baseline() if baseline is None else baseline
@@ -654,6 +672,14 @@ def finalize(
                         f"other fixed entry or WARNING row) with: {PRUNE_CMD}")
             extra.append(make_finding(meta, -1, "KI", "ERROR", text))
 
+    # A new row of a lost-or-unlinked rule is never baselined, in any mode.
+    unbaselinable = {g for g in new if g[0] in NO_BASELINE_RULES}
+
+    def known_issue_instead(r: str, t: str) -> str:
+        return (f"[{r}] is a lost or unlinked record, so it cannot be accepted into the baseline. "
+                f"Fix it; or, if it is accepted, list it in {meta} with the issue that tracks it: "
+                f"{entry_line(_row_key(r, t))}")
+
     if mode == "update":
         # An update rewrites in-scope rows from this run, but a row whose file or block was
         # removed stays: dropping it is a prune of removed data, which needs PRUNE_REMOVED_ENV.
@@ -663,14 +689,22 @@ def finalize(
                 for r, by_c in base.items()}
         for r, by_c in current.items():
             for c, ts in by_c.items():
-                rows.setdefault(r, {}).setdefault(c, []).extend(ts)
+                rows.setdefault(r, {}).setdefault(c, []).extend(
+                    t for t in ts if (r, c, t) not in unbaselinable)
         write_baseline(rows)
+        for r, c, t in sorted(unbaselinable):
+            extra.append(make_finding(
+                "hv-lint/warning_baseline.json", -1, "RATCHET", "ERROR",
+                f"refusing to add a baseline row for new WARNING [{r}] in {c}: {t}. "
+                + known_issue_instead(r, t)))
     else:
         for r, c, t in new:
             extra.append(make_finding(
                 "hv-lint/warning_baseline.json", -1, "RATCHET", "ERROR",
-                f"new WARNING [{r}] in {c}: {t}. Fix it; or, if it is accepted, add it to the "
-                f"baseline in this PR ({UPDATE_CMD}) and say why"))
+                f"new WARNING [{r}] in {c}: {t}. " + (
+                    known_issue_instead(r, t) if (r, c, t) in unbaselinable else
+                    f"Fix it; or, if it is accepted, add it to the baseline in this PR "
+                    f"({UPDATE_CMD}) and say why")))
         if mode != "prune":
             for g in gone:
                 r, c, t = g

@@ -8,6 +8,7 @@ the path a unit test of the rule function never reaches.
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import subprocess
@@ -78,6 +79,29 @@ class Tree:
                   .replace("status: <status>", f"status: {status}") for x in self.suggested(res)]
         self.ki.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return lines
+
+
+def seed_baseline(tree: Tree, runner) -> subprocess.CompletedProcess:
+    """Record every WARNING one run reports as the tree's baseline, written directly.
+
+    The baseline update refuses new rows of a lost-or-unlinked rule (``NO_BASELINE_RULES``), so
+    a test that needs such a WARNING already accepted -- the state main is in for its existing
+    rows -- seeds it here. ``runner(extra_env=...)`` runs the component or run_all."""
+    sys.path.insert(0, str(HVLINT))
+    import _known_issues as K  # noqa: PLC0415
+
+    dump = tree.tmp / "seed_dump.jsonl"
+    dump.unlink(missing_ok=True)
+    res = runner(extra_env={"HVLINT_DUMP_FINDINGS": str(dump)})
+    rows: dict = {}
+    if dump.is_file():
+        for line in dump.read_text(encoding="utf-8").splitlines():
+            d = json.loads(line)
+            if d["severity"] in K.RATCHETED and d["key"]:
+                rows.setdefault(d["check"], {}).setdefault(
+                    str(K.cohort_of(d["file"])), []).append(d["key"])
+    K.write_baseline(rows, tree.baseline)
+    return res
 
 
 def phase5(tree: Tree, **kw) -> subprocess.CompletedProcess:

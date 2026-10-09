@@ -173,7 +173,7 @@ def test_phase5_new_warning_fails_even_when_another_is_fixed(tmp_path):
     b["class_derivations"]["Condition"]["slot_derivations"]["condition_status"][
         "populated_from"] = "phv00001561"
     t.write("afib.yaml", [a, b])
-    assert E.phase5(t, mode="update").returncode == 0
+    assert E.seed_baseline(t, lambda **kw: E.phase5(t, **kw)).returncode == 1   # new [5.2]
     assert "[5.2]" in E.phase5(t).stdout and E.phase5(t).returncode == 0
     for blk, old, new in ((a, "EXAM 6-7", "EXAM 10"), (b, "ORIGINAL EXAM 10", "ORIGNAL EXAM 10")):
         v = blk["class_derivations"]["Condition"]["slot_derivations"]["associated_visit"]
@@ -455,7 +455,7 @@ def test_18_overlap_label_change_changes_the_fingerprint(tmp_path):
     t.write("a.yaml", [a])
     t.write("b.yaml", [_phase_block(["FHS OMNI 1 EXAM 2", "FHS OMNI 1 EXAM 3"])])
     script = "phase-1/check_cross_file_pht_consistency.py"
-    assert t.run(script, "--cohort", "COPDGene", mode="update").returncode == 0
+    E.seed_baseline(t, lambda **kw: t.run(script, "--cohort", "COPDGene", **kw))
     assert t.run(script, "--cohort", "COPDGene").returncode == 0
     t.write("b.yaml", [_phase_block(["FHS OMNI 1 EXAM 2", "FHS OMNI 1 EXAM 4"])])
     res = t.run(script, "--cohort", "COPDGene")
@@ -495,11 +495,12 @@ def _run_all(t, *skip: str):
 def _runner(t, stubs: dict[str, int] | None = None):
     """run_all.py over every phase, Phases 1 and 2 stubbed (E.run_all_stubbed)."""
     stubs = {"phase1": 0, "phase2": 0} if stubs is None else stubs
-    return lambda mode=None: E.run_all_stubbed(t, stubs, mode=mode)
+    return lambda mode=None, extra_env=None: E.run_all_stubbed(t, stubs, mode=mode,
+                                                               extra_env=extra_env)
 
 
 def _start_clean(t, run):
-    assert run("update").returncode == 0
+    E.seed_baseline(t, lambda **kw: run(**kw))
     clean = run()
     assert clean.returncode == 0, clean.stdout[-2000:]
     return t.ki.read_text(encoding="utf-8"), t.baseline.read_text(encoding="utf-8")
@@ -575,7 +576,8 @@ def test_prune_refuses_an_unparseable_spec(tmp_path, how):
     t = _real_subset(tmp_path, "FHS", ["visit.yaml", "cig_smok.yaml"])
     if how == "skip":
         args = _run_all(t, "phase1", "phase2", "phase3")
-        run = lambda mode=None: t.run(*args, mode=mode, run_all=False)  # noqa: E731
+        run = lambda mode=None, extra_env=None: t.run(*args, mode=mode, run_all=False,  # noqa: E731
+                                                      extra_env=extra_env)
     else:
         run = _runner(t, {"phase1": 0, "phase2": 0, "phase3": 0})
     ki, bl = _start_clean(t, run)
@@ -633,3 +635,37 @@ def test_deleting_a_spec_with_an_entry_does_not_go_green_through_plain_prune(tmp
     assert "REMOVED, not fixed (HVLINT_PRUNE_REMOVED=1): 1 entry/row(s)" in acked.stdout
     assert "FHS-ingest/afib.yaml" in acked.stdout.split("REMOVED, not fixed")[1]
     assert K.load_entries(t.ki) == [] and run().returncode == 0
+
+
+# -- the baseline update never accepts a lost or unlinked record (gate review B4) ---------------
+
+def test_update_refuses_a_new_unlinked_visit_label_through_main(tmp_path):
+    """A label visit.yaml does not define links every record of the block to nothing (5.2).
+    HVLINT_UPDATE_BASELINE used to accept it as one baseline row; now it refuses, writes no row,
+    and prints the known_issues.yaml line that accepts it with an issue number instead."""
+    t = E.Tree(tmp_path, "MESA")
+    t.write("visit.yaml", [E.visit_block("pht001116", "phv00084441", "MESA CLASSIC EXAM 1",
+                                         cohort="MESA")])
+    t.write("hdl.yaml", [_labelled("phv00084970", "MESA CLASSIC EXAM 1")])
+    assert E.phase5(t, mode="update").returncode == 0
+    clean = E.phase5(t)
+    assert clean.returncode == 0, clean.stdout[-2000:]
+    before = t.baseline.read_text(encoding="utf-8")
+
+    t.write("hdl.yaml", [_labelled("phv00084970", "MESA CLASSIC EXAM 55")])
+    red = E.phase5(t)
+    assert red.returncode == 1 and "new WARNING [5.2]" in red.stdout, red.stdout[-2000:]
+    assert K.UPDATE_CMD not in red.stdout.split("new WARNING [5.2]")[1].splitlines()[0]
+
+    upd = E.phase5(t, mode="update")
+    assert upd.returncode == 1, upd.stdout[-2000:]
+    assert "refusing to add a baseline row for new WARNING [5.2]" in upd.stdout
+    assert t.baseline.read_text(encoding="utf-8") == before
+    assert E.phase5(t).returncode == 1                          # still red
+
+    line = re.search(r"(- \{rule: \"5\.2\".*?\})", upd.stdout).group(1)
+    t.ki.write_text(line.replace("<issue>", "999").replace("<status>", "defect") + "\n",
+                    encoding="utf-8")
+    listed = E.phase5(t)
+    assert listed.returncode == 0 and "known issue #999, defect" in listed.stdout, \
+        listed.stdout[-2000:]

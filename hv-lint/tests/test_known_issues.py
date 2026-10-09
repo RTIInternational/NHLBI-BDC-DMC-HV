@@ -304,12 +304,12 @@ def test_prune_and_update_refuse_a_partial_or_single_component_run(tree, monkeyp
 
 
 def test_update_rewrites_only_rows_in_scope(tree, monkeypatch):
-    _baseline(_at(tree["other"], 0, "5.2", "WARNING", "other"),
-              _at(tree["afib"], 0, "5.2", "WARNING", "old"))
+    _baseline(_at(tree["other"], 0, "5.1", "WARNING", "other"),
+              _at(tree["afib"], 0, "5.1", "WARNING", "old"))
     monkeypatch.setenv("HVLINT_RUN_ALL", "1")
-    assert _run([_at(tree["afib"], 1, "5.2", "WARNING", "now")], tree, checks=("5.2",),
+    assert _run([_at(tree["afib"], 1, "5.1", "WARNING", "now")], tree, checks=("5.1",),
                 scanned=[tree["afib"]], mode="update") == []
-    rows = K.load_baseline()["5.2"]["FHS"]
+    rows = K.load_baseline()["5.1"]["FHS"]
     assert sorted(r.rsplit(" | ", 1)[1] for r in rows) == ["now", "other"]
 
 
