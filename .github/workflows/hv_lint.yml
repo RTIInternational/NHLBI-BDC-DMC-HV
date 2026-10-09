@@ -76,11 +76,14 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Every package is pinned with its hashes (hv-lint/requirements-lint.txt, compiled from
+      # requirements-lint.in for linux / Python 3.12): the ratchet compares findings, so a new
+      # yamllint, linkml-runtime or PyYAML release must not change them under an unrelated PR.
       # linkml-map is the model Phase 2's 2.1 reads its valid keys from; without it Phase 2
       # fails in CI rather than fall back to the frozen v0.3.9 key sets (Assumption A2). 0.5.3
       # is the version the pipeline runs (A6).
       - name: Install dependencies
-        run: pip install pyyaml yamllint linkml-runtime linkml-map==0.5.3
+        run: pip install --require-hashes -r hv-lint/requirements-lint.txt
 
       - name: Detect changed cohort
         id: detect

@@ -116,11 +116,11 @@ The frozen sets are a strict subset of linkml-map 0.5.3's, so the fallback canno
 
 | Environment | Behavior |
 |---|---|
-| CI (`GITHUB_ACTIONS=true`; the lint job installs `linkml-map==0.5.3`) | Live import. If it fails, Phase 2 exits 1 with `ERROR: linkml_map import failed ...` before any check |
+| CI (`GITHUB_ACTIONS=true`; the lint job installs `linkml-map==0.5.3` from the lock, A12) | Live import. If it fails, Phase 2 exits 1 with `ERROR: linkml_map import failed ...` before any check |
 | Local, `linkml-map` importable | Live import |
 | Local, import fails | Frozen v0.3.9 constants, with the WARNING above |
 
-**Action required if `linkml-map` is upgraded:** change the pin in `.github/workflows/hv_lint.yml`, and update the frozen constants in `validate_model_conformance.py` and this note.
+**Action required if `linkml-map` is upgraded:** change its pin in `hv-lint/requirements-lint.in`, recompile the lock (A12), and update the frozen constants in `validate_model_conformance.py` and this note.
 
 ### A3: HV Extensions (`value`, `object_derivations`) Are Valid Keys
 
@@ -216,6 +216,12 @@ Scripts detect which cohort a file belongs to by extracting the directory name b
 - `--cohort all` means every `*-ingest/` directory; there is no hard-coded cohort list.
 - The cache key is the cohort's declared release (see the dbGaP Cache Architecture above). `HCHS` finds its declaration in `_manifest-hchs_sol.yaml` through the same alias table.
 - A named cohort with no ingest directory and no cache fails Phases 1, 3 and 5 rather than passing with nothing checked.
+
+### A12: The Lint Job's Dependencies Are Locked with Hashes
+
+The `hv-lint` CI job installs `pip install --require-hashes -r hv-lint/requirements-lint.txt`. The lock is compiled from `hv-lint/requirements-lint.in`, which pins the four direct dependencies -- `pyyaml==6.0.3`, `yamllint==1.38.0`, `linkml-runtime==1.12.0`, `linkml-map==0.5.3` -- and every transitive one is pinned with its sha256 (112 packages; `linkml-map` brings in the full `linkml` toolchain). Phase 2 is enforced and every WARNING and HIGH is ratcheted, so, as with `BDCHM_REF` (A1), a new release of yamllint, linkml-runtime (whose SchemaView slot induction feeds 2.4 and 2.7) or PyYAML must not change findings under a PR that did not ask for it.
+
+The lock is resolved for the runner, not for the machine that compiles it: `uv pip compile hv-lint/requirements-lint.in --python-version 3.12 --python-platform linux --generate-hashes -o hv-lint/requirements-lint.txt`. It does not install on Windows as-is (click needs colorama there, which a linux resolution omits); compile with `--python-platform windows` into a scratch file for a local copy. To bump a dependency: change its pin in the `.in` file, recompile, run `HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all` in the new environment, and review the lock, known-issue and baseline changes in one PR. The unit-test job still installs `pytest pyyaml` unpinned: it asserts rule behaviour on fixtures, not counts over the tree.
 
 ---
 

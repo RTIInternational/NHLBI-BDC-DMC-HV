@@ -84,7 +84,8 @@ BDCHM_URL_TEMPLATE = (
 # 'millimeter_Hg' on Python 3.14), _derive_valid_keys() returns these frozen
 # constants and the reason. The frozen sets are a strict subset of 0.5.3's, so
 # they reject valid keys (missing_values, offset, ...): under GITHUB_ACTIONS the
-# fallback is an ERROR, and the lint job installs linkml-map==0.5.3 (Assumption A2).
+# fallback is an ERROR, and the lint job installs linkml-map==0.5.3 from
+# hv-lint/requirements-lint.txt (Assumption A2).
 #
 # HV-specific extensions ('value', 'object_derivations') are added
 # manually -- see Assumption A3.
@@ -890,7 +891,7 @@ def main() -> int:
     # lint job must run against the linkml-map it pins.
     if fallback and in_ci:
         print(f"ERROR: {fallback}. CI must import the linkml-map the lint job "
-              f"pins (.github/workflows/hv_lint.yml); 2.1 DID NOT RUN against the live model.",
+              f"pins (hv-lint/requirements-lint.txt); 2.1 DID NOT RUN against the live model.",
               file=sys.stderr)
         return 1
 
