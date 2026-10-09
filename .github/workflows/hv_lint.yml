@@ -11,6 +11,12 @@ on:
       # must run this workflow -- otherwise the one change the check exists to police is the
       # one change that never reaches it.
       - 'hv_dataqc/cache_fetcher/manifests/**'
+  # main itself, after every merge, over every cohort (Detect runs on pull_request only, so the
+  # config step falls back to `all`). Two PRs each green on its own base can be red together --
+  # one adds the block another adds in a different file (1.12), or one fixes the finding whose
+  # entry another relies on -- and without this no run shows it.
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       bdchm_ref:
