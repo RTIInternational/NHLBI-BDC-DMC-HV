@@ -418,6 +418,205 @@ class TestApplyYamlFallbackExprSupport:
         assert "No" in msg and "pattern" in msg
 
 
+class TestApplyYamlValueMappingsSupport:
+    """value_mappings (code -> CURIE dict, e.g. race:/sex:/value_enum: slots)
+    was previously invisible to _apply_yaml entirely: slot_re only recognized
+    a `value:`/`expr:` line immediately after the slot, but a value_mappings
+    slot's next line is `populated_from:` instead -- so _find_block_for_phv
+    never matched the block, and every such finding fell through to "No YAML
+    block found for phv" even when the fix was completely unambiguous.
+
+    A single table often maps several different codes to several different
+    CURIEs (confirmed via curie.csv, which files one row per distinct CURIE
+    a table emits for the same (yaml_file, slot, phv) -- e.g. ARIC
+    cig_smok.yaml's value_enum table maps U/N/Y to three different OMOP
+    concepts), so original_curie is required to pick which single code's
+    entry a finding is about."""
+
+    def test_phv_single_match_applied(self, tmp_path):
+        yf = tmp_path / "test.yaml"
+        yf.write_text(
+            "- class_derivations:\n"
+            "    Demography:\n"
+            "      populated_from: pht0001\n"
+            "      slot_derivations:\n"
+            "        race:\n"
+            "          populated_from: phvAAA\n"
+            "          value_mappings:\n"
+            "            N: OMOP:8527\n"
+            "            B: OMOP:8516\n",
+            encoding="utf-8",
+        )
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml(
+                "TEST", "test.yaml", "race", "OMOP:9999", "phvAAA",
+                original_curie="OMOP:8516",
+            )
+        assert ok
+        content = yf.read_text()
+        assert "B: OMOP:9999" in content
+        assert "N: OMOP:8527" in content  # sibling code untouched
+
+    def test_phv_no_original_curie_refused(self, tmp_path):
+        """value_mappings can't be applied without original_curie -- there's
+        no way to know which code's entry a bare (slot, phv) finding means."""
+        yf = tmp_path / "test.yaml"
+        original = (
+            "- class_derivations:\n"
+            "    Demography:\n"
+            "      populated_from: pht0001\n"
+            "      slot_derivations:\n"
+            "        race:\n"
+            "          populated_from: phvAAA\n"
+            "          value_mappings:\n"
+            "            N: OMOP:8527\n"
+            "            B: OMOP:8516\n"
+        )
+        yf.write_text(original, encoding="utf-8")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "race", "OMOP:9999", "phvAAA")
+        assert not ok
+        assert "original_curie" in msg
+        assert yf.read_text() == original
+
+    def test_phv_ambiguous_same_table_refused(self, tmp_path):
+        """Two codes in the same table both currently hold original_curie --
+        refuse rather than guess (or update both)."""
+        yf = tmp_path / "test.yaml"
+        original = (
+            "- class_derivations:\n"
+            "    Demography:\n"
+            "      populated_from: pht0001\n"
+            "      slot_derivations:\n"
+            "        race:\n"
+            "          populated_from: phvAAA\n"
+            "          value_mappings:\n"
+            "            N: OMOP:8527\n"
+            "            X: OMOP:8527\n"
+        )
+        yf.write_text(original, encoding="utf-8")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml(
+                "TEST", "test.yaml", "race", "OMOP:9999", "phvAAA",
+                original_curie="OMOP:8527",
+            )
+        assert not ok
+        assert "ambiguous" in msg
+        assert yf.read_text() == original
+
+    def test_phv_original_curie_not_in_table_refused(self, tmp_path):
+        yf = tmp_path / "test.yaml"
+        original = (
+            "- class_derivations:\n"
+            "    Demography:\n"
+            "      populated_from: pht0001\n"
+            "      slot_derivations:\n"
+            "        race:\n"
+            "          populated_from: phvAAA\n"
+            "          value_mappings:\n"
+            "            N: OMOP:8527\n"
+        )
+        yf.write_text(original, encoding="utf-8")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml(
+                "TEST", "test.yaml", "race", "OMOP:9999", "phvAAA",
+                original_curie="OMOP:0000000",
+            )
+        assert not ok
+        assert "doesn't" in msg and "value_mappings" in msg
+        assert yf.read_text() == original
+
+    def test_phv_only_targets_that_blocks_table(self, tmp_path):
+        """Two blocks with the same slot/code/value -- phv must scope the
+        edit to only its own block's table, same guarantee as the plain
+        value:/expr: phv-scoped paths."""
+        yf = tmp_path / "test.yaml"
+        yf.write_text(
+            "- class_derivations:\n"
+            "    Demography:\n"
+            "      populated_from: pht0001\n"
+            "      slot_derivations:\n"
+            "        race:\n"
+            "          populated_from: phvAAA\n"
+            "          value_mappings:\n"
+            "            N: OMOP:8527\n"
+            "- class_derivations:\n"
+            "    Demography:\n"
+            "      populated_from: pht0002\n"
+            "      slot_derivations:\n"
+            "        race:\n"
+            "          populated_from: phvBBB\n"
+            "          value_mappings:\n"
+            "            N: OMOP:8527\n",
+            encoding="utf-8",
+        )
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml(
+                "TEST", "test.yaml", "race", "OMOP:9999", "phvAAA",
+                original_curie="OMOP:8527",
+            )
+        assert ok
+        content = yf.read_text()
+        assert content.count("OMOP:9999") == 1
+        assert content.count("OMOP:8527") == 1  # phvBBB's table untouched
+
+    def test_original_curie_no_phv_single_match_applied(self, tmp_path):
+        """No phv, but original_curie narrows to exactly one value_mappings
+        entry across the whole file -- safe to apply, same principle as the
+        existing plain value:/expr: no-phv fallback."""
+        yf = tmp_path / "test.yaml"
+        yf.write_text(
+            "race:\n  populated_from: phvAAA\n  value_mappings:\n    N: OMOP:8527\n    B: OMOP:8516\n",
+            encoding="utf-8",
+        )
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml(
+                "TEST", "test.yaml", "race", "OMOP:9999",
+                original_curie="OMOP:8516",
+            )
+        assert ok
+        content = yf.read_text()
+        assert "B: OMOP:9999" in content
+        assert "N: OMOP:8527" in content
+
+    def test_original_curie_no_phv_multiple_matches_refused(self, tmp_path):
+        original = (
+            "race:\n  populated_from: phvAAA\n  value_mappings:\n    N: OMOP:8527\n"
+            "---\n"
+            "race:\n  populated_from: phvBBB\n  value_mappings:\n    N: OMOP:8527\n"
+        )
+        yf = tmp_path / "test.yaml"
+        yf.write_text(original, encoding="utf-8")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml(
+                "TEST", "test.yaml", "race", "OMOP:9999",
+                original_curie="OMOP:8527",
+            )
+        assert not ok
+        assert "no phv to say which one" in msg
+        assert yf.read_text() == original
+
+    def test_original_curie_no_phv_combined_with_plain_value_refused(self, tmp_path):
+        """original_curie matching both a plain value: block and a separate
+        value_mappings entry -- must count as 2 disagreeing candidates
+        total, not just check each form in isolation."""
+        original = (
+            "race:\n  value: OMOP:8527\n"
+            "---\n"
+            "race:\n  populated_from: phvAAA\n  value_mappings:\n    N: OMOP:8527\n"
+        )
+        yf = tmp_path / "test.yaml"
+        yf.write_text(original, encoding="utf-8")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml(
+                "TEST", "test.yaml", "race", "OMOP:9999",
+                original_curie="OMOP:8527",
+            )
+        assert not ok
+        assert "no phv to say which one" in msg
+        assert yf.read_text() == original
+
+
 # ---------------------------------------------------------------------------
 # _apply_csv
 # ---------------------------------------------------------------------------
