@@ -3,12 +3,13 @@
 
 Primary source: ``*.data_dict.xml`` files in the FTP cache
 (``pheno_variable_summaries/`` sub-directory). These cover every table
-including restricted-access and HeartGO tables that are absent from the
-CGI ``variables.xml`` bulk index.
+including restricted-access and HeartGO tables.
 
-Fallback / supplement: ``variables.xml`` (legacy CGI bulk index). Any
-PHVs found there that are not already in the FTP-sourced mapping are
-added, so the output is always a strict superset of the old behaviour.
+Only inputs attributable to the release being recorded contribute: each
+``*.data_dict.xml`` must carry that release's ``phs######.v#.`` stamp. The
+CGI ``variables.xml`` bulk index was merged as a supplement until
+2026-09-23 and is not read any more -- it carries no release, so a copy
+left from an earlier one silently made the artifact a union.
 
 Produces compressed JSON files mapping base PHV accessions to base PHT
 accessions. These compact indexes are used by Phase 3
@@ -27,82 +28,36 @@ indexes from already-fetched source data.
 from __future__ import annotations
 
 import argparse
+import datetime as _dt
 import gzip
 import json
+import shutil
 import sys
 import xml.etree.ElementTree as ET
-from html.parser import HTMLParser
 from pathlib import Path
 
-
-class VariableTableParser(HTMLParser):
-    """Parse the dbGaP variable list HTML table.
-
-    Each row has 5 columns:
-      [0] Variable accession  (e.g., phv00098579.v7.p3)
-      [1] Variable name       (e.g., SUBJECT_ID)
-      [2] Variable description
-      [3] Dataset accession   (e.g., pht001440.v7.p3)
-      [4] Dataset name        (e.g., ARIC_Subject)
-    """
-
-    def __init__(self):
-        super().__init__()
-        self.in_td = False
-        self.current_row: list[str] = []
-        self.rows: list[list[str]] = []
-        self.current_text = ""
-
-    def handle_starttag(self, tag, attrs):
-        if tag == "td":
-            self.in_td = True
-            self.current_text = ""
-        elif tag == "tr":
-            self.current_row = []
-
-    def handle_endtag(self, tag):
-        if tag == "td":
-            self.in_td = False
-            self.current_row.append(self.current_text.strip())
-        elif tag == "tr" and self.current_row:
-            self.rows.append(self.current_row)
-
-    def handle_data(self, data):
-        if self.in_td:
-            self.current_text += data
-
-
-def parse_variable_html(path: Path) -> dict[str, str]:
-    """Parse HTML variable list and return {base_phv: base_pht} mapping."""
-    parser = VariableTableParser()
-    parser.feed(path.read_text(encoding="utf-8", errors="replace"))
-    parser.close()
-
-    mapping: dict[str, str] = {}
-    for row in parser.rows:
-        if len(row) < 4:
-            continue
-        phv_base = row[0].split(".")[0]  # strip .vN.pN version
-        pht_base = row[3].split(".")[0]
-        if phv_base.startswith("phv") and pht_base.startswith("pht"):
-            mapping[phv_base] = pht_base
-
-    return mapping
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _cohorts  # noqa: E402
 
 
 def parse_data_dict_xml(path: Path) -> dict[str, str]:
-    """Parse one FTP ``*.data_dict.xml`` and return {base_phv: base_pht}."""
+    """Parse one FTP ``*.data_dict.xml`` and return {base_phv: base_pht}.
+
+    Raises :class:`_cohorts.DataDictUnreadable` when the file cannot be read or parsed, or its
+    root names no ``pht`` table: returning ``{}`` would drop the table from an index whose
+    manifest digest then vouches for it.
+    """
     try:
         tree = ET.parse(path)
-    except ET.ParseError as exc:
-        print(f"  WARN: XML parse error in {path.name}: {exc}", file=sys.stderr)
-        return {}
+    except (ET.ParseError, OSError) as exc:
+        raise _cohorts.DataDictUnreadable(f"{path}: XML parse error: {exc}") from exc
 
     root = tree.getroot()
     table_id_raw = root.get("id", "")
     base_pht = table_id_raw.split(".")[0] if table_id_raw else ""
     if not base_pht.startswith("pht"):
-        return {}
+        raise _cohorts.DataDictUnreadable(
+            f"{path}: root element names no pht table (id={table_id_raw!r})")
 
     mapping: dict[str, str] = {}
     for var_elem in root.iter("variable"):
@@ -113,15 +68,100 @@ def parse_data_dict_xml(path: Path) -> dict[str, str]:
     return mapping
 
 
-def build_mapping_from_ftp(cohort_dir: Path) -> dict[str, str]:
-    """Build {base_phv: base_pht} from FTP data dicts in pheno_variable_summaries/."""
+def build_mapping_from_ftp(cohort_dir: Path, prefix: str | None = None) -> dict[str, str]:
+    """Build {base_phv: base_pht} from FTP data dicts in pheno_variable_summaries/.
+
+    ``prefix`` is the ``phs######.v#.`` stamp of the release being recorded. When given, only
+    files carrying it contribute -- a file from another release, or one whose name cannot be
+    attributed to any release, must not add PHVs to an artifact that claims this one. Omitted,
+    every file contributes, which is correct only when no release is being claimed.
+    """
     ftp_dir = cohort_dir / "pheno_variable_summaries"
     if not ftp_dir.is_dir():
         return {}
     mapping: dict[str, str] = {}
+    skipped = 0
     for dd_file in sorted(ftp_dir.glob("*.data_dict.xml")):
+        if prefix and not dd_file.name.startswith(prefix):
+            skipped += 1
+            continue
         mapping.update(parse_data_dict_xml(dd_file))
+    if skipped:
+        print(f"  {cohort_dir.name}: skipped {skipped} data dictionaries not stamped "
+              f"{prefix[:-1]}", file=sys.stderr)
     return mapping
+
+
+def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
+    """Build one staging directory's PHV index. Returns its manifest entry, or ``None``.
+
+    Callable from ``update_data.py`` so the fetch orchestrator and this script build the same
+    artifact from the same source. It previously had its own ``variables.xml``-only builder that
+    wrote ``<cohort>.json.gz`` and recorded no provenance, so the documented onboarding command
+    produced a cache the mandatory release check then rejected.
+
+    The returned entry always carries ``study``/``study_version``, read from the data
+    dictionaries and never from what a cohort declares, which would make the release check
+    confirm itself. Dictionaries naming no single release raise
+    :class:`_cohorts.ReleaseUnestablished`; ``None`` means there was nothing to index.
+
+    **Only inputs attributable to the recorded release contribute.** Every PHV here comes from a
+    ``*.data_dict.xml`` whose ``phs######.v#.`` stamp matches the release this artifact is keyed
+    and provenance-stamped by. Two sources used to slip past that and make the artifact a union
+    of releases -- the thing keying by release exists to prevent:
+
+    * ``variables.xml``, the CGI bulk index, was merged as a supplement. It carries no release
+      in its name or contents, so a copy left from an earlier release was indistinguishable from
+      a current one and there was no check that could tell. Removed rather than guarded, after
+      three review rounds closed three separate roads to the same contamination. It cost
+      nothing: every committed cache was built by ``--source-cache`` from a staging tree that
+      contains no ``variables.xml`` at all, so the supplement contributed zero PHVs to all of
+      them.
+    * unstamped ``*.data_dict.xml`` files, which `retire_superseded_data_dicts` deliberately
+      leaves alone (it refuses to guess about a name it cannot parse). They were still parsed
+      into the mapping, so a hand-written or legacy-named file added PHVs to an artifact whose
+      manifest claimed one specific release.
+    """
+    # The release is decided FIRST, because it selects the inputs. Deciding it afterwards is
+    # what allowed inputs from other releases to be counted into the artifact it names. Data
+    # dictionaries naming no single release raise here; there is no directory-named fallback.
+    prefix = _cohorts.release_prefix(cohort_dir)
+    if prefix is None:
+        return None
+    mapping = build_mapping_from_ftp(cohort_dir, prefix)
+    ftp_count = len(mapping)
+
+    if not mapping:
+        return None
+
+    phts = len(set(mapping.values()))
+    # Named by the STUDY, not by the source directory: a directory name is a local convention
+    # (`aric`, `aric-v8`) that nothing validates and that cannot hold two releases at once.
+    accession, version = prefix[:-1].split(".")
+    key = f"{accession}.{version}"
+    entry: dict = {
+        "phvs": len(mapping), "phts": phts, "source_dir": cohort_dir.name,
+        "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name, source),
+        "study": accession,
+        "study_version": version,
+        "built": _dt.datetime.now(tz=_dt.UTC).date().isoformat(),
+    }
+
+    # Write compressed JSON
+    json_bytes = json.dumps(mapping, separators=(",", ":")).encode("utf-8")
+    gz_path = output / f"{key}.json.gz"
+    with gzip.open(gz_path, "wb") as f:
+        f.write(json_bytes)
+
+    # The digest and counts the loader verifies on every read (`_cohorts.load_cache_artifact`).
+    entry[_cohorts.ARTIFACTS_FIELD] = {gz_path.name: _cohorts.artifact_record(gz_path)}
+    gz_size = gz_path.stat().st_size
+    print(
+        f"  {cohort_dir.name:12s}: {len(mapping):>7,} PHVs "
+        f"({ftp_count:,} FTP), "
+        f"{phts:>4} PHTs -> {gz_size:>8,} bytes ({gz_path.name})"
+    )
+    return entry
 
 
 def main() -> int:
@@ -167,53 +207,55 @@ def main() -> int:
 
     output = Path(args.output_dir)
     output.mkdir(parents=True, exist_ok=True)
+    # Checked BEFORE any index is published: indexes land before the manifest does, and an
+    # index left there by a run whose manifest write is then refused has no recorded release.
+    try:
+        _cohorts.read_manifest_for_update(output)
+    except _cohorts.ManifestUnreadable as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
 
     print(f"Source cache: {source}")
     print(f"Output dir:   {output}")
     print()
 
     total_phvs = 0
-    for cohort_dir in sorted(source.iterdir()):
-        if not cohort_dir.is_dir():
-            continue
-
-        # Primary: FTP data dicts (complete coverage including restricted tables)
-        mapping = build_mapping_from_ftp(cohort_dir)
-        ftp_count = len(mapping)
-
-        # Supplement: variables.xml (CGI bulk index) fills any gaps
-        vf = cohort_dir / "variables.xml"
-        if vf.exists():
-            html_mapping = parse_variable_html(vf)
-            before = len(mapping)
-            for phv, pht in html_mapping.items():
-                if phv not in mapping:
-                    mapping[phv] = pht
-            html_added = len(mapping) - before
-        else:
-            html_added = 0
-
-        if not mapping:
-            continue
-
-        phts = len(set(mapping.values()))
-        total_phvs += len(mapping)
-
-        # Write compressed JSON
-        json_bytes = json.dumps(mapping, separators=(",", ":")).encode("utf-8")
-        gz_path = output / f"{cohort_dir.name.lower()}.json.gz"
-        with gzip.open(gz_path, "wb") as f:
-            f.write(json_bytes)
-
-        gz_size = gz_path.stat().st_size
-        supplement = f" (+{html_added} from variables.xml)" if html_added else ""
-        print(
-            f"  {cohort_dir.name:12s}: {len(mapping):>7,} PHVs "
-            f"({ftp_count:,} FTP{supplement}), "
-            f"{phts:>4} PHTs -> {gz_size:>8,} bytes ({gz_path.name})"
-        )
+    manifest: dict[str, dict] = {}
+    # Listed BEFORE the scratch directory exists, and dot-directories skipped: `source` and
+    # `output` are the same directory by default, so the scratch dir would otherwise be built.
+    cohort_dirs = [d for d in sorted(source.iterdir())
+                   if d.is_dir() and not d.name.startswith(".")]
+    # Every index is built into scratch and published only when ALL cohorts built: an
+    # unreadable data dictionary aborts the run with the cache and manifest untouched.
+    scratch = output / ".build-phv-index"
+    shutil.rmtree(scratch, ignore_errors=True)
+    scratch.mkdir()
+    try:
+        for cohort_dir in cohort_dirs:
+            entry = build_one(cohort_dir, scratch, source)
+            if entry is None:
+                continue
+            total_phvs += entry["phvs"]
+            if entry.get("study"):
+                manifest[f"{entry['study']}.{entry['study_version']}"] = entry
+        for built in sorted(scratch.glob("*.json.gz")):
+            built.replace(output / built.name)
+    except _cohorts.DataDictUnreadable as exc:
+        print(f"ERROR: {exc}\nPublishing nothing: no index or {_cohorts.MANIFEST_NAME} "
+              f"entry was written.", file=sys.stderr)
+        return 1
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
 
     print(f"\nTotal: {total_phvs:,} PHVs indexed")
+    if manifest:
+        try:
+            mpath = _cohorts.write_manifest_entries(output, manifest)
+        except _cohorts.ManifestUnreadable as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 1
+        print()
+        print(f"Provenance recorded for {len(manifest)} cohort(s) -> {mpath.name}")
     return 0
 
 

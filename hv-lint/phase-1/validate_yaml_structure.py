@@ -45,10 +45,6 @@ TRANSFORM_DIR = find_transform_dir()
 
 
 
-COHORTS = [
-    "ARIC", "CARDIA", "CHS", "COPDGene",
-    "FHS", "HCHS", "JHS", "MESA", "SPIROMICS", "WHI",
-]
 
 # ---------------------------------------------------------------------------
 # Constants

@@ -22,8 +22,6 @@ Checks implemented:
 from __future__ import annotations
 
 import argparse
-import gzip
-import json
 import os
 import re
 import sys
@@ -33,6 +31,7 @@ from pathlib import Path
 # Path resolution -- works in both control center and HV repo
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _cohorts  # noqa: E402
 from _derivations import iter_nested_class_derivs  # noqa: E402
 
 import yaml
@@ -43,21 +42,6 @@ import yaml
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
-
-# Maps directory-derived cohort name -> dbGaP cache key
-COHORT_TO_CACHE_KEY: dict[str, str] = {
-    "ARIC": "aric",
-    "CARDIA": "cardia",
-    "CHS": "chs",
-    "COPDGene": "copdgene",
-    "FHS": "fhs",
-    "HCHS": "hchs_sol",
-    "JHS": "jhs",
-    "MESA": "mesa",
-    "SPIROMICS": "spiromics",
-    "WHI": "whi",
-    "LTRC": "ltrc",
-}
 
 # Files to skip entirely. Each entry suppresses cross-reference checks for one
 # file while a tracked data issue is resolved -- remove the entry once fixed.
@@ -135,21 +119,12 @@ class DbGaPIndex:
 # ---------------------------------------------------------------------------
 
 def load_dbgap_index(cache_dir: Path, cache_key: str) -> DbGaPIndex:
-    """Load compressed phv->pht index for a cohort."""
-    gz_path = cache_dir / f"{cache_key}.json.gz"
-    json_path = cache_dir / f"{cache_key}.json"
+    """Load compressed phv->pht index for a cohort, verified against the manifest.
 
-    if gz_path.exists():
-        with gzip.open(gz_path, "rt", encoding="utf-8") as f:
-            mapping = json.load(f)
-    elif json_path.exists():
-        with json_path.open(encoding="utf-8") as f:
-            mapping = json.load(f)
-    else:
-        raise FileNotFoundError(
-            f"No dbGaP index for '{cache_key}': "
-            f"expected {gz_path} or {json_path}"
-        )
+    Raises ``FileNotFoundError`` when absent and ``_cohorts.CacheIntegrityError`` when its
+    content is not what the manifest records.
+    """
+    mapping = _cohorts.load_cache_artifact(cache_dir, cache_key)
 
     idx = DbGaPIndex()
     idx.phv_to_pht = mapping
@@ -550,6 +525,12 @@ def parse_args() -> argparse.Namespace:
         help="Cohort to validate (e.g., ARIC, CHS) or 'all' (default: all)"
     )
     p.add_argument(
+        "--expect-study", default=None,
+        help="OVERRIDE the release the cohort declares (phs000287 or phs000287.v7). The check "
+             "always runs: without this flag the expectation comes from the cohort's "
+             "_manifest-<cohort>.yaml, and a cache with no recorded provenance fails it.",
+    )
+    p.add_argument(
         "--fail-on", default="error",
         choices=["critical", "error", "high", "warning", "info"],
         help="Minimum severity to cause non-zero exit (default: error)"
@@ -562,11 +543,17 @@ def parse_args() -> argparse.Namespace:
         "--summary-limit", type=int, default=50,
         help="Max findings to include in the Markdown summary (default: 50)"
     )
-    return p.parse_args()
+    args = p.parse_args()
+    _cohorts.reject_expect_study_for_all(p, args)
+    return args
 
 
 def main() -> int:
     args = parse_args()
+    # The file scan matches `<cohort>-ingest`, so an alias (`hchs_sol`, `HCHS-SOL`) must name
+    # the DIRECTORY here, as it already names the cache in `cohorts_to_load`; otherwise the
+    # release check passes and the scan finds no file.
+    args.cohort = _cohorts.canonical_cohort(args.cohort, find_transform_dir())
     in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
     cache_dir = Path(args.cache_dir)
 
@@ -577,23 +564,55 @@ def main() -> int:
 
     # Load indexes (only the needed cohort when filtering)
     indexes: dict[str, DbGaPIndex] = {}
-    cohort_upper = args.cohort.upper()
-    needed = (
-        {k: v for k, v in COHORT_TO_CACHE_KEY.items() if k.upper() == cohort_upper}
-        if cohort_upper != "ALL"
-        else COHORT_TO_CACHE_KEY
-    )
-    for cohort_name, cache_key in needed.items():
+    pairs = _cohorts.cohorts_to_load(args.cohort, cache_dir, find_transform_dir())
+    missing: list[tuple[str, str]] = []
+    for cohort_name, cache_key in pairs:
         try:
             indexes[cohort_name] = load_dbgap_index(cache_dir, cache_key)
             count = len(indexes[cohort_name].phv_to_pht)
             phts = len(indexes[cohort_name].valid_phts)
-            print(f"  Loaded {cohort_name}: {count:,} PHVs across {phts} PHTs")
+            print(f"  Loaded {cohort_name}: {count:,} PHVs across {phts} PHTs "
+                  f"[{_cohorts.study_label(cache_dir, cache_key)}]")
+            # The release being linted against is ALWAYS checked, never assumed. `--expect-study`
+            # overrides; otherwise the cohort's own declaration in
+            # hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml is the expectation. A
+            # cohort that declares nothing is a hard failure, because "lint against whichever
+            # cache happens to be present" is how a superseded release goes unnoticed.
+            expected = args.expect_study or _cohorts.declared_study(cohort_name, cache_dir=cache_dir)
+            if not expected:
+                print(
+                    f"ERROR: cohort '{cohort_name}' declares no dbGaP release, so the cache "
+                    f"cannot be checked. Add hv_dataqc/cache_fetcher/manifests/"
+                    f"_manifest-<cohort>.yaml with current_version.study_id and data_version. "
+                    f"(--expect-study phs######.v# overrides it for a one-off Phase 3 run on "
+                    f"one named --cohort; Phase 5 has no override and still fails.)",
+                    file=sys.stderr,
+                )
+                return 1
+            source = "--expect-study" if args.expect_study else "declared release"
+            mismatch = _cohorts.study_mismatch(cache_dir, cache_key, expected)
+            if mismatch:
+                print(f"ERROR: study version check ({source} {expected}): {mismatch}",
+                      file=sys.stderr)
+                return 1
         except FileNotFoundError:
-            pass  # cohort not available -- will skip files for it
+            missing.append((cohort_name, cache_key))
+        except _cohorts.CacheIntegrityError as exc:
+            print(f"ERROR: cache integrity check for '{cohort_name}': {exc}", file=sys.stderr)
+            return 1
 
-    if not indexes:
-        print("ERROR: No dbGaP indexes found. Run build_phv_index.py.", file=sys.stderr)
+    # A cache the run asked for and did not get is a HARD failure naming what it looked for.
+    # Previously an unresolvable cohort produced an empty dict and the generic message "No dbGaP
+    # indexes found. Run build_phv_index.py." -- which names the wrong remedy when the cache is
+    # present but the cohort was simply not on the list, and cannot say WHICH cohort failed.
+    if missing:
+        for cohort_name, cache_key in missing:
+            print(
+                f"ERROR: no dbGaP index for cohort '{cohort_name}' -- looked for "
+                f"'{cache_key}.json.gz' in {cache_dir}. Build it with build_phv_index.py "
+                f"and build_phv_detail_index.py (--source-cache <dbgap staging dir>).",
+                file=sys.stderr,
+            )
         return 1
 
     # Discover YAML files
