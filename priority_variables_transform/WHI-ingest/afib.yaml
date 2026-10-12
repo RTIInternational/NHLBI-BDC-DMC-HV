@@ -211,11 +211,15 @@
 - class_derivations:
     Condition:
       populated_from: pht003407
+      joins:
+        pht000998:
+          source_key: phv00193141
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193154} == 1, ({phv00078437} * 365) + {phv00193155}))'
+          expr: 'case(({phv00193154} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193155}))'
         condition_concept:
           value: MONDO:0004981
         condition_status:
@@ -232,11 +236,15 @@
 - class_derivations:
     Condition:
       populated_from: pht003414
+      joins:
+        pht000998:
+          source_key: phv00193686
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193727} == 1, ({phv00078437} * 365) + {phv00193728}))'
+          expr: 'case(({phv00193727} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193728}))'
         condition_concept:
           value: MONDO:0004981
         condition_status:
@@ -253,11 +261,15 @@
 - class_derivations:
     Condition:
       populated_from: pht006223
+      joins:
+        pht000998:
+          source_key: phv00283451
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00283695} == 1, ({phv00078437} * 365) + {phv00283452}))'
+          expr: 'case(({phv00283695} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
         condition_concept:

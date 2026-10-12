@@ -51,11 +51,15 @@
 - class_derivations:
     Condition:
       populated_from: pht003402
+      joins:
+        pht000998:
+          source_key: phv00192476
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00192504} == 1, ({phv00078437} * 365) + {phv00192505}))'
+          expr: 'case(({phv00192504} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00192505}))'
         condition_concept:
           value: HP:0001342
           range: string
@@ -75,11 +79,15 @@
 - class_derivations:
     Condition:
       populated_from: pht003402
+      joins:
+        pht000998:
+          source_key: phv00192476
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00192522} == 1, ({phv00078437} * 365) + {phv00192523}))'
+          expr: 'case(({phv00192522} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00192523}))'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -99,11 +107,15 @@
 - class_derivations:
     Condition:
       populated_from: pht003402
+      joins:
+        pht000998:
+          source_key: phv00192476
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00192525} == 1, ({phv00078437} * 365) + {phv00192526}))'
+          expr: 'case(({phv00192525} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00192526}))'
         condition_concept:
           value: MONDO:0005264
           range: string
@@ -123,11 +135,15 @@
 - class_derivations:
     Condition:
       populated_from: pht003402
+      joins:
+        pht000998:
+          source_key: phv00192476
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00192507} == 1, ({phv00078437} * 365) + {phv00192508}))'
+          expr: 'case(({phv00192507} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00192508}))'
         condition_concept:
           value: HP:0002140
           range: string
@@ -171,11 +187,15 @@
 - class_derivations:
     Condition:
       populated_from: pht003407
+      joins:
+        pht000998:
+          source_key: phv00193141
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193205} == 1, ({phv00078437} * 365) + {phv00193206}))'
+          expr: 'case(({phv00193205} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193206}))'
         condition_concept:
           value: MONDO:0005264
           range: string
@@ -195,11 +215,15 @@
 - class_derivations:
     Condition:
       populated_from: pht003407
+      joins:
+        pht000998:
+          source_key: phv00193141
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193184} == 1, ({phv00078437} * 365) + {phv00193185}))'
+          expr: 'case(({phv00193184} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193185}))'
         condition_concept:
           value: HP:0001342
           range: string
@@ -219,11 +243,15 @@
 - class_derivations:
     Condition:
       populated_from: pht003407
+      joins:
+        pht000998:
+          source_key: phv00193141
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193187} == 1, ({phv00078437} * 365) + {phv00193188}))'
+          expr: 'case(({phv00193187} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193188}))'
         condition_concept:
           value: HP:0002140
           range: string
@@ -243,11 +271,15 @@
 - class_derivations:
     Condition:
       populated_from: pht003407
+      joins:
+        pht000998:
+          source_key: phv00193141
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193202} == 1, ({phv00078437} * 365) + {phv00193203}))'
+          expr: 'case(({phv00193202} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193203}))'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -267,11 +299,15 @@
 - class_derivations:
     Condition:
       populated_from: pht003414
+      joins:
+        pht000998:
+          source_key: phv00193686
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193735} == 1, ({phv00078437} * 365) + {phv00193736}))'
+          expr: 'case(({phv00193735} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193736}))'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -291,11 +327,15 @@
 - class_derivations:
     Condition:
       populated_from: pht003414
+      joins:
+        pht000998:
+          source_key: phv00193686
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193737} == 1, ({phv00078437} * 365) + {phv00193738}))'
+          expr: 'case(({phv00193737} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193738}))'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -545,11 +585,15 @@
 - class_derivations:
     Condition:
       populated_from: pht006223
+      joins:
+        pht000998:
+          source_key: phv00283451
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00283533} == 1, ({phv00078437} * 365) + {phv00283452}))'
+          expr: 'case(({phv00283533} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: string
@@ -572,11 +616,15 @@
 - class_derivations:
     Condition:
       populated_from: pht006223
+      joins:
+        pht000998:
+          source_key: phv00283451
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00283705} == 1, ({phv00078437} * 365) + {phv00283452}))'
+          expr: 'case(({phv00283705} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: string
