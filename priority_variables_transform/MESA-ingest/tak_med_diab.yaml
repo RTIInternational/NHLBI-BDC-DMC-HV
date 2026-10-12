@@ -9,7 +9,7 @@
         age_at_exposure_start:
           expr: case(({phv00083006} == 1, {phv00083008} * 365))
         drug_concept:
-          expr: 'case(({phv00083006} == 1, "ATC:A10"))'
+          value: ATC:A10
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -29,7 +29,7 @@
         age_at_exposure_start:
           expr: case(({phv00085234} == 1, {phv00085244} * 365))
         drug_concept:
-          expr: 'case(({phv00085234} == 1, "ATC:A10"))'
+          value: ATC:A10
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -49,7 +49,7 @@
         age_at_exposure_start:
           expr: case(({phv00087115} == 1, {phv00087161} * 365))
         drug_concept:
-          expr: 'case(({phv00087115} == 1, "ATC:A10"))'
+          value: ATC:A10
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -67,7 +67,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00175292} == 1, "ATC:A10"))'
+          value: ATC:A10
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -86,7 +86,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175794}) + ":MESA LUNG CT")'
         drug_concept:
-          expr: 'case(({phv00175870} == 1, "ATC:A10"))'
+          value: ATC:A10
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -104,7 +104,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00176715} == 1, "ATC:A10"))'
+          value: ATC:A10
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

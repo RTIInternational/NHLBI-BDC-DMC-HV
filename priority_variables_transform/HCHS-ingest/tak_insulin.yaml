@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
-          expr: 'case(({phv00226345} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -25,7 +25,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
-          expr: 'case(({phv00226360} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -44,7 +44,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
-          expr: 'case(({phv00226361} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

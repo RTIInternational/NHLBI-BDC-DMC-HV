@@ -9,24 +9,6 @@
         condition_concept:
           value: OMOP:4102124
         condition_status:
-          populated_from: phv00204712
-        condition_provenance:
-          value: STUDY_RECORD
-        associated_evidence:
-          value: carotid ultrasound
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht004063
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
-        condition_concept:
-          value: OMOP:4102124
-        condition_status:
           populated_from: phv00204776
           value_mappings:
             '0': ABSENT

@@ -127,6 +127,41 @@
           range: string
 - class_derivations:
     Condition:
+      populated_from: pht001112
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00083440}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00083440}) + ":MESA AIR SPIROMETRY")'
+        condition_concept:
+          value: MONDO:0005002
+          range: string
+        condition_status:
+          populated_from: phv00083486
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
+            '3': PRESENT
+            '4': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        condition_severity:
+          populated_from: phv00083486
+          value_mappings:
+            '1': OMOP:4116992
+            '2': OMOP:3272197
+            '3': OMOP:4087703
+            '4': OMOP:4087703
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+- class_derivations:
+    Condition:
       populated_from: pht001114
       slot_derivations:
         associated_participant:
@@ -428,6 +463,41 @@
         associated_evidence:
           value: "spirometry"
           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001122
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087666}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087666}) + ":MESA FAMILY SPIROMETRY")'
+        condition_concept:
+          value: MONDO:0005002
+          range: string
+        condition_status:
+          populated_from: phv00087712
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
+            '3': PRESENT
+            '4': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        condition_severity:
+          populated_from: phv00087712
+          value_mappings:
+            '1': OMOP:4116992
+            '2': OMOP:3272197
+            '3': OMOP:4087703
+            '4': OMOP:4087703
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht003086
