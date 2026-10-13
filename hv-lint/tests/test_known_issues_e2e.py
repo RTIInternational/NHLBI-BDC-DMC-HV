@@ -581,8 +581,9 @@ def test_prune_refuses_an_unparseable_spec(tmp_path, how):
     """Review round 3 A M3, as reported (`skip`): FHS cig_smok.yaml unparseable, then
     `HVLINT_PRUNE=1 run_all.py --cohort FHS --skip phase1 phase2 phase3` pruned its 7 entries.
     `every-phase` runs Phase 5 for real with Phases 1-3 stubbed as passing, so Phase 5's own
-    5.0 is what refuses it."""
-    t = _real_subset(tmp_path, "FHS", ["visit.yaml", "cig_smok.yaml"])
+    5.0 is what refuses it. The broken file is one that still has known-issue entries
+    (hist_hrtdis.yaml): cig_smok.yaml has none since #892 fixed its 2.12 findings."""
+    t = _real_subset(tmp_path, "FHS", ["visit.yaml", "hist_hrtdis.yaml"])
     if how == "skip":
         args = _run_all(t, "phase1", "phase2", "phase3")
         run = lambda mode=None, extra_env=None: t.run(*args, mode=mode, run_all=False,  # noqa: E731
@@ -590,11 +591,11 @@ def test_prune_refuses_an_unparseable_spec(tmp_path, how):
     else:
         run = _runner(t, {"phase1": 0, "phase2": 0, "phase3": 0})
     ki, bl = _start_clean(t, run)
-    assert "cig_smok.yaml" in ki
-    _break(t, "cig_smok.yaml")
+    assert "file: FHS-ingest/hist_hrtdis.yaml," in ki
+    _break(t, "hist_hrtdis.yaml")
     res = run("prune")
     assert res.returncode == 1 and "Prune REFUSED" in res.stdout, res.stdout[-3000:]
-    assert "[5.0] Could not parse cig_smok.yaml" in res.stdout
+    assert "[5.0] Could not parse hist_hrtdis.yaml" in res.stdout
     assert t.ki.read_text(encoding="utf-8") == ki
     assert t.baseline.read_text(encoding="utf-8") == bl
 
