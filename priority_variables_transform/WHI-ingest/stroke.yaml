@@ -360,48 +360,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193798}) + ":WHI")'
         # excluded: age_at_condition_start -- pht003415 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
-          value: MONDO:0005098
-          range: string
-        condition_status:
-          populated_from: phv00193806
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PHYSICIAN_ADJUDICATION
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht003415
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193798}) + ":WHI")'
-        # excluded: age_at_condition_start -- pht003415 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
-        condition_concept:
-          value: MONDO:0005098
-          range: string
-        condition_status:
-          populated_from: phv00193811
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PHYSICIAN_ADJUDICATION
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht003415
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193798}) + ":WHI")'
-        # excluded: age_at_condition_start -- pht003415 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
-        condition_concept:
           value: HP:0001342
           range: string
         condition_status:
