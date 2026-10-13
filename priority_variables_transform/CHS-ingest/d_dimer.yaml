@@ -52,7 +52,7 @@
               populated_from: pht001449
               slot_derivations:
                 value_decimal:
-                  populated_from: phv00098768
+                  expr: "case(({phv00098768} == -99, None), (True, {phv00098768}))"
                 unit:
                   value: mg/L
                   range: string
