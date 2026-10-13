@@ -28,7 +28,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00170566}) + ":WHI")'
         age_at_exposure_start:
-          expr: 'case(({phv00170599} == 1, ({pht000998.phv00078437} * 365) + {phv00170600}))'
+          expr: 'case(({phv00170599} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00170600}))'
         drug_concept:
           value: ATC:A10B
         exposure_provenance:
@@ -69,7 +69,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193628}) + ":WHI")'
         age_at_exposure_start:
-          expr: 'case(({phv00193673} == 1, ({pht000998.phv00078437} * 365) + {phv00193674}))'
+          expr: 'case(({phv00193673} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193674}))'
         drug_concept:
           value: ATC:A10B
         exposure_provenance:
@@ -91,7 +91,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_exposure_start:
-          expr: 'case(({phv00193785} == 1, ({pht000998.phv00078437} * 365) + {phv00193786}))'
+          expr: 'case(({phv00193785} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193786}))'
         drug_concept:
           value: ATC:A10B
         exposure_provenance:
