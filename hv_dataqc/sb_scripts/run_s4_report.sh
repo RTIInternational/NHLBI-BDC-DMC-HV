@@ -186,15 +186,17 @@ for COHORT in "${PREFLIGHT_OK[@]}"; do
     if $DO_EXTRACT && { [ -z "$SRC_JSON" ] || $FORCE; }; then
         SOURCE_ROOT="$(find_source_root "$COHORT")"
         echo "[$i/$TOTAL] $COHORT — source extract (this is the slow step)..."
-        # S4 only needs variables_by_pht.  Skip the multi-PHV joint-distribution
-        # crosstabs (QAQC-only; FHS ~33k pairs dominate memory). Console is quiet
-        # by default; full log is in the run's *.log file.
+        # S4 only needs variables_by_pht for spec PHVs: scope columns to them
+        # and skip the multi-PHV joint-distribution crosstabs (QAQC-only; FHS
+        # ~33k pairs dominate memory). Console is quiet by default; full log is
+        # in the run's *.log file.
         (cd "$HV" && uv run python -m hv_dataqc.extract_source.extract_source_summaries \
             --cohort "$COHORT" \
             --source-root "$SOURCE_ROOT" \
             --output-dir "$OUT_DIR" \
             --yaml-dir "$SPECS_ROOT/${COHORT}-ingest" \
             --cache-dir "$CACHE_DIR" \
+            --scope-to-yaml \
             --no-joint-distributions)
         SRC_JSON="$(find_src_json "$OUT_DIR")"
     elif $DO_EXTRACT; then

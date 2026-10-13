@@ -740,18 +740,17 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                         "and computes pairwise crosstabs during extraction. "
                         "Adds 'joint_distributions_by_pht' to the output JSON, enabling "
                         "exact (non-SKIP) comparisons for multi-PHV conditions in compare.")
-    p.add_argument("--no-scope-to-yaml", action="store_true",
-                   help="Disable the default behavior of restricting summarized columns to "
-                        "the PHVs referenced by --yaml-dir. With --yaml-dir and no explicit "
-                        "--phv-list, the extractor summarizes only spec-referenced PHVs "
-                        "(far fewer columns, much less memory). Pass this to summarize every "
-                        "column instead (the legacy full extract).")
+    p.add_argument("--scope-to-yaml", action="store_true",
+                   help="Summarize only the columns for PHVs referenced by --yaml-dir "
+                        "(ignored with --phv-list). Far fewer columns and much less memory "
+                        "(FHS: ~90k columns -> a few hundred), but the extract then covers "
+                        "only the specs as they stood when it ran. Default: every column.")
     p.add_argument("--no-joint-distributions", action="store_true",
                    help="Skip the multi-PHV case() joint-distribution crosstabs even when "
                         "--yaml-dir is given. The crosstabs power QAQC's exact multi-PHV "
                         "comparisons but can be tens of thousands of pairs (FHS: ~33k), which "
                         "dominates output size and memory. Table S4 does not need them — it "
-                        "reads only variables_by_pht. Still scopes columns to --yaml-dir PHVs.")
+                        "reads only variables_by_pht.")
 
     # --- output ---
     p.add_argument("--output-dir", metavar="DIR", default=None,
@@ -762,7 +761,10 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                    help="Override JSON output filename.")
     p.add_argument("--verbose", action="store_true")
 
-    return p.parse_args(argv)
+    args = p.parse_args(argv)
+    if args.scope_to_yaml and not args.yaml_dir:
+        p.error("--scope-to-yaml requires --yaml-dir")
+    return args
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -905,11 +907,15 @@ def main(argv: list[str] | None = None) -> None:
         if args.phv_list:
             phv_filter_set = {c.strip().lower() for c in args.phv_list}
             log.info("Column filter active (explicit --phv-list): %d columns", len(phv_filter_set))
-        elif yaml_phvs and not args.no_scope_to_yaml:
+        elif args.scope_to_yaml:
+            if not yaml_phvs:
+                raise SystemExit(
+                    "ERROR: --scope-to-yaml needs --yaml-dir to name a directory "
+                    "whose specs reference at least one PHV."
+                )
             phv_filter_set = scope_columns_to_yaml_phvs(yaml_phvs, phv_name_map)
             log.info(
-                "Column filter active (scoped to --yaml-dir PHVs): %d spec PHV(s) -> %d column name(s). "
-                "Pass --no-scope-to-yaml for the full extract.",
+                "Column filter active (--scope-to-yaml): %d spec PHV(s) -> %d column name(s).",
                 len(yaml_phvs), len(phv_filter_set),
             )
 

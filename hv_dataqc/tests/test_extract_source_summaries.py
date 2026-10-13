@@ -6,14 +6,17 @@ do not contain real participant records or study data.
 
 from __future__ import annotations
 
+import io
 import tempfile
 import unittest
+from contextlib import redirect_stderr
 from pathlib import Path
 
 import pandas as pd
 
 from hv_dataqc.extract_source.extract_source_summaries import (
     _compute_joint_distributions,
+    _parse_args,
     apply_quasi_identifier_suppression,
     compute_variable_summary,
     count_rows_per_visit,
@@ -272,6 +275,16 @@ class ExtractSourceSummaryTests(unittest.TestCase):
         scoped = scope_columns_to_yaml_phvs(yaml_phvs, name_map)
         # Resolved names are lowercased; the unresolved PHV falls back to its id.
         self.assertEqual(scoped, {"a40", "ast", "phv99999999"})
+
+    def test_yaml_dir_alone_does_not_scope_columns(self) -> None:
+        # dm-bip's QAQC passes --yaml-dir for crosstabs and needs every
+        # column; scoping must stay opt-in.
+        args = _parse_args(["--cohort", "X", "--yaml-dir", "specs"])
+        self.assertFalse(args.scope_to_yaml)
+
+    def test_scope_to_yaml_requires_yaml_dir(self) -> None:
+        with self.assertRaises(SystemExit), redirect_stderr(io.StringIO()):
+            _parse_args(["--cohort", "X", "--scope-to-yaml"])
 
 
 if __name__ == "__main__":
