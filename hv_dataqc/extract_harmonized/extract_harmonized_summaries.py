@@ -349,7 +349,7 @@ def _valid_value_mask(series: pd.Series, *, is_continuous: bool) -> pd.Series:
     contributes to n_total but NOT to n_valid.  categorical_stats drops only
     raw NaN.  Distinct-participant counts must use the SAME mask as the n_valid
     computation, otherwise rows whose value coerces to NaN inflate participants
-    past n_valid — Anne caught FHS ALT SGPT showing participants=3,732 over
+    past n_valid — S5 review caught FHS ALT SGPT showing participants=3,732 over
     n_valid=3,728 because four rows had non-numeric value strings.
     """
     if is_continuous:

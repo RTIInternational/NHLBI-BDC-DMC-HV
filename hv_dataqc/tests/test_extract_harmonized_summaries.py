@@ -265,7 +265,7 @@ class LabelMapMainWiringTests(unittest.TestCase):
 class ParticipantsCountedOverValidRowsTests(unittest.TestCase):
     """Regression tests for the participants-vs-n_valid mask alignment.
 
-    Anne reported S5 rows where the participants column exceeded n (8-epi-
+    S5 review found rows where the participants column exceeded n (8-epi-
     PGF2a in urine: participants=9,730 vs n=3,096; WHI BUN per-cohort:
     participants=39,046 vs n_valid=5,928).  Root cause: participants was
     counted via `group[pcol].nunique()` over the *whole* group, including
@@ -344,7 +344,7 @@ class ParticipantsCountedOverValidRowsTests(unittest.TestCase):
         self.assertEqual(variables["observation_OMOP:W"]["participants"], 1)
 
     def test_non_numeric_value_strings_do_not_inflate_participants(self) -> None:
-        # Anne caught FHS ALT SGPT showing participants=3,732 over n_valid=3,728.
+        # S5 review caught FHS ALT SGPT showing participants=3,732 over n_valid=3,728.
         # Root cause: continuous_stats coerces value strings to numeric via
         # pd.to_numeric(errors="coerce"), so rows with non-numeric values
         # (sentinels like "<5", "censored") contribute to n_total but not

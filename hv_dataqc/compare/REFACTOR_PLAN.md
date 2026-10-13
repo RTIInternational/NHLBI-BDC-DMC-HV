@@ -25,7 +25,7 @@ goals of the refactor were:
    config-driven where possible.
 3. Make JSON the single source of truth for report generation, so reports can
    be re-rendered (e.g., after annotation) without re-running the comparison.
-4. Use Chris's transform-mode table consistently to dispatch comparison
+4. Use the transform-mode table consistently to dispatch comparison
    strategy and avoid false FAILs on YAML shapes the comparator can't evaluate.
 5. Clean up the redundant `variables`/`variables_by_pht` duplication in source
    extracts.
@@ -221,7 +221,7 @@ formatting preferences.
 
 ### Mode-aware comparison dispatch
 
-Chris's transform mode table (from
+The transform mode table (from
 `hv_dataqc/compare/WALKTHROUGH_CONTEXT.md`):
 
 | Mode | Detected From YAML | Comparison |
@@ -343,7 +343,7 @@ from the crosswalk so the renderer can include them inline.
 
 ### Idea parked: inferred corrections for unit-error patterns
 
-Stephanie suggested: when a clinical-range FAIL looks like a unit error
+Proposed: when a clinical-range FAIL looks like a unit error
 (e.g., height in m vs. cm, °F vs. °C), surface an "inferred corrected"
 aggregate alongside the failing value so reviewers can see the likely
 hypothesis. Scope if revisited: C9 only, common unit conversions only,
@@ -362,7 +362,7 @@ self-describing JSON, the renderer becomes a free-standing script:
   Markdown.
 - Enables: annotate JSON → re-render; switch link/format config without
   re-running the comparison; investigation-tracker workflows.
-- Chris confirmed ARIC report size (488KB) is fine; no need to split reports.
+- Confirmed ARIC report size (488KB) is fine; no need to split reports.
 
 ## Phase F (deferred): SB bootstrap + private results repo
 

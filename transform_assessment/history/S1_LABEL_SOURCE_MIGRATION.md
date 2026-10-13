@@ -82,9 +82,8 @@ Table S4 (`transform_assessment/spec_phv_report.py`) and Table S5
 `hv_dataqc/extract_harmonized/config/harmonized_vars.tsv`.
 
 That TSV was a manual export of the curator master sheet, undated and drifted.
-Anne's newer **Table S1** ("Data Harmonization Supplementary Data" workbook
-`1PDaX266_H0haa0aabMYQ6UNtEKT5-ClMarP0FvNntN8`, tab S1, owner
-annethessen@gmail.com) supersedes it. S1 has 7 columns: BDCHM Element,
+The curator's newer **Table S1** (tab S1 of the "Data Harmonization
+Supplementary Data" workbook, owned by the curation lead) supersedes it. S1 has 7 columns: BDCHM Element,
 Variable Label, Data Type, UCUM Unit, Ontology CURIE, OMOP Concept ID,
 Variable Description.
 
@@ -115,13 +114,13 @@ sheet, re-download the S1 tab first, then re-run the build script.
 `hv_dataqc/extract_harmonized/config/TableS1_review.xlsx` (generated; see the
 build script archived with the session). Emitted as `.xlsx`, not `.tsv`: xlsx
 is UTF-8 native (a TSV re-import guessed Windows-1252 and mangled em-dashes and
-the Greek letters in Anne's IL-1β / 8-epi-PGF2α descriptions), and it carries
+the Greek letters in the IL-1β / 8-epi-PGF2α descriptions), and it carries
 formatting so the sheet drops in looking like S1 without manual re-styling
 (bold frozen header, wrapped note/description columns, review rows peach-filled,
 ignore rows green-filled). The Ontology CURIE column is left unstyled — S1's own
-yellow cells are Anne's annotation of the newly-added OBA codes and reapply on
+yellow cells are the curator's annotation of the newly-added OBA codes and reapply on
 paste-back. S1 + adjacent `var_name` / `status` / `note` columns so one sheet
-carries everything for Anne:
+carries everything for the curator:
 
 Columns: `BDCHM Element, Variable Label, var_name, status, note, Data Type,
 UCUM Unit, Ontology CURIE, OMOP Concept ID, Variable Description`.
@@ -184,8 +183,8 @@ repo — nothing reads it and a second copy only drifts.
      the four spec code corrections, so redo it against the current specs.
    - `ignore_observation_types` — moves to S1 `status=ignore` rows; pipeline
      reads them from the sheet.
-   - `unmatched_note` — keep exposed, not hidden in code (Sigfried's
-     preference: exceptions live in declarative sources Anne can see/edit).
+   - `unmatched_note` — keep exposed, not hidden in code (exceptions
+     live in declarative sources the curator can see/edit).
 4. **`harmonized_vars.tsv`** — retire. Keep only as provenance for the derived
    var_names (header comment marking it dead); nothing in the pipeline reads it.
 5. **Tests** — update `test_label_map.py` / `test_spec_phv_report.py` fixtures
