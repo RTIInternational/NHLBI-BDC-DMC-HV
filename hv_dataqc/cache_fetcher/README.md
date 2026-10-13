@@ -46,13 +46,13 @@ the corresponding manifest file's `current_version:` block and re-run with
 
 ## Quick start
 
-Use the convenience wrapper in `local_scripts/` which writes to the
-standard `local_output/dbgap-cache/` location:
+Use the convenience wrapper in `sb_scripts/`, which writes to the
+standard `hv_dataqc/local_output/dbgap-cache/` location (`run_s4_report.sh`
+calls it for you):
 
 ```bash
-cd ../local_scripts/
-./fetch_cache.sh --cohort copdgene
-./fetch_cache.sh --list
+hv_dataqc/sb_scripts/fetch_cache.sh copdgene
+hv_dataqc/sb_scripts/fetch_cache.sh --list
 ```
 
 ## Usage (direct)

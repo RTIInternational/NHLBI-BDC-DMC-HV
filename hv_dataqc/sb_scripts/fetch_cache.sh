@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Convenience wrapper for cache_fetcher with output to local_output/dbgap-cache.
+# Convenience wrapper for cache_fetcher with output to hv_dataqc/local_output/dbgap-cache.
 #
 # Usage:
 #   ./fetch_cache.sh copdgene              # positional cohort name

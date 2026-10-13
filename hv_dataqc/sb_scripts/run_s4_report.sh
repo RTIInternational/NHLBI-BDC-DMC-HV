@@ -115,7 +115,7 @@ if $DO_FETCH && ! $CHECK_ONLY; then
     echo "=== Fetching dbGaP caches (idempotent, quiet) ==="
     # --quiet keeps the per-file/per-cohort chatter out of the runner output;
     # warnings + the final cache summary still print.
-    if ! "$HV/hv_dataqc/local_scripts/fetch_cache.sh" --quiet; then
+    if ! "$HV/hv_dataqc/sb_scripts/fetch_cache.sh" --quiet; then
         echo "WARNING: fetch_cache.sh returned non-zero; continuing with whatever caches exist." >&2
     fi
     echo

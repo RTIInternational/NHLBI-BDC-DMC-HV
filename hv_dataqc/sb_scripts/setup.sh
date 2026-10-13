@@ -27,9 +27,6 @@ cat <<'BANNER'
     hv_dataqc/sb_scripts/run_s5_report.sh                  # latest DataRun
     hv_dataqc/sb_scripts/run_s5_report.sh --list-dataruns  # pick a DataRun
 
-  QAQC (source-vs-harmonized, per cohort) — see hv_dataqc/QUICK_RUN.md:
-    hv_dataqc/sb_scripts/run_extracts.sh <COHORT>    # then compare.sh locally
-
   Output lands in /sbgenomics/workspace/{S4,S5}-output-files/ (download the
   .xlsx). Re-running resumes from completed cohorts; --force redoes them.
 ────────────────────────────────────────────────────────────────────────

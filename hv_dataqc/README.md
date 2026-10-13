@@ -16,12 +16,11 @@ ranges, visit structure, and cross-variable consistency.
 |--------|--------|---------|-----------|
 | `extract_source/` | `extract_source_summaries.py` | Summarize raw dbGaP TSVs | **Inside enclave** |
 | `extract_harmonized/` | `extract_harmonized_summaries.py` | Summarize dm-bip harmonized output | **Inside enclave** |
-| `compare/` | `python -m hv_dataqc.compare` | Compare both summaries; run checks C1-C12 | Outside enclave |
-| `cache_fetcher/` | `fetch_dbgap_cache.py` | Download dbGaP data dictionaries for PHV resolution | Outside enclave |
+| `compare/` | `python -m hv_dataqc.compare` | Compare both summaries; run checks C1-C12 | **Inside enclave** |
+| `cache_fetcher/` | `fetch_dbgap_cache.py` | Download dbGaP data dictionaries for PHV resolution | **Inside enclave** |
 | `sb_scripts/` | Runner/analysis scripts | Ad-hoc scripts for enclave work | **Inside enclave** |
-| `local_scripts/` | `compare.sh`, `fetch_cache.sh` | Convenience wrappers (auto-resolve paths) | Outside enclave |
 | `sb_output/` | *(gitignored)* | Output produced on Seven Bridges | **Inside enclave** |
-| `local_output/` | *(gitignored)* | Downloaded JSONs, dbgap-cache, comparison reports | Outside enclave |
+| `local_output/` | *(gitignored)* | dbGaP cache (`dbgap-cache/`) | **Inside enclave** |
 
 ---
 
@@ -43,8 +42,8 @@ ranges, visit structure, and cross-variable consistency.
 
 3. **Comparison uses live YAMLs.** The crosswalk (source PHV → harmonized concept
    code) is built fresh from the current HV YAML checkout on every compare run.
-   Re-run `python -m hv_dataqc.compare` as often as needed as YAMLs evolve — no
-   re-entry to the enclave required.
+   Re-run `python -m hv_dataqc.compare` as often as needed as YAMLs evolve,
+   without re-running the extracts.
 
 4. **YAML transforms and dbGaP cache are both required.** `--yaml-dir` (HV
    transform YAMLs) and `--cache-dir` (dbGaP data-dict XMLs) are mandatory
@@ -52,21 +51,13 @@ ranges, visit structure, and cross-variable consistency.
    to build the cache (deps: `requests`, `pyyaml`; one command per cohort,
    idempotent on re-runs).
 
-5. **Reports are archived by commit + timestamp.** Every `compare.sh` run writes
-   its outputs into `local_output/archive/<git-short-commit>_<UTC-timestamp>/`,
-  updates stable symlinks at `local_output/<cohort>_comparison_{report.md,results.json}`,
-  and creates timestamped top-level symlinks for the same run. Old reports are
-  never overwritten. Each archive entry also contains a `manifest.json`
-  recording the source and harmonized JSONs used, the YAML directory, and the
-  git commit at the time of the run. Markdown report headers also record the
-  source JSON filename, harmonized JSON filename, and YAML directory used.
-
 ---
 
 ## Workflow
 
-To run S4, S5, or QAQC, follow [QUICK_RUN.md](QUICK_RUN.md): SB setup, the
-run commands, and the local compare steps.
+To run Tables S4 and S5, follow [QUICK_RUN.md](QUICK_RUN.md). QAQC runs per
+cohort inside dm-bip's harmonization workflow
+([`hv-dataqc-cohort.sh`](https://github.com/linkml/dm-bip/blob/main/scripts/workflow/hv-dataqc-cohort.sh)).
 
 ### Output layout
 
@@ -82,28 +73,10 @@ QC-output-files/<COHORT>/
   latest_harmonized -> harmonized_<ts>
 ```
 
-**Comparison outputs** (locally, in `hv_dataqc/local_output/`): each
-`compare.sh` run writes into a fresh archive directory and updates
-top-level symlinks. Old reports are never overwritten.
-
-```
-hv_dataqc/local_output/
-  <cohort>_comparison_report.md           -> archive/<commit>_<ts>/...
-  <cohort>_comparison_results.json        -> archive/<commit>_<ts>/...
-  <cohort>_comparison_report_<ts>.md      -> archive/<commit>_<ts>/...
-  <cohort>_comparison_results_<ts>.json   -> archive/<commit>_<ts>/...
-  archive/
-    <git-commit>_<YYYYMMDDTHHMMSSZ>/
-      copdgene_comparison_report.md
-      copdgene_comparison_results.json
-      manifest.json
-```
-
 ### Full manual workflow
 
-See [local_scripts/README.md](local_scripts/README.md) and
-[sb_scripts/README.md](sb_scripts/README.md) for details on running
-individual steps or without the convenience wrappers.
+See [sb_scripts/README.md](sb_scripts/README.md) for the extract commands and
+[compare/README.md](compare/README.md) for running the comparison directly.
 
 ---
 
@@ -229,27 +202,6 @@ uv run python -m pytest \
     hv_dataqc/tests/test_compare_source_harmonized.py::C1NPreservationTests::test_c1_pass_exact_match_no_pht \
     -v
 ```
-
-### Regression check (local only)
-
-`hv_dataqc/tests/regression_check.sh` compares the current Markdown +
-JSON comparison-report output for COPDGene, ARIC, and HCHS against
-pre-captured baselines (in `/tmp/phase_a_baseline/` by default). Used
-during refactor work to verify that mechanical changes preserve output
-behavior; not part of the regular test suite.
-
-```bash
-# Capture baselines from the current code state.
-hv_dataqc/tests/regression_check.sh capture
-
-# Diff current output against the captured baselines.
-hv_dataqc/tests/regression_check.sh check
-```
-
-Requires `compare.sh` to be runnable for all three cohorts, which means
-the source/harmonized JSONs must be present under `local_output/` and
-the dbGaP cache must be fetched for each cohort. Doesn't run on Seven
-Bridges (different paths, no harmonized download).
 
 ---
 

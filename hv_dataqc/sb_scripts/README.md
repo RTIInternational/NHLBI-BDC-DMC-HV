@@ -64,7 +64,7 @@ The script auto-resolves the cache path to
 if the cache has not been fetched yet. Fetch it first with:
 
 ```bash
-cd hv_dataqc/local_scripts && ./fetch_cache.sh <cohort>
+hv_dataqc/sb_scripts/fetch_cache.sh <cohort>
 ```
 
 ```bash

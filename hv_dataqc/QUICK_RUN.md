@@ -1,22 +1,19 @@
-# Quick run guide — S4, S5, QAQC reports
+# Quick run guide — Tables S4 and S5
 
-Cheat-sheet for regenerating the three deliverables. For background and
-design, see the [main README](README.md).
+Cheat-sheet for regenerating Tables S4 and S5. Both run entirely on Seven
+Bridges, all cohorts in one run. For background and design, see the
+[main README](README.md).
 
-## The three deliverables
+| Table | What it is |
+|-------|-----------|
+| **S4** | Pre-harmonized phv counts + source N per variable/cohort |
+| **S5** | Harmonized summary stats (mean/min/max/…) per variable, pooled across cohorts |
 
-| Report | What it is | Runs where | All cohorts at once? |
-|--------|-----------|-----------|----------------------|
-| **S4** | Pre-harmonized phv counts + source N per variable/cohort | **SB enclave** | Yes (one run) |
-| **S5** | Harmonized summary stats (mean/min/max/…) per variable, pooled across cohorts | **SB enclave** | Yes (one run) |
-| **QAQC** | Source-vs-harmonized comparison, checks C1–C12 | SB extract + **local** compare | **No — one cohort at a time** |
-
-(If something else belongs here, add it — these are the three current
-publication/QC outputs.)
+QAQC (the source-vs-harmonized comparison) is not run from here: dm-bip's
+harmonization workflow runs it per cohort
+([`hv-dataqc-cohort.sh`](https://github.com/linkml/dm-bip/blob/main/scripts/workflow/hv-dataqc-cohort.sh)).
 
 ## Getting started on SB (Data Studio)
-
-S4, S5, and the QAQC extract all run in a Seven Bridges Data Studio terminal.
 
 **Fresh Data Studio instance:** open a terminal, then
 
@@ -120,34 +117,3 @@ file browser. The `table_s5_paste_*.tsv` inside is the paste-ready table.
 > **S5 reflects the DataRun's harmonized data, not the specs directly.**
 > If a value looks wrong, confirm the DataRun was harmonized *after* the
 > relevant spec fix. Picking an older DataRun reproduces old values.
-
-## QAQC — source-vs-harmonized comparison (per cohort)
-
-No all-cohorts wrapper; run the two steps per cohort. The extract reads raw
-participant data, so it runs on SB; its output is aggregate summaries only,
-which can be downloaded. The compare runs on your own machine because it
-reads the transform specs fresh on every run, so you can re-run it as specs
-change without going back into SB.
-
-**1. On SB:** extract source + harmonized for the cohort, then download the
-`dataqc_<cohort>_output.tgz` from `/sbgenomics/workspace/` (JupyterLab file
-browser, right-click → Download).
-
-```bash
-hv_dataqc/sb_scripts/run_extracts.sh FHS          # --datarun to pin; --list-dataruns to see
-```
-
-**2. Locally:** in your own clone of the repo, on the same branch as on SB
-(needs `uv` installed):
-
-```bash
-git pull
-cd hv_dataqc/local_scripts
-./unpack.sh                                       # newest ~/Downloads/dataqc_*_output.tgz into local_output/
-./fetch_cache.sh FHS                              # once per cohort
-./compare.sh FHS                                  # runs C1–C12, writes report.md + results.json
-```
-
-Reports archive under `local_output/archive/<commit>_<timestamp>/` with
-stable symlinks at `local_output/<cohort>_comparison_{report.md,results.json}`.
-Repeat per cohort.
