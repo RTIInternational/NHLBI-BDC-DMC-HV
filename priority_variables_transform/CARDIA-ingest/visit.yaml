@@ -127,26 +127,6 @@
 #           value: HEALTH_EXAMINATION
 #         associated_participant:
 #           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121724}) + ":CARDIA")'
-# pht003298 (HeartGO_CARDIA) uses HeartGO New_SUBJID (GENEVA subject ID) — these produce
-# separate Visit entities that do not cross-link with standard Individual_ID-keyed tables.
-# phv00190622 (ESP_age_at_serum_creatinine) is NOT participant age (var_report shows mean
-# 3.15, range 0.15-23.1 -- a specimen/assay-interval field, not exam age) -- omitted below,
-# same as the other YEAR 20 tables which also lack a direct exam-age variable.
-- class_derivations:
-    Visit:
-      populated_from: pht003298
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
-        name:
-          value: CARDIA YEAR 20
-        visit_category:
-          value: STUDY_SITE_VISIT
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
 # pht001999 (GENEVA_CARDIA_Subject_Phenotypes) uses GENEVA_ID (phv00129484) as participant key —
 # a different ID space from standard CARDIA Individual_ID. Visit UUIDs here match the
 # associated_participant/associated_visit keys in cig_smok.yaml's pht001999 block.
