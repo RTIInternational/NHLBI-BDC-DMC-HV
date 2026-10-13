@@ -145,7 +145,7 @@
         age_at_condition_start:
           expr: 'case(({phv00192507} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00192508}))'
         condition_concept:
-          value: HP:0002140
+          value: MONDO:1060198
           range: string
         condition_status:
           populated_from: phv00192507
@@ -253,7 +253,7 @@
         age_at_condition_start:
           expr: 'case(({phv00193187} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193188}))'
         condition_concept:
-          value: HP:0002140
+          value: MONDO:1060198
           range: string
         condition_status:
           populated_from: phv00193187
@@ -423,7 +423,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193798}) + ":WHI")'
         # excluded: age_at_condition_start -- pht003415 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
-          value: HP:0002140
+          value: MONDO:1060198
           range: string
         condition_status:
           populated_from: phv00193802
@@ -517,7 +517,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193819}) + ":WHI")'
         # excluded: age_at_condition_start -- pht003416 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
-          value: HP:0002140
+          value: MONDO:1060198
           range: string
         condition_status:
           populated_from: phv00193823
