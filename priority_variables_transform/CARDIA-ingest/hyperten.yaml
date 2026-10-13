@@ -13,7 +13,7 @@
           value: MONDO:0005044
           range: string
         condition_status:
-          expr: case(({phv00113020} == 2, 'PRESENT'), ({phv00113022} == 1, 'HISTORICAL'))
+          expr: case(({phv00113022} == 5, 'HISTORICAL'), ({phv00113020} == 2, 'PRESENT'))
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -38,7 +38,7 @@
           value: MONDO:0005044
           range: string
         condition_status:
-          expr: case(({phv00114385} == 2, 'PRESENT'), ({phv00114387} == 1, 'HISTORICAL'))
+          expr: case(({phv00114387} == 5, 'HISTORICAL'), ({phv00114385} == 2, 'PRESENT'))
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
