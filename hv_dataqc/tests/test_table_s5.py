@@ -6,6 +6,7 @@ import math
 import unittest
 from unittest import mock
 
+from hv_dataqc.extract_harmonized.label_map import load_label_map
 from hv_dataqc.extract_harmonized.table_s5 import spec as table_s5_spec
 from hv_dataqc.extract_harmonized.table_s5.aggregate import (
     PooledRow,
@@ -26,6 +27,9 @@ from hv_dataqc.extract_harmonized.table_s5.spec import (
     TABLE_S5_LABELS,
 )
 
+# S5 rows with no Table S1 counterpart; they stay blank in the paste output.
+S5_LABELS_WITHOUT_S1_ROW = {"Fasting lipids"}
+
 
 # ---------------------------------------------------------------------------
 # Spec sanity
@@ -35,6 +39,15 @@ class SpecSanityTests(unittest.TestCase):
 
     def test_table_s5_labels_are_unique(self) -> None:
         self.assertEqual(len(TABLE_S5_LABELS), len(set(TABLE_S5_LABELS)))
+
+    def test_table_s5_labels_match_table_s1_exactly(self) -> None:
+        # Lookup against Table S1 is exact and case-sensitive; a label that
+        # misses emits a blank paste row, which is easy to overlook.
+        s1_labels = set(load_label_map().values())
+        unmatched = {
+            S5_LABEL_ALIASES.get(label, label) for label in TABLE_S5_LABELS
+        } - s1_labels - S5_LABELS_WITHOUT_S1_ROW
+        self.assertEqual(unmatched, set())
 
     def test_s5_label_aliases_keys_are_in_table_s5(self) -> None:
         # Each alias maps a TABLE_S5_LABELS row's literal label to the

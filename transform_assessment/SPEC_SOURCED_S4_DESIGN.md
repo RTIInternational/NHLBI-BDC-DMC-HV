@@ -230,13 +230,13 @@ Two consequences beyond this file:
   generator. A validator check for value-less `Quantity` blocks would fire
   exactly once right now, which is the right size for a new check.
 
-## Known defects — found 2026-08-12, not fixed
+## Known defects — found 2026-08-12
 
 Audited after two silent failures turned up (the `observation_type` narrowing,
 and a `cohort_keys` omission that blanked the whole HCHS/SOL column). Each of
 these is **verified against the code and the data**, and each fails *silently* —
-a blank cell or a wrong number, never an error. None are fixed; they are
-recorded so the next person doesn't rediscover them.
+a blank cell or a wrong number, never an error. Defect 2 is fixed; 1 and 3
+are open and recorded so the next person doesn't rediscover them.
 
 **1. N can be silently undercounted — the highest-risk one, because it publishes
 a wrong number rather than a blank.** `_col_n_valid`
@@ -266,23 +266,19 @@ renames (`alcohol_servings` → `Alcohol Consumption` vs `Alcohol servings`,
 `copd` → `COPD status` vs `COPD`).
 
 **`TABLE_S5_LABELS` was evidently derived from the stata-side spelling, not from
-S1** — the two labels S5 currently fails to match are exactly two of those 16.
-So defect 2 is not a random typo; it is one label list built against one sheet
-and matched against another.
+S1** — the two labels S5 failed to match (`Bilirubin total`, `interleukin 6 in
+blood`) were exactly two of those 16.
+Defect 2 below came from building one label list against one sheet and
+matching it against another.
 
-**2. Table S5 drops rows on letter-case drift.** `table_s5/` matches
+**2. Table S5 dropped rows on letter-case drift (fixed).** `table_s5/` matches
 `TABLE_S5_LABELS` against Table S1 exactly and case-**sensitively** — there is
 no `lower()` anywhere in the package — while the S4 side normalizes case
 (`spec_phv_report.py:498`). Two tables, one label source, opposite policies.
-Currently affected: `Bilirubin total` (S1: `Bilirubin Total`) and `interleukin 6
-in blood` (S1: `Interleukin 6 in blood`). **This is a regression** — both were
-`matched` in the June run; see
-`hv_dataqc/sb_output/20260630T172556Z/s5_coverage_20260630_172655.tsv` lines 13
-and 60. `93ac3910` emptied `S5_LABEL_ALIASES` on the claim that all 19 aliases
-were dead under S1; for these two the alias needed *updating*, not deleting.
-`format_paste_tsv` emits a blank line, so the paste still aligns and the failure
-is invisible in the delivered artifact. (`Fasting lipids` also misses but has no
-S1 row at all — pre-existing, not a regression.)
+A miss emits a blank paste line, so the paste still aligns and the failure is
+invisible in the delivered artifact. `test_table_s5_labels_match_table_s1_exactly`
+now fails on any S5 label without an exact S1 match. `Fasting lipids` is the one
+exemption: it has no S1 row at all.
 
 **3. Demography labels are lowercase where everything else capitalizes.**
 `harmonized_extract.yaml` maps `sex: sex` / `race: race` / `ethnicity:

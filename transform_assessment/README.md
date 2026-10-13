@@ -189,8 +189,8 @@ In priority order. Everything premised on matching the published table is gone.
    a plausible-looking wrong number rather than a blank, which makes it the
    highest-risk item on this list.
 
-The three defects in §"Known defects" are recorded but unfixed; 2 and 3 there
-affect S5 output today.
+Of the three defects in §"Known defects", 2 is fixed; 1 and 3 are open, and 3
+affects S5 output today.
 
 ### Also queued, lower priority
 
