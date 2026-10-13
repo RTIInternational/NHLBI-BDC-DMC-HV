@@ -24,11 +24,9 @@ in [`README.md`](README.md), not here.
   `phv00421971` Fibrinogen) appear only under `_archive/` — removed from
   the live specs but still in `FHS_VariableProperties`. So S4's "6 / 9"
   counts are stale-sheet artifacts; spec-derived counts are 5 / 8.
-- **Pull specs from `main`** (latest of everything, nothing pending from
-  QC), and **merge `thessen-s5-fixes` before re-running** (fixes some
-  problems, not all — some extreme values are in the original source data).
-  `thessen-s5-fixes` is unmerged, mostly spirometry/method_type, and does
-  not touch ast_sgot/fibrin.
+- **Pull specs from `main`** before re-running (latest of everything). This
+  fixes some problems, not all — some extreme values are in the original
+  source data.
 
 Sourcing:
 
@@ -318,7 +316,7 @@ Team-facing questions have moved to [`README.md`](README.md). One remains
 specific to this design:
 
 - For S5: which spec snapshot were the enclave harmonized TSVs built from?
-  Re-harmonizing from `main` + `thessen-s5-fixes` should clear the aptamer
+  Re-harmonizing from current `main` should clear the aptamer
   contamination; the residual extreme values flagged in QC are in the source
   data and stay.
 
