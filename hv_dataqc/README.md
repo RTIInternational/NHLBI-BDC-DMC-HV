@@ -65,60 +65,8 @@ ranges, visit structure, and cross-variable consistency.
 
 ## Workflow
 
-### Quick start (using convenience scripts)
-
-**On Seven Bridges** (run extracts).
-These instructions assume a fresh Data Studio session (no persisted state).
-SB studio sessions often crash after a timeout and lose the workspace, so
-"start from scratch" is the realistic default; if the repo is already
-present and on the branch you want, you can skip the clone/checkout
-steps.
-
-```bash
-# 1. Clone the repo if it's not already here (run in whatever dir you
-#    want the clone to live under — /sbgenomics/workspace/ is typical).
-[ -d NHLBI-BDC-DMC-HV ] || git clone https://github.com/RTIInternational/NHLBI-BDC-DMC-HV.git
-
-# 2. Enter the repo and sync with origin.
-cd NHLBI-BDC-DMC-HV
-git fetch origin
-
-# 3. Check out the branch you want — `main` unless you were told otherwise.
-#    The QC refactor that used to live on `refactor/phase-*` branches is
-#    done (Phases A and B landed); those branches are gone. To see what is
-#    currently active:
-#       git for-each-ref --sort=-committerdate \
-#           --format='%(refname:short)  %(committerdate:short)  %(subject)' \
-#           refs/remotes/origin/ | head -10
-git checkout main
-git pull --ff-only
-
-# 4. Install deps (once per session — uv isn't preinstalled on SB).
-source hv_dataqc/sb_scripts/setup.sh
-
-# 5. Optional: set vi as editor (SB doesn't persist dotfiles).
-source hv_dataqc/sb_scripts/vi_defaults.sh
-
-# 6. Optional sanity checks before kicking off a long extract:
-uv run python -m pytest hv_dataqc/tests/ -q   # unit + integration tests
-uv run python -m hv_dataqc.compare --help     # compare CLI sanity check
-
-# 7. Run extracts for a cohort. Auto-discovers the latest DataRun and
-#    packages a downloadable tgz when both extracts succeed.
-hv_dataqc/sb_scripts/run_extracts.sh COPDGene
-```
-
-Download the resulting `dataqc_<cohort>_output.tgz` from `/sbgenomics/workspace/`
-via JupyterLab's file browser (right-click → Download).
-
-**Locally** (fetch cache, unpack, compare):
-```bash
-git pull
-cd hv_dataqc/local_scripts/
-./fetch_cache.sh copdgene                  # once per cohort
-./unpack.sh                                # unpacks ~/Downloads/dataqc_*_output.tgz
-./compare.sh COPDGene                      # auto-finds latest JSONs, YAML dir, cache
-```
+To run S4, S5, or QAQC, follow [QUICK_RUN.md](QUICK_RUN.md): SB setup, the
+run commands, and the local compare steps.
 
 ### Output layout
 

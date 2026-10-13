@@ -8,9 +8,9 @@ can be cloned anywhere on SB.
 
 ## Setup
 
-At the start of each SB session — see the top-level
-[README's SB quick-start](../README.md#quick-start-using-convenience-scripts)
-for the full clone/fetch/checkout walkthrough. Once the repo is in place
+At the start of each SB session — see
+[QUICK_RUN.md](../QUICK_RUN.md#getting-started-on-sb-data-studio)
+for the full clone/checkout walkthrough. Once the repo is in place
 and you're on the branch you want:
 
 ```bash

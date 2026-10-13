@@ -1,8 +1,7 @@
 # Quick run guide — S4, S5, QAQC reports
 
 Cheat-sheet for regenerating the three deliverables. For background and
-design, see the [main README](README.md). Assumes the
-`NHLBI-BDC-DMC-HV` repo is already cloned (on SB and/or locally).
+design, see the [main README](README.md).
 
 ## The three deliverables
 
@@ -15,32 +14,44 @@ design, see the [main README](README.md). Assumes the
 (If something else belongs here, add it — these are the three current
 publication/QC outputs.)
 
-## Common first steps
+## Getting started on SB (Data Studio)
 
-1. **Be on the right branch with the latest specs merged in.** S4/S5/QAQC
-   all read the transform specs in `priority_variables_transform/`, so the
-   branch must contain the current `main` plus any pending spec fixes.
+S4, S5, and the QAQC extract all run in a Seven Bridges Data Studio terminal.
 
-   ```bash
-   git fetch origin
-   git checkout <your working branch>
-   git merge origin/main                        # latest specs + code
-   git merge origin/thessen-s5-fixes            # pending S5 spec fixes (still unmerged to main)
-   # resolve conflicts if any, then commit the merge
-   ```
+**Fresh Data Studio instance:** open a terminal, then
 
-   > Merge both before re-running, or the reports reflect stale specs.
-   > `thessen-s5-fixes` is mostly spirometry/method_type fixes and is still
-   > unmerged to `main` as of 2026-08-12. Don't start from
-   > `feature/S5-report-20260603` — it is a stale, unmerged feature branch
-   > kept only for its granular history.
+```bash
+cd /sbgenomics/workspace
+git clone https://github.com/RTIInternational/NHLBI-BDC-DMC-HV.git
+cd NHLBI-BDC-DMC-HV
+git checkout s4-docs-cleanup                 # temporary: until PR #749 merges, then stay on main
+source hv_dataqc/sb_scripts/setup.sh
+```
 
-2. **SB session setup** (only for steps that run in the enclave — S5, QAQC
-   extract):
+SB sessions can time out and lose the workspace, so expect to repeat this.
 
-   ```bash
-   source hv_dataqc/sb_scripts/setup.sh         # uv + deps, once per session
-   ```
+**Saved analysis, repo already cloned:** open a terminal, then
+
+```bash
+cd /sbgenomics/workspace/NHLBI-BDC-DMC-HV
+git pull
+source hv_dataqc/sb_scripts/setup.sh
+```
+
+`setup.sh` installs `uv` and the Python packages, and sets a sane umask and
+`core.fileMode false` (SB rewrites file permissions). Source it in every new
+terminal session; it ends by printing the run commands below.
+
+Optional:
+
+```bash
+source hv_dataqc/sb_scripts/vi_defaults.sh       # vi as editor (SB doesn't persist dotfiles)
+uv run python -m pytest hv_dataqc/tests/ -q      # sanity check before a long run
+```
+
+The reports read the transform specs in `priority_variables_transform/`, so
+run from `main` (for now, `s4-docs-cleanup`) unless you were given a
+specific branch.
 
 ## S4 — pre-harmonized phv report (SB enclave)
 
@@ -112,16 +123,28 @@ file browser. The `table_s5_paste_*.tsv` inside is the paste-ready table.
 
 ## QAQC — source-vs-harmonized comparison (per cohort)
 
-No all-cohorts wrapper; run the two steps per cohort.
+No all-cohorts wrapper; run the two steps per cohort. The extract reads raw
+participant data, so it runs on SB; its output is aggregate summaries only,
+which can be downloaded. The compare runs on your own machine because it
+reads the transform specs fresh on every run, so you can re-run it as specs
+change without going back into SB.
+
+**1. On SB:** extract source + harmonized for the cohort, then download the
+`dataqc_<cohort>_output.tgz` from `/sbgenomics/workspace/` (JupyterLab file
+browser, right-click → Download).
 
 ```bash
-# 1. SB enclave: extract source + harmonized for the cohort
 hv_dataqc/sb_scripts/run_extracts.sh FHS          # --datarun to pin; --list-dataruns to see
-# download the output tgz, unpack locally:
-cd hv_dataqc/local_scripts && ./unpack.sh         # into local_output/
+```
 
-# 2. Local: fetch dbGaP cache (once per cohort) then compare
-./fetch_cache.sh FHS                              # skip if already cached
+**2. Locally:** in your own clone of the repo, on the same branch as on SB
+(needs `uv` installed):
+
+```bash
+git pull
+cd hv_dataqc/local_scripts
+./unpack.sh                                       # newest ~/Downloads/dataqc_*_output.tgz into local_output/
+./fetch_cache.sh FHS                              # once per cohort
 ./compare.sh FHS                                  # runs C1–C12, writes report.md + results.json
 ```
 
