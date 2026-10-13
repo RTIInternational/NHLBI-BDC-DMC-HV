@@ -187,14 +187,21 @@ class PoolEntriesTests(unittest.TestCase):
         row = pool_entries([a, b], bdc_label="X")
         self.assertEqual(row.participants, 185)
 
-    def test_participants_partial_sums_only_contributors_with_it(self) -> None:
-        # If only some contributors supply participants, sum those and
-        # ignore the rest.  Better than None (we have some signal) and
-        # better than misreporting (we know which cohort's count this is).
+    def test_participants_none_when_any_contributor_lacks_it(self) -> None:
+        # A partial sum would understate silently, so blank instead.
         a = {"n_valid": 100, "participants": 90, "_cohort": "A"}
         b = {"n_valid": 100, "_cohort": "B"}  # no participants field
         row = pool_entries([a, b], bdc_label="X")
-        self.assertEqual(row.participants, 90)
+        self.assertIsNone(row.participants)
+
+    def test_participants_max_within_cohort_sum_across(self) -> None:
+        # Two methods in cohort A cover overlapping participants: take the
+        # max (90), not the sum.  Cohort B is disjoint: add its 50.
+        a1 = {"n_valid": 100, "participants": 90, "_cohort": "A"}
+        a2 = {"n_valid": 60, "participants": 60, "_cohort": "A"}
+        b = {"n_valid": 50, "participants": 50, "_cohort": "B"}
+        row = pool_entries([a1, a2, b], bdc_label="X")
+        self.assertEqual(row.participants, 140)
 
     def test_enums_pool_by_category(self) -> None:
         # Same category 'ABSENT' across two cohorts -> summed.  Distinct
