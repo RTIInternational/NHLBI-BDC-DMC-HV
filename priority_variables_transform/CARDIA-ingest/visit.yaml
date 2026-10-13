@@ -127,21 +127,22 @@
 #           value: HEALTH_EXAMINATION
 #         associated_participant:
 #           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121724}) + ":CARDIA")'
-# pht001999 (GENEVA_CARDIA_Subject_Phenotypes) uses GENEVA_ID (phv00129484) as participant key —
-# a different ID space from standard CARDIA Individual_ID. Visit UUIDs here match the
-# associated_participant/associated_visit keys in cig_smok.yaml's pht001999 block.
 - class_derivations:
     Visit:
       populated_from: pht001999
+      joins:
+        pht001559:
+          source_key: dbGaP_Subject_ID
+          lookup_key: dbGaP_Subject_ID
       slot_derivations:
         id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00129484}) + ":CARDIA YEAR 20")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({pht001559.phv00112417}) + ":CARDIA YEAR 20")'
         name:
           value: CARDIA YEAR 20
         visit_category:
           value: STUDY_SITE_VISIT
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00129484}) + ":CARDIA")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({pht001559.phv00112417}) + ":CARDIA")'
         age_at_visit_start:
           expr: "None if str({phv00129493}) == 'M' else float({phv00129493}) * 365"
         age_at_visit_end:
