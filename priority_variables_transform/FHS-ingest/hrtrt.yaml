@@ -638,8 +638,8 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00024536}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00024536}) + ":" + case(({phv00024511} == ''1'', ''FHS OFFSPRING 2002-2006''), ({phv00024511} == ''7'', ''FHS OMNI 1 2002-2006''), (True, ''FHS UNKNOWN VISIT'')))'
+        age_at_observation:
+          expr: '({pht003099.phv00177930} * 365) + {phv00024535}'
         observation_type:
           value: OBA:1001087
           range: string
