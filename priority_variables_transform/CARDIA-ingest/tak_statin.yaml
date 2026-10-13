@@ -42,7 +42,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117468}) + ":CARDIA YEAR 7")'
         drug_concept:
-          expr: 'case((str({phv00117471}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00117471}).lower().strip() == "m", "RxCUI:6472"), (str({phv00117471}).lower().strip() == "hydrochlorothiazide", "RxCUI:5487"), (str({phv00117471}).lower().strip() == "proventil", "RxCUI:202908"), (str({phv00117471}).lower().strip() == "lopid", "RxCUI:202999"), (str({phv00117471}).lower().strip() == "questran", "RxCUI:202582"), (str({phv00117471}).lower().strip() == "mavacor 20mg", "RxCUI:316175"))'
+          expr: 'case((str({phv00117471}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00117471}).lower().strip() == "hydrochlorothiazide", "RxCUI:5487"), (str({phv00117471}).lower().strip() == "proventil", "RxCUI:202908"), (str({phv00117471}).lower().strip() == "lopid", "RxCUI:202999"), (str({phv00117471}).lower().strip() == "questran", "RxCUI:202582"), (str({phv00117471}).lower().strip() == "mavacor 20mg", "RxCUI:316175"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
