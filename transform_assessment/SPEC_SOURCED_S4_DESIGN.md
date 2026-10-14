@@ -296,9 +296,9 @@ S1 and `s4_layout.yaml` both say `Sex` / `Race` / `Ethnicity`, so any join on
 **Why none of this was caught, and the one guard that would have.** Every real
 config file except `TableS1.tsv` has zero test coverage: all 17 tests in
 `test_spec_phv_report.py` build layout dicts inline, so `load_layout(None)` and
-`DEFAULT_LAYOUT_PATH` are never exercised. `test_table_s5.py:330` asserts in a
-*comment* that S1 matches every S5 label directly — contradicted by the data
-above, and never tested.
+`DEFAULT_LAYOUT_PATH` are never exercised. The S1-vs-S5 label match is now
+tested (`test_table_s5_labels_match_table_s1_exactly`); nothing similar covers
+the S4 layout.
 
 The superseded pipeline had the check that would have caught all of these: a
 bidirectional config-vs-data cohort reconciliation, plus union rather than
