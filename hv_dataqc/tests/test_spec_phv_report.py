@@ -360,10 +360,10 @@ def test_n_resolved_per_pht_no_double_count():
     }
     name_map = {"phv00007567": "A40", "phv00172165": "AST"}
     # PHT-scoped: picks the pht002889 "AST" (3732), not the sum of all "ast".
-    assert _col_n_valid(source_doc, "phv00172165", "pht002889", name_map) == 3732
-    assert _col_n_valid(source_doc, "phv00007567", "pht000030", name_map) == 4754
+    assert _col_n_valid(source_doc, "phv00172165", "pht002889", name_map) == (3732, None)
+    assert _col_n_valid(source_doc, "phv00007567", "pht000030", name_map) == (4754, None)
     # No-PHT fallback would sum both "ast" columns — confirm the scoping matters.
-    assert _col_n_valid(source_doc, "phv00172165", None, name_map) == 3732 + 2507
+    assert _col_n_valid(source_doc, "phv00172165", None, name_map) == (3732 + 2507, None)
 
 
 def test_build_cohort_rows_end_to_end(tmp_path, monkeypatch):
@@ -385,6 +385,42 @@ def test_build_cohort_rows_end_to_end(tmp_path, monkeypatch):
     assert rows["AST SGOT"]["phv_count"] == 2
     assert rows["AST SGOT"]["total_n"] == 4754 + 3732
     assert rows["AST SGOT"]["label"] == "AST SGOT"
+    assert rows["AST SGOT"]["unresolved"] == []
+
+
+def test_unresolved_phv_names_its_failure():
+    # Each way a lookup fails gets its own reason, so the S4 warning says
+    # whether to re-extract, refresh the cache, or check the spec's PHT.
+    source_doc = {"variables_by_pht": {"pht000001": {
+        "a": {"n_valid": 5}, "b": {"n_valid": None},
+    }}}
+    name_map = {"phv1": "A", "phv2": "B", "phv3": "C"}
+    assert _col_n_valid(source_doc, "phv1", "pht000009", name_map) == (
+        None, "pht000009 not in extract")
+    assert _col_n_valid(source_doc, "phv3", "pht000001", name_map) == (
+        None, "column 'c' not in pht000001")
+    assert _col_n_valid(source_doc, "phv2", "pht000001", name_map) == (
+        None, "n_valid is null for pht000001.b")
+    assert _col_n_valid(source_doc, "phv4", "pht000001", name_map) == (
+        None, "column 'phv4' not in pht000001 (PHV not in dbGaP cache)")
+
+
+def test_build_cohort_rows_records_unresolved_phvs(tmp_path, monkeypatch):
+    # The AST column is missing from the extract: it still counts toward
+    # phv_count, so it must be reported rather than silently adding 0 to N.
+    specs_dir = _write_spec(tmp_path)
+    source_json = tmp_path / "src.json"
+    source_json.write_text(json.dumps({
+        "variables_by_pht": {"pht000030": {"a40": {"n_valid": 4754}}, "pht002889": {}}
+    }))
+    monkeypatch.setattr(
+        "transform_assessment.spec_phv_report.load_phv_name_map",
+        lambda _cache: {"phv00007567": "A40", "phv00172165": "AST"},
+    )
+    rows = build_cohort_rows(specs_dir, source_json, tmp_path / "cache", {"ast_sgot": "AST SGOT"})
+    row = rows["AST SGOT"]
+    assert (row["phv_count"], row["total_n"]) == (2, 4754)
+    assert row["unresolved"] == [("phv00172165", "column 'ast' not in pht002889")]
 
 
 def _read_csv(path):

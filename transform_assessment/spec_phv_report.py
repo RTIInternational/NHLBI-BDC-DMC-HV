@@ -245,7 +245,7 @@ def parse_spec_file(path: Path) -> dict[str, Any]:
 
 def _col_n_valid(
     source_doc: dict, phv: str, pht: str | None, phv_name_map: dict[str, str]
-) -> int | None:
+) -> tuple[int | None, str | None]:
     """Resolve a PHV's n_valid from a source-extract JSON.
 
     PHV -> column name (via dbGaP cache map) -> n_valid in
@@ -254,15 +254,24 @@ def _col_n_valid(
     several FHS PHTs).  JSON keys are lowercased column names; the cache map
     yields original case.  Falls back to scanning all PHTs only when the spec
     gave no PHT (should not happen for value slots).
+
+    Returns ``(n_valid, None)``, or ``(None, why)`` when it doesn't resolve.
     """
     col = (phv_name_map.get(phv) or phv).lower()
     vp = source_doc.get("variables_by_pht", {})
+    # A cache miss makes the column lookup try the PHV id itself, which
+    # rarely matches; say so, since the fix is refreshing the cache.
+    cache_note = "" if phv in phv_name_map else " (PHV not in dbGaP cache)"
 
-    if pht and pht in vp:
+    if pht:
+        if pht not in vp:
+            return None, f"{pht} not in extract"
         stat = vp[pht].get(col)
-        if isinstance(stat, dict) and stat.get("n_valid") is not None:
-            return int(stat["n_valid"])
-        return None
+        if not isinstance(stat, dict):
+            return None, f"column {col!r} not in {pht}{cache_note}"
+        if stat.get("n_valid") is None:
+            return None, f"n_valid is null for {pht}.{col}"
+        return int(stat["n_valid"]), None
 
     # No PHT scope — sum unique matches as a last resort.
     total, found = 0, False
@@ -271,7 +280,9 @@ def _col_n_valid(
         if isinstance(stat, dict) and stat.get("n_valid") is not None:
             total += int(stat["n_valid"])
             found = True
-    return total if found else None
+    if found:
+        return total, None
+    return None, f"column {col!r} not in any PHT{cache_note}"
 
 
 def _resolve_label(
@@ -348,9 +359,12 @@ def build_cohort_rows(
         phvs = sorted(phv_pht)
         total_n = 0
         n_seen = False
+        unresolved: list[tuple[str, str]] = []
         for phv in phvs:
-            n = _col_n_valid(source_doc, phv, phv_pht[phv], phv_name_map)
-            if n is not None:
+            n, why = _col_n_valid(source_doc, phv, phv_pht[phv], phv_name_map)
+            if n is None:
+                unresolved.append((phv, why or ""))
+            else:
                 total_n += n
                 n_seen = True
         rows[label] = {
@@ -360,8 +374,22 @@ def build_cohort_rows(
             "phv_pht": phv_pht,
             "total_n": total_n if n_seen else None,
             "observation_type": sorted(slot["observation_types"]) or None,
+            # PHVs counted in phv_count that add nothing to total_n.
+            "unresolved": unresolved,
         }
     return rows
+
+
+def _warn_unresolved(cohort: str, rows: dict[str, dict[str, Any]]) -> None:
+    """Print every PHV that counts toward phv_count but adds 0 to N."""
+    misses = [(label, phv, why) for label, row in sorted(rows.items())
+              for phv, why in row.get("unresolved", [])]
+    if not misses:
+        return
+    print(f"WARNING: {cohort}: {len(misses)} PHV(s) counted in phv_count but "
+          f"missing from N (row N is an undercount):", file=sys.stderr)
+    for label, phv, why in misses:
+        print(f"  {label}: {phv}: {why}", file=sys.stderr)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -414,6 +442,7 @@ def main(argv: list[str] | None = None) -> int:
             ingest_dir, src, cache, var_labels, obs_type_labels, ignore_ots
         )
         print(f"{cohort}: {len(per_cohort[cohort])} variables from {ingest_dir.name}")
+        _warn_unresolved(cohort, per_cohort[cohort])
 
     if args.debug_variable:
         _debug(args, var_labels, per_cohort)
@@ -456,8 +485,9 @@ def _debug(args, var_labels, per_cohort) -> None:
         for phv in row["phvs"]:
             col = phv_name_map.get(phv, phv)
             pht = row["phv_pht"].get(phv)
-            n = _col_n_valid(source_doc, phv, pht, phv_name_map)
-            print(f"      {phv}  pht={pht}  col={col!r}  n_valid={n}")
+            n, why = _col_n_valid(source_doc, phv, pht, phv_name_map)
+            print(f"      {phv}  pht={pht}  col={col!r}  n_valid={n}"
+                  + (f"  ({why})" if why else ""))
 
 
 DEFAULT_LAYOUT_PATH = Path(__file__).parent / "config" / "s4_layout.yaml"

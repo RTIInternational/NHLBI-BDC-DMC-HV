@@ -57,9 +57,18 @@ by `extract_source` from the raw TSVs. No spreadsheets. One command, all
 cohorts.
 
 `run_s4_report.sh` takes no arguments and is idempotent: it fetches dbGaP
-caches, extracts any cohort that lacks an extract, reuses the ones that have
-one, and builds the table. Extraction is the **default** — you only need a flag
-to opt out of it or to force it.
+caches, extracts any cohort whose extract is missing or stale (its specs now
+reference a phv it wasn't scoped to), reuses the rest, and builds the table.
+Extraction is the **default** — you only need a flag to opt out of it or to
+force it.
+
+S4 keeps its extracts in `/sbgenomics/workspace/S4-output-files/extracts/`.
+**When that folder is empty, the run extracts every cohort, FHS included**,
+which is slow. Later runs reuse the extracts.
+
+Watch for `WARNING: <COHORT>: N PHV(s) counted in phv_count but missing from
+N`. Each listed phv says why (usually a stale dbGaP cache or a spec naming the
+wrong PHT); that cohort's N for those rows is an undercount.
 
 ```bash
 hv_dataqc/sb_scripts/run_s4_report.sh                 # the normal run
@@ -79,7 +88,7 @@ Inspect one variable's resolved phvs + per-phv N:
 uv run python -m transform_assessment.spec_phv_report \
     --specs-root priority_variables_transform \
     --cohort FHS \
-    --source-json <QC-output-files/FHS/latest_source/fhs_source_*.json> \
+    --source-json <S4-output-files/extracts/FHS/latest_source/fhs_source_*.json> \
     --cache-dir hv_dataqc/local_output/dbgap-cache/fhs \
     --debug-variable ast_sgot
 ```

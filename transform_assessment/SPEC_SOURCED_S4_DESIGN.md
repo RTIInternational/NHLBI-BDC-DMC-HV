@@ -33,9 +33,12 @@ Sourcing:
 - phv list / count / harmonized concept / cohort ← ingest YAMLs
   (`populated_from` phvs, `observation_type.value`, ingest dir)
 - `n` (kept) ← `extract_source`, measured from source TSVs in the enclave.
-  It already has a `--yaml-dir` hook that scopes phvs to whatever the
-  specs reference, so out-of-spec phvs (the aptamers) are excluded
-  automatically. No `extract_source` change expected.
+  `run_s4_report.sh` passes `--yaml-dir --scope-to-yaml`, so the extract
+  summarizes only the phvs the specs reference (the aptamers and other
+  out-of-spec phvs are never summarized). The extract records that phv set
+  as `metadata.scoped_to_phvs`; when the specs later reference a phv outside
+  it, the runner re-extracts that cohort
+  ([`extract_coverage.py`](../hv_dataqc/extract_source/extract_coverage.py)).
 
 The sheets are then not needed for any table data (phv membership,
 mapping, or n).
@@ -234,19 +237,22 @@ Two consequences beyond this file:
 
 Audited after two silent failures turned up (the `observation_type` narrowing,
 and a `cohort_keys` omission that blanked the whole HCHS/SOL column). Each of
-these is **verified against the code and the data**, and each fails *silently* —
-a blank cell or a wrong number, never an error. Defect 2 is fixed; 1 and 3
-are open and recorded so the next person doesn't rediscover them.
+these was **verified against the code and the data**, and each failed *silently*
+— a blank cell or a wrong number, never an error. Defect 2 is fixed; 1 now
+warns but still undercounts; 3 is open.
 
-**1. N can be silently undercounted — the highest-risk one, because it publishes
-a wrong number rather than a blank.** `_col_n_valid`
-(`spec_phv_report.py:259-264`) returns `None` for three distinct failures: PHT
-missing from the extract, column missing from the PHT, and `n_valid` present but
-null. `build_cohort_rows` (lines 350-357) then counts that phv toward
-`phv_count` while contributing 0 to `total_n`. The result is a row claiming e.g.
-6 phvs with an N covering only 4 — plausible-looking and wrong, with nothing
-counting or reporting the misses. A stale dbGaP cache triggers the same path via
-the `phv_name_map` miss at line 257.
+**1. N undercounts when a PHV doesn't resolve — now warned, not fixed.**
+When `_col_n_valid` can't find a PHV's `n_valid` (PHT missing from the
+extract, column missing from the PHT, `n_valid` null, or the PHV missing from
+the dbGaP cache so the column name can't be resolved), `build_cohort_rows`
+still counts it toward `phv_count` but adds 0 to `total_n`. The row then
+claims e.g. 6 phvs with an N covering only 4. `spec_phv_report` now prints a
+`WARNING` listing each such PHV with its reason, and `run_s4_report.sh`
+re-extracts cohorts whose extract predates their specs, which removes the
+"PHV not in the extract's scope" cause. The remaining causes need a person:
+refresh the dbGaP cache, or correct the PHT in the spec. A run against the
+June local extracts warned on 61 HCHS PHVs, all missing from the local
+`hchs_sol` cache.
 
 **0. Four label/var_name sources exist, and two of them disagree.** Worth knowing
 before touching any of the label handling, because it explains defect 2 below.

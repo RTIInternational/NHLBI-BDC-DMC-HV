@@ -904,6 +904,9 @@ def main(argv: list[str] | None = None) -> None:
         # 4. Optional column filter
         # ------------------------------------------------------------------
         phv_filter_set: set[str] = set()
+        # Spec PHVs this extract was scoped to; None means no spec scoping.
+        # run_s4_report.sh compares it to the current specs to spot stale extracts.
+        scoped_to_phvs: list[str] | None = None
         if args.phv_list:
             phv_filter_set = {c.strip().lower() for c in args.phv_list}
             log.info("Column filter active (explicit --phv-list): %d columns", len(phv_filter_set))
@@ -914,6 +917,7 @@ def main(argv: list[str] | None = None) -> None:
                     "whose specs reference at least one PHV."
                 )
             phv_filter_set = scope_columns_to_yaml_phvs(yaml_phvs, phv_name_map)
+            scoped_to_phvs = sorted(yaml_phvs)
             log.info(
                 "Column filter active (--scope-to-yaml): %d spec PHV(s) -> %d column name(s).",
                 len(yaml_phvs), len(phv_filter_set),
@@ -1096,6 +1100,8 @@ def main(argv: list[str] | None = None) -> None:
                 "source_dirs": [str(d) for d in source_dirs],
                 "phts_loaded": [pht for pht, _ in loaded],
                 "n_distinct_threshold": n_distinct_threshold,
+                "phv_list": args.phv_list,
+                "scoped_to_phvs": scoped_to_phvs,
             },
             "total_rows": total_rows_all,
             "total_rows_by_pht": total_rows_by_pht,

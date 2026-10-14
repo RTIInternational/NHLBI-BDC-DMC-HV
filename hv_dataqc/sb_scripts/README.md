@@ -122,8 +122,12 @@ per-cohort phv counts and source `N`. Sourced from the transform specs in
 spreadsheets**.
 
 Takes no arguments and is idempotent. It fetches dbGaP caches, runs a preflight
-that reports each cohort's cache/extract status, extracts any cohort that lacks
-an extract, reuses the ones that have one, and builds the CSV + xlsx.
+that reports each cohort's cache/extract status, extracts any cohort whose
+extract is missing or stale (its specs now reference a phv it wasn't scoped
+to), reuses the rest, and builds the CSV + xlsx. Extracts go to
+`/sbgenomics/workspace/S4-output-files/extracts/<COHORT>/`, separate from
+QAQC's full extracts in `QC-output-files/`. Any phv that still has no `N`
+is listed in a `WARNING` with the reason; that cohort's row N undercounts.
 
 ```bash
 ./NHLBI-BDC-DMC-HV/hv_dataqc/sb_scripts/run_s4_report.sh                 # the normal run
