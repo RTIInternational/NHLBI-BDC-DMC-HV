@@ -576,6 +576,18 @@ def test_phase_5_fails_on_a_swapped_stats_index(tmp_path, monkeypatch, capsys):
     assert "5.12 DID NOT RUN" in out
 
 
+def test_phase_5_fails_when_the_stats_index_is_missing(tmp_path, monkeypatch, capsys):
+    """A missing ``_stats`` index leaves 5.12's observed-code half unrun: an ERROR, not a pass."""
+    cache = _make_tree(tmp_path)
+    (cache / f"{KEY}_stats.json.gz").unlink()
+    rc = _phase5_critical(monkeypatch, tmp_path, cache)
+    out = capsys.readouterr().out
+    assert rc == 1, out
+    assert f"no value-count index for HCHS (looked for '{KEY}_stats.json.gz'" in out
+    assert "5.12 and the fallback-reachability half of 5.2 DID NOT RUN" in out
+    assert "build_phv_stats_index.py --cohort " + KEY in out
+
+
 def test_a_swapped_tables_index_is_refused(tmp_path):
     """``_tables`` (rules 1.8 / 1.14) is read through the same check as every other artifact."""
     cache = _make_tree(tmp_path)
