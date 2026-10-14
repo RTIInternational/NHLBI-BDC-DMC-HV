@@ -28,7 +28,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00170566}) + ":WHI")'
         age_at_exposure_start:
-          expr: 'case(({phv00170601} == 1, ({pht000998.phv00078437} * 365) + {phv00170602}))'
+          expr: 'case(({phv00170601} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00170602}))'
         drug_concept:
           value: MeSH:D007328
         exposure_provenance:
@@ -69,7 +69,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193628}) + ":WHI")'
         age_at_exposure_start:
-          expr: 'case(({phv00193671} == 1, ({pht000998.phv00078437} * 365) + {phv00193672}))'
+          expr: 'case(({phv00193671} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193672}))'
         drug_concept:
           value: MeSH:D007328
         exposure_provenance:
@@ -91,7 +91,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_exposure_start:
-          expr: 'case(({phv00193783} == 1, ({pht000998.phv00078437} * 365) + {phv00193784}))'
+          expr: 'case(({phv00193783} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193784}))'
         drug_concept:
           value: MeSH:D007328
         exposure_provenance:

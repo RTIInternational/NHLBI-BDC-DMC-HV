@@ -36,30 +36,25 @@ HV-Lint is organized into four phases with increasing data requirements:
 | **Phase 2** | BDC-HM Model Conformance | YAML files + BDCHM/linkml-map schemas | Active |
 | **Phase 3** | dbGaP Structure & Cross-Reference | YAML files + dbGaP PHV indexes | Active |
 | **Phase 4** | Regression Detection | Phase 1-3 outputs + git diff | Planned |
-| **Phase 5** | Visit Structure Validation | YAML files + visit.yaml + visit cache + PHV index | Active |
+| **Phase 5** | Visit Structure Validation | YAML files + visit.yaml + dbGaP PHV and detail indexes | Active |
 
 ### dbGaP Cache Architecture
 
-Phases 3 and 5 use **compressed JSON indexes** (committed in `hv-lint/dbgap-cache/`) instead of raw XML:
+Phases 3 and 5 use **compressed JSON indexes** (committed in `hv-lint/dbgap-cache/`) instead of raw XML. The artifacts are named by **study release**, not by cohort, so two releases of one study can sit side by side:
 
-1. **Basic index** (`<cohort>.json.gz`) -- maps each base PHV to base PHT (~425 KB total). Used by rules 3.1-3.5.
-2. **Extended detail index** (`<cohort>_detail.json.gz`) -- adds variable name, type, unit, description, coded values, and collection interval (`coll_interval`). Used by rules 3.9-3.16 and 5.8.
+1. **Basic index** (`<phs######>.<v#>.json.gz`, e.g. `phs000280.v8.json.gz`) -- maps each base PHV to base PHT. Used by rules 3.1-3.5 and by Phase 5 checks 5.3 and 5.4.
+2. **Extended detail index** (`<phs######>.<v#>_detail.json.gz`) -- adds variable name, type, unit, description, coded values, and collection interval (`coll_interval`). Used by rules 3.9-3.16 and 5.8.
+3. **`manifest.json`** -- one entry per release key: cohort, study, study version, PHV and PHT counts, source directory and build date, plus an `artifacts` record per file (its sha256 and PHV/PHT counts). The two builders write it; it is the only record of which release a file holds. Every cache read goes through `_cohorts.load_cache_artifact`, which fails closed when a file's bytes or counts differ from its record -- a release label alone cannot catch another release's file copied over this one's name. Per-release counts live there, not in this document.
 
-Indexes are committed to this repo (~4 MB total) so CI and contributors can run lint without fetching from NCBI. To rebuild: `python hv-lint/update_data.py --build-only`.
+**Which release is linted** is the cohort's *declared* release: `current_version` in `hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml`. Phases 3 and 5 compare it with the cache's manifest entry before reading the index, and the run fails, **regardless of `--fail-on`**, when:
 
-| Cohort | PHVs | PHTs | Compressed Size |
-|--------|------|------|----------------|
-| ARIC | 31,705 | 398 | 69 KB |
-| CARDIA | 9,364 | 322 | 19 KB |
-| CHS | 14,717 | 56 | 33 KB |
-| COPDGene | 1,026 | 5 | 2 KB |
-| FHS | 91,702 | 541 | 214 KB |
-| HCHS-SOL | 1,571 | 3 | 4 KB |
-| JHS | 4,224 | 103 | 9 KB |
-| MESA | 22,147 | 93 | 53 KB |
-| SPIROMICS | 269 | 3 | 1 KB |
-| WHI | 6,207 | 86 | 13 KB |
-| **Total** | **182,932** | -- | **~425 KB** |
+- the manifest records a different release, or has no entry for the key;
+- the cohort declares no release;
+- the index is missing, or (Phase 5) no `--cache-dir` was given.
+
+Phase 5 reports each of these as an ERROR finding that names the checks that did not run. A cache for a release no cohort declares (e.g. ARIC `phs000280.v9` next to the declared v8) is kept but never loaded.
+
+Indexes are committed to this repo (4.66 MB as committed: 0.51 MB basic, 4.15 MB detail) so CI and contributors can run lint without fetching from NCBI. To rebuild: `python hv-lint/update_data.py --build-only`.
 
 ### File Inventory
 
@@ -67,8 +62,9 @@ Indexes are committed to this repo (~4 MB total) so CI and contributors can run 
 |------|-------|---------|
 | `hv-lint/_paths.py` | -- | Shared path resolution (supports `HV_ROOT` env var and `--hv-root` override) |
 | `hv-lint/_http.py` | -- | Self-contained HTTP caching layer for data fetching |
+| `hv-lint/_cohorts.py` | -- | The one cohort resolver: `--cohort` spelling -> ingest directory, declared release -> cache key, manifest provenance and the release check |
 | `hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml` | -- | Cohort version pins (study IDs, data versions) — single source of truth shared with hv_dataqc |
-| `hv-lint/update_data.py` | -- | Fetch + build all indexes and visit cache (single entry point) |
+| `hv-lint/update_data.py` | -- | Fetch FTP data dictionaries + build both indexes and the manifest (single entry point) |
 | `hv-lint/.yamllint` | 1 | yamllint configuration |
 | `hv-lint/phase-1/run_phase1.py` | 1 | Phase 1 manager -- orchestrates all sub-components |
 | `hv-lint/phase-1/validate_yaml_structure.py` | 1 | Structural checks (1.1-1.5, 1.7, 1.9, 1.10, 1.11) |
@@ -83,10 +79,11 @@ Indexes are committed to this repo (~4 MB total) so CI and contributors can run 
 | `hv-lint/phase-3/validate_dbgap_crossref.py` | 3 | dbGaP cross-reference checks (3.1-3.5) |
 | `hv-lint/phase-3/validate_semantic.py` | 3 | Semantic validation (3.9, 3.10, 3.12-3.16) |
 | `hv-lint/phase-3/check_value_semantic.py` | 3 | Value-mapping label/OMOP semantic check (3.11) |
-| `hv-lint/build_phv_index.py` | -- | Builds compressed PHV-to-PHT indexes from bulk HTML cache |
+| `hv-lint/build_phv_index.py` | -- | Builds release-keyed PHV-to-PHT indexes from FTP data_dict.xml files |
 | `hv-lint/build_phv_detail_index.py` | -- | Builds extended PHV detail indexes from FTP data_dict.xml files |
 | `hv-lint/phase-5/run_phase5.py` | 5 | Phase 5 manager -- orchestrates visit structure validation |
-| `hv-lint/phase-5/validate_visit_structure.py` | 5 | Visit structure checks (5.0-5.10) |
+| `hv-lint/phase-5/validate_visit_structure.py` | 5 | Visit structure checks (5.0-5.10; 5.5 and 5.7 removed) |
+| `hv-lint/tests/` | -- | pytest suite for the resolver, builders, label parser and validator entry points |
 
 ---
 
@@ -127,11 +124,12 @@ These are included in `VALID_SLOT_DERIVATION_KEYS` and will not trigger CRITICAL
 - **PHV**: Exactly `phv` followed by 8 digits (e.g., `phv00098579`). Version suffix (`.v7.p3`) is stripped during index building.
 - **PHT**: Exactly `pht` followed by 6 digits (e.g., `pht001440`). Version suffix stripped.
 
-### A5: dbGaP Index Is Built from Bulk Variable List HTML
+### A5: dbGaP Indexes Are Built from Release-Stamped FTP Data Dictionaries
 
-The dbGaP variable list pages (`GetListOfAllObjects.cgi`) return HTML tables. The `build_phv_index.py` script parses this HTML to extract a `{base_phv: base_pht}` mapping, then compresses it to `.json.gz`.
+`build_phv_index.py` and `build_phv_detail_index.py` read the FTP `*.data_dict.xml` files, whose names carry the `phs######.v#.pht######.v#.` prefix dbGaP stamps on each one. That prefix is how a built artifact knows its release, and the builders record it in `manifest.json`.
 
-- **Assumption**: The HTML table has 5 columns: variable accession, variable name, variable description, dataset accession, dataset name
+- **Assumption**: every data dictionary in one source directory names the same `phs######.v#`; a directory that names more than one release is refused rather than merged.
+- **Not read**: the CGI variable list (`GetListOfAllObjects.cgi` / `variables.xml`). It carries no release, so a copy left from an earlier release would make the index a union of two.
 - **Assumption**: Stripping the version suffix (`.vN.pN`) yields the canonical accession
 
 ### A6: Cross-Table PHV References for Known Slot Patterns Are Expected
@@ -188,7 +186,12 @@ Scripts detect which cohort a file belongs to by extracting the directory name b
 - `priority_variables_transform/ARIC-ingest/bmi.yaml` -> cohort `ARIC`
 - `priority_variables_transform/HCHS-ingest/bmi.yaml` -> cohort `HCHS`
 
-The `HCHS` directory name maps to `hchs_sol` in the dbGaP cache (via `COHORT_TO_CACHE_KEY`).
+`hv-lint/_cohorts.py` resolves every `--cohort` token the same way in every phase:
+
+- The canonical name is the ingest directory's spelling, matched case-insensitively and through `_cohorts.ALIASES`, so `copdgene` resolves to `COPDGene` and `HCHS-SOL`, `hchs_sol` and `hchs` resolve to `HCHS`.
+- `--cohort all` means every `*-ingest/` directory; there is no hard-coded cohort list.
+- The cache key is the cohort's declared release (see the dbGaP Cache Architecture above). `HCHS` finds its declaration in `_manifest-hchs_sol.yaml` through the same alias table.
+- A named cohort with no ingest directory and no cache fails Phases 1, 3 and 5 rather than passing with nothing checked.
 
 ---
 
@@ -482,7 +485,7 @@ Compare Phase 1-3 error counts between `main` and the PR branch. Block merge if 
 
 **Scripts**: `hv-lint/phase-5/validate_visit_structure.py` (checks 5.0-5.10)
 **Dependencies**: PyYAML
-**Optional data**: Visit cache for checks 5.3, 5.5; PHV index for check 5.4; Extended detail index for check 5.8
+**Data**: `--cache-dir` (default `hv-lint/dbgap-cache` through `run_phase5.py`): the PHV index for check 5.3 and the PHV half of 5.4, the detail index for 5.8, after the release check above. Without it those checks do not run and the run fails. There is no visit cache and no `--visit-cache` option.
 
 Phase 5 is the first **cross-file** validation phase. It builds a per-cohort visit registry from `visit.yaml` and validates all measurement/condition transform files against it.
 
@@ -508,9 +511,9 @@ Expressions are parsed using regex:
 
 ### 5.0 Missing visit.yaml
 
-Flag cohorts that have an ingest directory but no `visit.yaml` file.
+Flag cohorts that have an ingest directory but no `visit.yaml` file. Under `--cohort all` that is a WARNING (every shipped cohort has a `visit.yaml`). A cohort named with `--cohort` that has no ingest directory, or an ingest directory but no `visit.yaml`, was never checked, so it is an ERROR and fails the run regardless of `--fail-on`. So is a `visit.yaml` that cannot be parsed or has no Visit blocks, under any `--cohort`: none of 5.1-5.10 can run without it.
 
-- **Severity**: WARNING
+- **Severity**: WARNING (no `visit.yaml`, under `--cohort all`); ERROR (named cohort with no ingest directory or no `visit.yaml`; `visit.yaml` unparseable or with no Visit blocks)
 
 ### 5.1 Visit ID Uniqueness
 
@@ -531,41 +534,28 @@ Every `associated_visit` value or case() target in measurement/condition files m
 
 ### 5.3 Visit/PHT Consistency
 
-> **Requires**: `--visit-cache`
+> **Requires**: `--cache-dir` (the declared release's PHV index)
 
-Validate that Visit block PHTs are recognized dbGaP accessions and exist in the visit cache.
+Validate that every Visit block has a `populated_from` PHT, that it is a well-formed accession, and that the table exists in the PHV index of the release being linted. The PHT set comes from the PHV index -- the same source rule 3.2 uses.
 
-- **Severity**: ERROR for malformed PHT; WARNING for PHT not in cache
+- **Severity**: ERROR for all three
 
 ### 5.4 Age Formula Structural Check
 
 Validate that `age_at_visit_start` and `age_at_visit_end` expressions are present and structurally sound.
 
-- **Checks**: Age slot presence, PHV validity (if `--cache-dir` provided), unit conversion (`* 365` for years-to-days)
+- **Checks**: Age slot presence, PHV validity against the PHV index (`--cache-dir`), unit conversion (`* 365` for years-to-days). The age-slot and `* 365` checks need no cache and run even when the index cannot be read.
 - **Severity**: WARNING for missing age slots; ERROR for invalid PHVs; INFO for missing `* 365`
 
-### 5.5 Multi-Visit Table Coverage
+### 5.5 and 5.7 (removed)
 
-> **Requires**: `--visit-cache`
-
-Validate that transform blocks using multi-visit tables include appropriate visit discrimination.
-
-- **Severity**: WARNING for no `associated_visit` on multi-visit table; INFO for static `associated_visit`
+Both checks validated transform specs against a visit cache generated by regex-matching dbGaP variable names and table descriptions. That is an inference, not a published visit list, so they were removed together with the cache. Their numbers are not reused.
 
 ### 5.6 Orphan Visit References
 
 Detect Visit IDs defined in `visit.yaml` but never referenced by any measurement or condition transform file.
 
 - **Severity**: INFO (orphan visits may represent future work)
-
-### 5.7 Visit PHT Alignment
-
-Validates that visit blocks' PHT references are consistent with dbGaP visit-cache metadata.
-
-- **Sub-checks**:
-  - **5.7a**: Multi-visit table with static ID and single block -> WARNING
-  - **5.7b**: Multi-visit table block expressions don't reference known discriminator PHVs -> INFO
-  - **5.7c**: Block's age PHVs don't overlap with table's known age variables -> INFO
 
 ### 5.8 Collection Interval Mismatch
 
