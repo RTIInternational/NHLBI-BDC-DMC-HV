@@ -21,7 +21,6 @@ harmonization workflow runs it per cohort
 cd /sbgenomics/workspace
 git clone https://github.com/RTIInternational/NHLBI-BDC-DMC-HV.git
 cd NHLBI-BDC-DMC-HV
-git checkout s4-docs-cleanup                 # temporary: until PR #749 merges, then stay on main
 source hv_dataqc/sb_scripts/setup.sh
 ```
 
@@ -47,8 +46,7 @@ uv run python -m pytest hv_dataqc/tests/ -q      # sanity check before a long ru
 ```
 
 The reports read the transform specs in `priority_variables_transform/`, so
-run from `main` (for now, `s4-docs-cleanup`) unless you were given a
-specific branch.
+run from `main` unless you were given a specific branch.
 
 ## S4 — pre-harmonized phv report (SB enclave)
 
