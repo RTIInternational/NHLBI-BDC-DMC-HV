@@ -14,4 +14,4 @@
           value: CASE_REPORT_FORM
           range: string
         procedure_status:
-          expr: case(({phv00226273} == 'Pacemaker', 'PRESENT'), (True, 'ABSENT'))
+          expr: case(({phv00226273} == 'Pacemaker', 'PRESENT'), ({phv00526254} is not None, 'ABSENT'))
