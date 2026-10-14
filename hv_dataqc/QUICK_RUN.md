@@ -82,6 +82,19 @@ Output: `/sbgenomics/workspace/S4-output-files/s4_report_<ts>.csv` (+ a
 `latest_s4_report.csv` symlink). Paste it (minus header) into the Table S4
 template.
 
+**Expected on a healthy run** (not errors):
+- `LTRC BLOCKED … no source dir`: SB has no LTRC source data; S4 has no LTRC
+  column.
+- `WARNING: CARDIA: … pht003298 not in extract`: those specs reference
+  CARDIA's GENEVA/ESP table, which SB's source data doesn't include, so those
+  CARDIA cells are blank or undercount. Open curation question. Any *other*
+  cohort in this warning is new and worth a look.
+- `NOTE: … no template row: Interleukin 18 in blood`: the S4 template has no
+  row for it yet.
+
+A full first run (all cohorts extracting) takes about 15 minutes; later runs
+reuse the extracts.
+
 Inspect one variable's resolved phvs + per-phv N:
 
 ```bash
