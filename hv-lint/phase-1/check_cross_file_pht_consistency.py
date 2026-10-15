@@ -25,6 +25,11 @@ Checks:
          description's bracketed source says "Visit N" under a label other than ARIC EXAM N; a
          MESA table whose name says "ExamN" under a "MESA ... EXAM M" label. Catches the
          single-block table that 1.8's majority arm cannot (ARIC ATRFIB41 labelled EXAM 3).
+         A cohort with no VISIT_EVIDENCE pattern gets one INFO "not applicable" finding, so a
+         1.14 pass is never read as coverage the cohort does not have.
+
+A missing input is a failure, never a skip: a cohort in TABLE_NAME_COHORTS (1.8's name arm) or
+VISIT_EVIDENCE (1.14) whose index is absent exits 1 naming the check that did not run.
 
 Usage:
     python hv-lint/phase-1/check_cross_file_pht_consistency.py
@@ -62,6 +67,9 @@ FHS_COHORT_CODE = {
     "0": "ORIGINAL", "1": "OFFSPRING", "2": "NEW OFFSPRING SPOUSE", "3": "GENERATION 3",
     "7": "OMNI 1", "72": "OMNI 2",
 }
+# Cohorts whose dbGaP table short names encode the exam (expected_fhs_labels), so 1.8's
+# table-name ERROR arm needs their ``_tables`` index; without it that arm has nothing to compare.
+TABLE_NAME_COHORTS = frozenset({"FHS"})
 _FHS_EXAM_SHORT_RE = re.compile(r"^ex(\d+)_(\d+)s$")
 _FHS_EXAM_LONG_RE = re.compile(r"(?:^|_)ex(\d+)_(\d+)(b?)(?:_|$)")
 
@@ -167,6 +175,15 @@ def _cohort_of(rel_path: str) -> str:
         if part.endswith("-ingest"):
             return part[: -len("-ingest")]
     return ""
+
+
+def not_applicable_114(cohort: str) -> Finding:
+    """The INFO that says 1.14 judged nothing for ``cohort``: a skip is not a pass."""
+    return Finding(
+        f"priority_variables_transform/{cohort}-ingest", 0, "1.14", "INFO",
+        f"1.14 not applicable: no visit-evidence pattern for cohort {cohort} (only "
+        f"{', '.join(sorted(VISIT_EVIDENCE))} have one), so visit labels are not checked "
+        f"against its dbGaP metadata")
 
 
 def check_visit_vs_dbgap(
@@ -304,7 +321,8 @@ def check_cross_file_pht_consistency(
     """Check 1.8 over every data block of one run.
 
     ``table_names`` maps a PHT to its dbGaP short name (FHS's ``_tables`` index); without it the
-    ERROR sub-check has nothing to compare against and only the overlap WARNING runs.
+    ERROR sub-check has nothing to compare against and only the overlap WARNING runs, which is
+    why ``main()`` refuses to run a TABLE_NAME_COHORTS cohort whose index is absent.
     """
     findings: list[Finding] = []
     table_names = table_names or {}
@@ -418,6 +436,7 @@ def main() -> int:
     cache_dir = Path(args.cache_dir)
     table_names: dict[str, dict[str, str]] = {}
     details: dict = {}
+    findings_na: list[Finding] = []
     for name, key in _cohorts.cohorts_to_load(args.cohort, cache_dir, base_dir):
         # The 1.14 detail read sits inside this try so an integrity failure of either artifact
         # is reported, never raised.
@@ -434,6 +453,13 @@ def main() -> int:
             print(f"ERROR: cache integrity check for '{name}': {exc} -- 1.8 and 1.14 DID NOT "
                   f"RUN for it.", file=sys.stderr)
             return 1
+        if name in TABLE_NAME_COHORTS and not tables:
+            # The table-name arm is the one that found #782's wrong labels; with no names it
+            # judges nothing and the run would pass.
+            print(f"ERROR: no {key}_tables.json.gz for {name}: 1.8's table-name check DID NOT "
+                  f"RUN for it. Build it with {_cohorts.stats_rebuild_command(key, tables=True)}",
+                  file=sys.stderr)
+            return 1
         if name in VISIT_EVIDENCE:
             # 1.14 reads the pinned release's metadata; a missing index is a skipped check.
             kind = VISIT_EVIDENCE[name][0]
@@ -442,8 +468,11 @@ def main() -> int:
                       f"Build it with {_cohorts.stats_rebuild_command(key, tables=True)}",
                       file=sys.stderr)
                 return 1
+        else:
+            findings_na.append(not_applicable_114(name))
     findings = check_cross_file_pht_consistency(all_refs, table_names)
     findings.extend(check_visit_vs_dbgap(all_refs, table_names, details))
+    findings.extend(findings_na)
 
     # -- Report --------------------------------------------------------
     # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).

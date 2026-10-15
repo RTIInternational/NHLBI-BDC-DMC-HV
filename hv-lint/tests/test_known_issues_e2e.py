@@ -545,12 +545,13 @@ def test_prune_refuses_when_a_partial_fix_leaves_a_new_warning(tmp_path):
 
 
 def test_prune_refuses_when_a_cohort_did_not_run(tmp_path):
-    """MESA's visit.yaml deleted: 5.0 fails the run, and 5.8's cohort-level row (MESA's detail
-    index has no coll_interval) must survive the prune, not be read as fixed."""
+    """MESA's visit.yaml deleted: 5.0 fails the run, so the prune is refused and the known issues
+    and baseline are left as they were -- rows of checks that did not run are not read as fixed.
+    5.8's notice for MESA (no collection-interval metadata) is INFO, so it is not one of them."""
     t = _real_subset(tmp_path, "MESA", ["visit.yaml", "hdl.yaml"])
     run = _runner(t)
     ki, bl = _start_clean(t, run)
-    assert "MESA-ingest/ | cohort" in bl
+    assert "MESA-ingest/ | cohort" not in bl
     (t.dir / "visit.yaml").unlink()
     res = run("prune")
     assert res.returncode == 1 and "refusing to prune" in res.stdout, res.stdout[-3000:]

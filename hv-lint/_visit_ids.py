@@ -1,5 +1,6 @@
 """Symbolic enumeration of the ids an ``id`` / ``associated_visit`` / ``associated_participant``
-expression can emit -- one parser for rules 1.8, 5.1, 5.2 and 5.11.
+expression can emit -- one parser for rules 1.8, 5.1, 5.2 and 5.11. It also holds the one parse of
+dbGaP's "Collected in: P1 P2" collection interval, for rules 3.13 and 5.8.
 
 An expression is parsed with :mod:`ast` (each ``{phv}`` / ``{pht.phv}`` becomes a name) and every
 value it can produce is enumerated: ``case()`` yields each arm's value, ``+`` concatenates,
@@ -292,3 +293,46 @@ def fallback_reach(expr: str, counts_for) -> tuple[str | None, dict[str, dict[st
         if iv.label:
             out.setdefault(iv.label, {})[str(code)] = int(n)
     return phv, out
+
+
+# -- collection intervals (rules 3.13 and 5.8) ---------------------------------------------------
+
+# dbGaP's structured collection interval, "Collected in: P1 P2 P3" (COPDGene). Other cohorts carry
+# none, or free text (FHS date ranges) that names no visit.
+_COLLECTED_IN_RE = re.compile(r"^Collected\s+in:\s*(.+)$", re.IGNORECASE)
+
+# A sub-phase covered by its parent's interval: COPDGene P3B is the Phase 3 short-term 1-year
+# follow-up, which dbGaP rolls into "Collected in: P3".
+_PHASE_SUB_ALIASES: dict[str, str] = {"P3B": "P3"}
+
+
+def parse_coll_interval_phases(coll_interval: str | None) -> set[str] | None:
+    """The phase tokens of a "Collected in: X Y Z" interval, or None for any other text."""
+    if not coll_interval:
+        return None
+    m = _COLLECTED_IN_RE.match(coll_interval.strip())
+    if not m:
+        return None
+    tokens = m.group(1).split()
+    return set(tokens) if tokens else None
+
+
+def expand_ci_phases(ci_phases: set[str]) -> set[str]:
+    """``ci_phases`` plus each sub-phase whose parent phase it contains (P3 covers P3B)."""
+    return set(ci_phases) | {c for c, parent in _PHASE_SUB_ALIASES.items() if parent in ci_phases}
+
+
+def has_collection_intervals(intervals) -> bool:
+    """Whether any of ``intervals`` (coll_interval strings) is in the parseable format.
+
+    False means 3.13 and 5.8 can judge nothing for the cohort, which they must report rather
+    than pass silently.
+    """
+    return any(parse_coll_interval_phases(ci) is not None for ci in intervals)
+
+
+def not_applicable_message(rule: str, cohort: str) -> str:
+    """The INFO text 3.13 and 5.8 emit for a cohort with no parseable collection interval."""
+    return (f"{rule} not applicable for cohort {cohort}: no collection-interval metadata (no "
+            f"variable in its detail index has a 'Collected in: P1 P2' coll_interval), so "
+            f"collection-interval mismatches are not checked here")

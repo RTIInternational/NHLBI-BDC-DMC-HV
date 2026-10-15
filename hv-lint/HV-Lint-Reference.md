@@ -67,7 +67,7 @@ Indexes are committed to this repo (4.66 MB as committed: 0.51 MB basic, 4.15 MB
 | `hv-lint/_known_issues.py` | all | Known issues, stale-entry check and WARNING ratchet, called by every component (A7) |
 | `hv-lint/known_issues.yaml` | all | One entry per known ERROR finding, each with its issue and status (A7) |
 | `hv-lint/warning_baseline.json` | all | WARNING count per rule and cohort, ratcheted (A7) |
-| `hv-lint/_visit_ids.py` | 1, 5 | ast enumerator of id / associated_visit / associated_participant values (1.8, 5.1, 5.2, 5.11) |
+| `hv-lint/_visit_ids.py` | 1, 3, 5 | ast enumerator of id / associated_visit / associated_participant values (1.8, 5.1, 5.2, 5.11); the `Collected in:` interval parse (3.13, 5.8) |
 | `hv-lint/_expr.py` | 2 | ast readers for `expr` strings (2.4, 2.7, 2.10) |
 | `hv-lint/_derivations.py` | all | Nested class-derivation parsing and the every-depth slot walker |
 | `hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml` | -- | Cohort version pins (study IDs, data versions) — single source of truth shared with hv_dataqc |
@@ -270,7 +270,7 @@ Detect DrugExposure blocks within a file that share the same source PHV(s) in `d
 
 Each data block's `associated_visit` is read as a label SET by the shared enumerator (`hv-lint/_visit_ids.py`): every case() arm is enumerated, comparison operands (`'P2'`, CARDIA `'HBP'`) are never labels, and a `(True, ...)` fallback arm (`FHS UNKNOWN VISIT`) is dropped. Blocks are grouped by PHT.
 
-- **ERROR**: a block with exactly one label disagrees with the exam its FHS table encodes in its dbGaP short name (`ex<cohort>_<exam>s`, `..._ex<NN>_<cohort>[b]_...`; a description range such as "Original Cohort Exams 1 - 7" widens it; derived `vr_` tables encode no single exam). The short names and descriptions come from `<release>_tables.json.gz` (`build_phv_stats_index.py --tables`), committed for FHS only.
+- **ERROR**: a block with exactly one label disagrees with the exam its FHS table encodes in its dbGaP short name (`ex<cohort>_<exam>s`, `..._ex<NN>_<cohort>[b]_...`; a description range such as "Original Cohort Exams 1 - 7" widens it; derived `vr_` tables encode no single exam). The short names and descriptions come from `<release>_tables.json.gz` (`build_phv_stats_index.py --tables`). A cohort whose table names encode the exam (`TABLE_NAME_COHORTS`, FHS today) needs that index: when it is absent the run fails ("1.8's table-name check DID NOT RUN"), because without the names this arm judges nothing and the run would otherwise pass.
 - **ERROR** (any cohort): a block with exactly one label disagrees with a label that at least 2 other single-label blocks of the same table carry, and those are at least 80% of the table's other single-label blocks -- a copy-paste label on a single-exam table (the #782 class). On all cohorts today this finds nothing, at any block minimum from 1 to 5: the largest share of disagreeing blocks any single-label block faces is 28% (ARIC pht012853, a wide multi-exam table). The rule is armed on 277 tables (4,858 blocks). Relabelling MESA hdl b1 `MESA CLASSIC EXAM 2` among 118 EXAM 1 blocks fails Phase 1, and so does relabelling MESA cac_volume b42 `MESA CLASSIC EXAM 4` on pht001205, whose other 3 blocks are `MESA AORTIC CT EXAM 4`.
 - **WARNING**: two blocks of one table carry label sets that overlap while neither contains the other (COPDGene phase subsets). The finding names the other label set's block with the smallest known-issue identity, not the first one scanned, so adding a file that sorts earlier or reordering the file list does not re-key the 18 COPDGene baseline rows.
 - Not reported: a block whose label set is a superset of another's (MESA potassium b0's Exam 3/4 case beside Exam 4 blocks), or different single exams of one multi-exam table (no label holds 80%).
@@ -322,6 +322,7 @@ A block with exactly one visit label whose own dbGaP metadata names a different 
 - **Not judged**: a label with no exam number (`ARIC CHEM 2`, `MESA LUNG CT`), metadata naming none, a block with several labels. A block whose value variables name several visits passes under any of them.
 - **Measured**: on main c0307803 it judges 673 of ARIC's 977 and 554 of MESA's 853 single-label blocks and reports 3, the ARIC labels confirmed wrong in review (afib ATRFIB41 `EXAM 3`, stroke TIAD04 and TIAE04 `EXAM 1`; listed under #872, fixed by #888). On main 2a28934a, after #888 and #889, it judges 673 of ARIC's 970 and 553 of MESA's 852 single-label blocks (297 and 299 name no exam) and reports none.
 - **Data**: a missing detail index (ARIC) or table-name index (MESA) fails the run.
+- **Not applicable**: a cohort with no visit-evidence pattern (every cohort but ARIC and MESA) gets one INFO finding, "1.14 not applicable: no visit-evidence pattern for cohort <X>", so a 1.14 pass is not read as coverage. INFO is not ratcheted, so the notice never enters `warning_baseline.json`.
 - **Severity**: ERROR
 
 ### 1.15 value_mappings Key Is Not a String
@@ -514,7 +515,8 @@ Validates that Condition blocks using `value_mappings` on `condition_status` do 
 - **Data**: Extended detail index with `coll_interval` field
 - **Scope**: Condition class only. Rule 5.8 covers all classes more broadly.
 - **Severity**: CRITICAL
-- **Availability**: Only applies to cohorts with structured `coll_interval` data (currently COPDGene: 95% coverage; others: limited or none)
+- **Availability**: Only cohorts whose detail index holds a `Collected in: P1 P2` interval (COPDGene, 1,003 of 1,052 variables). The parse is shared with 5.8 (`_visit_ids.parse_coll_interval_phases`).
+- **Not applicable**: every other cohort gets one INFO finding, "3.13 not applicable for cohort <X>: no collection-interval metadata", so a 3.13 pass is not read as coverage. Free-text intervals count as none: FHS's ("Cancer Cases Reviewed through ..."), ARIC's ("Collected in Exam 1", no colon) and CHS's ("1989 through 2014") name no phase the rule can compare.
 
 ### 3.14 Unit Conversion Source-Unit Mismatch
 
@@ -677,7 +679,7 @@ Validates that data PHVs used in transform blocks are actually collected at all 
 
 - **Logic**: Extracts phase tokens from case expressions, loads PHV `coll_interval` from detail index, flags uncovered phases
 - **Severity**: CRITICAL for Condition class (null -> false ABSENT); ERROR for Measurement/Observation/DrugExposure (null -> NaN)
-- **Availability**: COPDGene 95% coverage; FHS 42% (free-text, gracefully skipped); ARIC and CHS a few variables; CARDIA, HCHS, JHS, LTRC, MESA, SPIROMICS and WHI none. For those seven the skip is a WARNING finding ("5.8 did not run for <cohort>"), so a 5.8 pass is not read as coverage. Until a proxy exists (dataset naming, var_report presence per visit), #782 addendum B option 3 stands: a one-time manual audit of their multi-visit Condition blocks.
+- **Availability**: only the `Collected in: P1 P2` format is read, which only COPDGene carries (1,003 of 1,052 variables). FHS (39,202 variables), ARIC (20) and CHS (2) carry free-text intervals that name no phase; CARDIA, HCHS, JHS, LTRC, MESA, SPIROMICS and WHI carry none. For all ten the rule emits one INFO finding, "5.8 not applicable for cohort <X>: no collection-interval metadata", so a 5.8 pass is not read as coverage. It is INFO, not WARNING: a fact about a cohort's dbGaP metadata is not a defect, and a WARNING would live in the ratchet as a baseline row. Until a proxy exists (dataset naming, var_report presence per visit), #782 addendum B option 3 stands: a one-time manual audit of their multi-visit Condition blocks.
 - **Phase-alias expansion**: Sub-phases expanded from parents (e.g., COPDGene P3B treated as sub-visit of P3)
 - **Relationship to Rule 3.13**: Rule 5.8 is the broad cross-file check (all classes); Rule 3.13 is the targeted Condition-only check.
 

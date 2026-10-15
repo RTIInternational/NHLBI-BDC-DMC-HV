@@ -860,47 +860,9 @@ def check_5_6_orphan_visits(
 
 # -- Collection interval parsing ----------------------------------------------
 
-# Matches "Collected in: P1 P2 P3" or "Collected in: P2 P3" style values
-_COLLECTED_IN_RE = re.compile(r"^Collected\s+in:\s*(.+)$", re.IGNORECASE)
-
-# Sub-phase aliases: if a parent phase is in coll_interval, its sub-phases
-# are considered covered.  COPDGene P3B is "Phase 3 Short-term 1-year
-# follow-up" -- a sub-visit of P3 that dbGaP rolls into "Collected in: P3".
-_PHASE_SUB_ALIASES: dict[str, str] = {
-    "P3B": "P3",  # COPDGene Phase 3B -> Phase 3
-}
-
-
-def expand_ci_phases(ci_phases: set[str]) -> set[str]:
-    """Expand collection-interval phases to include known sub-phase aliases.
-
-    If ci_phases contains a parent phase (e.g., 'P3'), the corresponding
-    sub-phase (e.g., 'P3B') is added to the returned set, because dbGaP
-    annotates sub-visit data under the parent phase's collection interval.
-    """
-    expanded = set(ci_phases)
-    # Reverse lookup: parent -> children
-    for child, parent in _PHASE_SUB_ALIASES.items():
-        if parent in ci_phases:
-            expanded.add(child)
-    return expanded
-
-
-def parse_coll_interval_phases(coll_interval: str) -> set[str] | None:
-    """Parse a structured coll_interval string into a set of phase tokens.
-
-    Returns a set of phase tokens (e.g., {"P1", "P2", "P3"}) if the string
-    follows the "Collected in: X Y Z" format.  Returns None if the format
-    is unstructured (e.g., FHS date ranges) -- callers should skip validation.
-    """
-    if not coll_interval:
-        return None
-    m = _COLLECTED_IN_RE.match(coll_interval.strip())
-    if not m:
-        return None
-    tokens = m.group(1).split()
-    # Only return if we got at least one token
-    return set(tokens) if tokens else None
+# One parse of dbGaP's "Collected in: P1 P2" interval, shared with 3.13 (_visit_ids).
+parse_coll_interval_phases = _visit_ids.parse_coll_interval_phases
+expand_ci_phases = _visit_ids.expand_ci_phases
 
 
 def extract_visit_phase_token(visit_label: str) -> str | None:
@@ -1627,9 +1589,11 @@ def main() -> int:
                 all_findings.extend(
                     check_5_11_participant_seed(yaml_files, hv_root, detail_idx)
                 )
-                # Check if this cohort has any coll_interval data
-                n_ci = sum(1 for v in detail_idx.values() if v.get("coll_interval"))
-                if n_ci > 0:
+                # 5.8 reads only the "Collected in: P1 P2" format; free-text intervals (FHS date
+                # ranges) name no visit, so a cohort holding only those is as unjudged as one
+                # holding none.
+                if _visit_ids.has_collection_intervals(
+                        v.get("coll_interval") for v in detail_idx.values()):
                     all_findings.extend(
                         check_5_8_collection_interval(
                             yaml_files, hv_root, detail_idx
@@ -1637,12 +1601,11 @@ def main() -> int:
                     )
                 else:
                     # A skip that prints nothing reads as "no mismatch": say it in the findings,
-                    # so a 5.8 pass is not taken for coverage this cohort does not have.
+                    # so a 5.8 pass is not taken for coverage this cohort does not have. INFO, not
+                    # WARNING: a fact about the cohort's metadata is not a defect to ratchet.
                     all_findings.append(Finding(
-                        f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "WARNING",
-                        f"5.8 did not run for {cohort}: its detail index has no coll_interval "
-                        f"(collection interval) for any variable, so collection-interval "
-                        f"mismatches are not checked here"))
+                        f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "INFO",
+                        _visit_ids.not_applicable_message("5.8", cohort)))
 
         # 5.9: Visit uuid5 format compliance
         all_findings.extend(check_5_9_uuid5_format(registry, cohort_refs))

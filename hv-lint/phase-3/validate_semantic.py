@@ -45,6 +45,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
 import _known_issues  # noqa: E402
 import _cohorts  # noqa: E402
+import _visit_ids  # noqa: E402
 from _derivations import iter_nested_class_derivs, walk_slot_derivations  # noqa: E402
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import check_status_semantic as _css  # noqa: E402  (stats reader and follow-up detector)
@@ -827,24 +828,9 @@ def check_unit_conversion_mismatch(
 # Check 3.13: Condition Null-Default Risk (Collection Interval)
 # ---------------------------------------------------------------------------
 
-# Matches "Collected in: P1 P2 P3" style values
-_COLLECTED_IN_RE = re.compile(r"^Collected\s+in:\s*(.+)$", re.IGNORECASE)
-
-# Sub-phase aliases: if a parent phase is in coll_interval, its sub-phases
-# are considered covered.  COPDGene P3B is "Phase 3 Short-term 1-year
-# follow-up" -- a sub-visit of P3 that dbGaP rolls into "Collected in: P3".
-_PHASE_SUB_ALIASES: dict[str, str] = {
-    "P3B": "P3",  # COPDGene Phase 3B -> Phase 3
-}
-
-
-def _expand_ci_phases(ci_phases: set[str]) -> set[str]:
-    """Expand collection-interval phases to include known sub-phase aliases."""
-    expanded = set(ci_phases)
-    for child, parent in _PHASE_SUB_ALIASES.items():
-        if parent in ci_phases:
-            expanded.add(child)
-    return expanded
+# One parse of dbGaP's "Collected in: P1 P2" interval, shared with 5.8 (_visit_ids).
+_parse_ci_phases = _visit_ids.parse_coll_interval_phases
+_expand_ci_phases = _visit_ids.expand_ci_phases
 
 # Detects case() in expressions
 _CASE_RE = re.compile(r"\bcase\s*\(")
@@ -852,17 +838,6 @@ _CASE_RE = re.compile(r"\bcase\s*\(")
 # Matches case result strings: , "RESULT") or , 'RESULT')
 _CASE_RESULT_DQ = re.compile(r',\s*"([^"]+)"\s*\)')
 _CASE_RESULT_SQ = re.compile(r",\s*'([^']+)'\s*\)")
-
-
-def _parse_ci_phases(coll_interval: str | None) -> set[str] | None:
-    """Parse structured coll_interval into phase tokens, or None."""
-    if not coll_interval:
-        return None
-    m = _COLLECTED_IN_RE.match(coll_interval.strip())
-    if not m:
-        return None
-    tokens = m.group(1).split()
-    return set(tokens) if tokens else None
 
 
 def _extract_case_phases(expr: str) -> set[str]:
@@ -1386,6 +1361,15 @@ def main() -> int:
 
     # Run checks
     all_findings: list[Finding] = []
+    if "3.13" in enabled_checks:
+        # 3.13 judges a cohort only through "Collected in: P1 P2" intervals; one with none would
+        # pass silently, which reads as coverage it does not have.
+        all_findings.extend(
+            Finding(f"priority_variables_transform/{name}-ingest", 0, "3.13", "INFO",
+                    _visit_ids.not_applicable_message("3.13", name))
+            for name, idx in sorted(indexes.items())
+            if not _visit_ids.has_collection_intervals(
+                r.coll_interval for r in idx.records.values()))
     followup_idx: dict[str, object] = {}
     files_checked = 0
     blocks_checked = 0
