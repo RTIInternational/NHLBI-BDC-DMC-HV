@@ -1,0 +1,432 @@
+- class_derivations:
+    QuestionnaireResponse:
+      populated_from: pht001676
+      slot_derivations:
+        id: 
+          expr: 'uuid5("https://w3id.org/bdchm/Questionnaire" + str({phv00115979}) + "CESD" + ":CARDIA EXAM 5")'
+        associated_visit:
+          value: "CARDIA EXAM 5"
+        age_at_response:
+          expr: '{pht001667.phv00115705} * 365'
+        items:
+          class_derivations:
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ1")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ1")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ1")'
+                        value:
+                          populated_from: phv00115980
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ2")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ2")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ2")'
+                        value:
+                          populated_from: phv00115981
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ3")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ3")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ3")'
+                        value:
+                          populated_from: phv00115982
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ4")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ4")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ4")'
+                        value:
+                          populated_from: phv00115983
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ5")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ5")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ5")'
+                        value:
+                          populated_from: phv00115984
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ6")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ6")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ6")'
+                        value:
+                          populated_from: phv00115985
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ7")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ7")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ7")'
+                        value:
+                          populated_from: phv00115986
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ8")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ8")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ8")'
+                        value:
+                          populated_from: phv00115987
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ9")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ9")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ9")'
+                        value:
+                          populated_from: phv00115988
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ10")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ10")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ10")'
+                        value:
+                          populated_from: phv00115989
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ11")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ11")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ11")'
+                        value:
+                          populated_from: phv00115990
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ12")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ12")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ12")'
+                        value:
+                          populated_from: phv00115991
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ13")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ13")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ13")'
+                        value:
+                          populated_from: phv00115992
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ14")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ14")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ14")'
+                        value:
+                          populated_from: phv00115993
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ15")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ15")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ15")'
+                        value:
+                          populated_from: phv00115994
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ16")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ16")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ16")'
+                        value:
+                          populated_from: phv00115995
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ17")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ17")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ17")'
+                        value:
+                          populated_from: phv00115996
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ18")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ18")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ18")'
+                        value:
+                          populated_from: phv00115997
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ19")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ19")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ19")'
+                        value:
+                          populated_from: phv00115998
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001676
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + "CESDQ20")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDQ20")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001676
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESDQ20")'
+                        value:
+                          populated_from: phv00115999
+                          value_mappings:
+                            "1": "Rarely or none of the time"
+                            "2": "Some of the time"
+                            "3": "Much of the time"
+                            "4": "Most of the time"
