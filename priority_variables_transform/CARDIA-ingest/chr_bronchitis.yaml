@@ -94,7 +94,7 @@
           value_mappings:
             '1': ABSENT
             '2': PRESENT
-            '8': ABSENT
+            '8': UNKNOWN
             'M': UNKNOWN
         condition_provenance:
           value: STUDY_RECORD
@@ -120,7 +120,7 @@
           value_mappings:
             '1': ABSENT
             '2': PRESENT
-            '8': ABSENT
+            '8': UNKNOWN
         condition_provenance:
           value: STUDY_RECORD
           range: string
@@ -147,31 +147,7 @@
           value_mappings:
             '1': ABSENT
             '2': PRESENT
-            '8': ABSENT
-        condition_provenance:
-          value: STUDY_RECORD
-          range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht003298
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
-        condition_concept:
-          value: MONDO:0005607
-        condition_status:
-          populated_from: phv00190625
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            '8': UNKNOWN
         condition_provenance:
           value: STUDY_RECORD
           range: string

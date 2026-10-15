@@ -2053,27 +2053,6 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-        condition_provenance:
-          value: STUDY_RECORD
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht012504
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
-        condition_concept:
-          value: MONDO:0005098
-        condition_status:
-          populated_from: phv00507338
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
             T: UNKNOWN
         condition_provenance:
           value: STUDY_RECORD
