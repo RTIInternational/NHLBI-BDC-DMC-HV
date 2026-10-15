@@ -1,4 +1,14 @@
-"""Check for PHVs mapped as measured values in multiple harmonized variables."""
+"""Check for PHVs mapped as measured values in multiple harmonized variables.
+
+DrugExposure is deliberately not checked here. This check flags a PHV mapped
+to more than one distinct concept, and for medications that is often by
+design: spironolactone is both a diuretic and an aldosterone blocker, and a
+drug-class block can sit beside a drug-name block for the same question
+(45 such PHVs on main, 2026-10-07). It also cannot see the real medication
+defect, the same block in two files with the SAME concept (44 FHS pairs).
+HV-Lint rule 1.12 (hv-lint/phase-1/check_cross_file_duplicates.py) covers
+that for every class, DrugExposure included.
+"""
 
 import sys
 from collections import defaultdict
@@ -31,19 +41,10 @@ def iter_nested_class_derivs(slot_def):
             yield name, spec
 
 
-# Known duplicates tracked in #455. Remove entries as they are fixed.
-#
-# Re-triaged in #735 once this check could see MeasurementObservationSet.
-# Seven entries were dropped as genuinely resolved; the two below are still
-# live and were only invisible because they sit inside a Set.
-KNOWN_ISSUES = {
-    # ARIC blood_pressure.yaml emits the same random-zero "zero reading"
-    # (SBPA17 / SBPA20) twice, typed as both OMOP:4152194 (systolic) and
-    # OMOP:4154790 (diastolic), distinguished only by method_type. Whether
-    # a calibration offset should carry a BP concept at all is open in #735.
-    "phv00210286",
-    "phv00210289",
-}
+# PHVs allowed to map to more than one concept, each with the issue that tracks it. An entry
+# that no longer matches a duplicate fails the check, so the list only shrinks as fixes land.
+# Empty: both copies of this check report 0 duplicates on main (2,469 value PHVs).
+KNOWN_ISSUES: dict[str, str] = {}
 
 
 def _measurement_value_phvs(slots, block_index):
@@ -153,12 +154,13 @@ def main() -> int:
 
     known = {phv: hits for phv, hits in duplicates.items() if phv in KNOWN_ISSUES}
     new = {phv: hits for phv, hits in duplicates.items() if phv not in KNOWN_ISSUES}
+    stale = sorted(phv for phv in KNOWN_ISSUES if phv not in duplicates)
 
     if known:
-        print(f"\nKNOWN ISSUES ({len(known)} PHVs, see #373):")
+        print(f"\nKNOWN ISSUES ({len(known)} PHVs):")
         for phv, hits in known.items():
             concepts = {c for c, _, _ in hits}
-            print(f"\n  {phv} mapped to {len(concepts)} concepts:")
+            print(f"\n  {phv} mapped to {len(concepts)} concepts (tracked in {KNOWN_ISSUES[phv]}):")
             for concept, file, block_index in hits:
                 print(f"    {concept} in {file} (block {block_index})")
 
@@ -169,6 +171,12 @@ def main() -> int:
             print(f"\n  {phv} mapped to {len(concepts)} concepts:")
             for concept, file, block_index in hits:
                 print(f"    {concept} in {file} (block {block_index})")
+        return 1
+
+    if stale:
+        print(f"\nSTALE KNOWN_ISSUES ENTRIES ({len(stale)}): no longer duplicated; delete them:")
+        for phv in stale:
+            print(f"  {phv} ({KNOWN_ISSUES[phv]})")
         return 1
 
     if parse_errors:

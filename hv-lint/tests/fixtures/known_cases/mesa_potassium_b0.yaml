@@ -1,0 +1,28 @@
+# mesa_potassium_b0: copied verbatim from HV main 731984f5 as a fixed test case for #885.
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht001120
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")
+      associated_visit:
+        expr: case(({phv00191192} == 3, uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 3")), ({phv00191192} == 4, uuid5("https://w3id.org/bdchm/Visit", str({phv00086726})
+          + ":MESA CLASSIC EXAM 4")))
+      age_at_observation:
+        expr: case(({phv00191192} == 4, {phv00086727} * 365), ({phv00191192} == 3, {phv00086259} * 365))
+      observation_type:
+        value: OBA:VT0002668
+        range: string
+      method_type:
+        value: blood assay
+        range: string
+      value_quantity:
+        class_derivations:
+        - Quantity:
+            populated_from: pht001120
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00191191
+              unit:
+                value: mmol/L
+                range: string

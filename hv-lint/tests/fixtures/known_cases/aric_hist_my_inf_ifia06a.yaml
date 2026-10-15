@@ -1,0 +1,26 @@
+# aric_hist_my_inf_ifia06a: block 49 of ARIC-ingest/hist_my_inf.yaml at the #885 branch tip after main c0307803, a fixed test case for #885.
+class_derivations:
+  Condition:
+    populated_from: pht004054
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00204350}) + ":ARIC")
+      associated_visit:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00204350}) + ":ARIC Death
+          Event")
+        range: string
+      condition_concept:
+        value: MONDO:0005068
+        range: string
+      condition_status:
+        populated_from: phv00204300
+        value_mappings:
+          N: ABSENT
+          Y: HISTORICAL
+          U: UNKNOWN
+      condition_provenance:
+        value: PATIENT_SELF_REPORT
+        range: string
+      relationship_to_participant:
+        value: ONESELF
+        range: string

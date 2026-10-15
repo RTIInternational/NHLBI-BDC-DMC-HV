@@ -62,8 +62,8 @@ def parse_args() -> argparse.Namespace:
         help="Passed to sub-components (default: error)"
     )
     p.add_argument(
-        "--bdchm-ref", default="main",
-        help="Git ref for BDCHM schema (default: main)"
+        "--bdchm-ref", default=None,
+        help="Git ref for BDCHM schema (default: validate_model_conformance.BDCHM_REF, pinned)"
     )
     p.add_argument(
         "--bdchm-schema", default=None,
@@ -77,7 +77,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def run_component(name: str, cohort: str, fail_on: str,
-                  bdchm_ref: str, bdchm_schema: str | None) -> int:
+                  bdchm_ref: str | None, bdchm_schema: str | None) -> int:
     """Run a single Phase 2 component and return its exit code."""
     comp = COMPONENTS[name]
     script = comp["script"]
@@ -99,7 +99,7 @@ def run_component(name: str, cohort: str, fail_on: str,
     if comp.get("pass_bdchm"):
         if bdchm_schema:
             cmd.extend(["--bdchm-schema", bdchm_schema])
-        else:
+        elif bdchm_ref:
             cmd.extend(["--bdchm-ref", bdchm_ref])
 
     cmd.extend(comp["extra_args"])

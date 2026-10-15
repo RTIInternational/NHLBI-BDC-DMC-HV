@@ -1,0 +1,28 @@
+# mesa_cac_volume_b43: copied from HV main 731984f5 as a fixed test case for #885 (pht001205, a 4-block single-exam table: 1.8 majority rule).
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht001205
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00090067}) + ":MESA")
+      associated_visit:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00090067}) + ":MESA AORTIC CT EXAM 4")
+      observation_type:
+        value: OMOP:4166120
+        range: string
+      body_position:
+        value: SUPINE_BODY_POSITION
+        range: string
+      method_type:
+        value: cardiac CT
+        range: string
+      value_quantity:
+        class_derivations:
+        - Quantity:
+            populated_from: pht001205
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00090117
+              unit:
+                value: mm3
+                range: string

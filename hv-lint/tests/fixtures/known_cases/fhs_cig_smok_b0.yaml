@@ -1,0 +1,24 @@
+# fhs_cig_smok_b0: copied verbatim from HV main 731984f5 as a fixed test case for #885.
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht000009
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00001036}) + ":FHS")
+      associated_visit:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 1")
+      age_at_observation:
+        expr: '{pht003099.phv00177930} * 365'
+      observation_type:
+        value: OMOP:4282779
+        range: string
+      value_enum:
+        populated_from: phv00000543
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945
+          '2': OMOP:45883458
+          '3': OMOP:40766945
+          '5': OMOP:45883537
+          '7': OMOP:45885135
+          '9999': OMOP:45885135
