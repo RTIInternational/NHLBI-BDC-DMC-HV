@@ -2801,8 +2801,6 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00276975}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276975}) + ":" + case(({phv00276976} == ''0'', ''FHS ORIGINAL VTR''), ({phv00276976} == ''1'', ''FHS OFFSPRING VTR''), ({phv00276976} == ''2'', ''FHS NEW OFFSPRING SPOUSE VTR''), ({phv00276976} == ''3'', ''FHS GENERATION 3 VTR''), ({phv00276976} == ''7'', ''FHS OMNI 1 VTR''), ({phv00276976} == ''72'', ''FHS OMNI 2 VTR''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -2821,6 +2819,8 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+        age_at_condition_start:
+          expr: "case(({phv00276988} == '1', ({pht003099.phv00177930} * 365) + {phv00277010}))"
 - class_derivations:
     Condition:
       populated_from: pht006006

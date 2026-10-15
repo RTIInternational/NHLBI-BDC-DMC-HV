@@ -8,9 +8,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00205057}) + ":ARIC EXAM 4")'
           range: string
         procedure_concept:
-          expr: case(({phv00205047} == 'Y', "OMOP:45772840"))
+          value: OMOP:45772840
         procedure_provenance:
-          expr: case(({phv00205047} == 'Y', "PATIENT_SELF_REPORT"))
+          value: PATIENT_SELF_REPORT
+          range: string
         procedure_status:
           populated_from: phv00205047
           value_mappings:
@@ -27,9 +28,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         procedure_concept:
-          expr: case(({phv00206911} == 'Y', "OMOP:45772840"))
+          value: OMOP:45772840
         procedure_provenance:
-          expr: case(({phv00206911} == 'Y', "EHR"))
+          value: EHR
+          range: string
         procedure_status:
           populated_from: phv00206911
           value_mappings:
@@ -45,9 +47,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207836}) + ":ARIC EXAM 3")'
           range: string
         procedure_concept:
-          expr: case(({phv00207815} == 'Y', "OMOP:45772840"))
+          value: OMOP:45772840
         procedure_provenance:
-          expr: case(({phv00207815} == 'Y', "PATIENT_SELF_REPORT"))
+          value: PATIENT_SELF_REPORT
+          range: string
         procedure_status:
           populated_from: phv00207815
           value_mappings:
