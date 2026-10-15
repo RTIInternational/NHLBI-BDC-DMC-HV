@@ -192,15 +192,6 @@
    "JHS": [
     "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078) omits declared code 'A' (\"Less than $5,000\"); no var_report counts, so whether any row carries it is unknown",
     "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078) omits declared code 'B' (\"$5,000 - 7,999\"); no var_report counts, so whether any row carries it is unknown",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078) omits declared code 'C' (\"$8,000 - 11,999\"); no var_report counts, so whether any row carries it is unknown",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078) omits declared code 'D' (\"$12,000 - 15,999\"); no var_report counts, so whether any row carries it is unknown",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078) omits declared code 'E' (\"$16,000 - 19,999\"); no var_report counts, so whether any row carries it is unknown",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078) omits declared code 'F' (\"$20,000 - 24,999\"); no var_report counts, so whether any row carries it is unknown",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078) omits declared code 'G' (\"$25,000 - 34,999\"); no var_report counts, so whether any row carries it is unknown",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078) omits declared code 'H' (\"$35,000 - 49,999\"); no var_report counts, so whether any row carries it is unknown",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078) omits declared code 'I' (\"$50,000 - 74,999\"); no var_report counts, so whether any row carries it is unknown",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078) omits declared code 'J' (\"$75,000 - 99,999\"); no var_report counts, so whether any row carries it is unknown",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078) omits declared code 'K' (\"$100,000 or more\"); no var_report counts, so whether any row carries it is unknown",
     "JHS-ingest/fam_income.yaml | SdohObservation@pht008776:phv00403608 | value_mappings on Quantity.value_concept (phv00403608) drops observed value '2. No': # of # rows (#) emit no value -- possible data loss",
     "JHS-ingest/fam_income.yaml | SdohObservation@pht008776:phv00403608 | value_mappings on Quantity.value_concept (phv00403608) drops observed value '3. Do not know': # of # rows (#) emit no value -- possible data loss",
     "JHS-ingest/fam_income.yaml | SdohObservation@pht008776:phv00403608 | value_mappings on Quantity.value_concept (phv00403608) drops observed value '4. Refused': # of # rows (#) emit no value -- possible data loss",
@@ -229,42 +220,7 @@
   },
   "3.12": {
    "ARIC": [
-    "ARIC-ingest/hist_cor_bypg.yaml | Procedure@pht004143:phv00208846 | Procedure.procedure_status: phv00208846 (PHEA07A) description \"[Invasive procedures]. Have you ever had surgery on your heart, or on the arteri\" contains domain keyword(s) ['neck'] -- conflicts with file domain ['coronary']",
-    "ARIC-ingest/stroke.yaml | Condition@pht004102:phv00206814 | Condition.associated_participant: phv00207055 (SUBJECT_ID) description \"De-identified ARIC subject ID [Heart Failure Hospital Record Abstraction Form, H\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']",
-    "ARIC-ingest/stroke.yaml | Condition@pht004102:phv00206814 | Condition.associated_visit: phv00207055 (SUBJECT_ID) description \"De-identified ARIC subject ID [Heart Failure Hospital Record Abstraction Form, H\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']",
-    "ARIC-ingest/stroke.yaml | Condition@pht004102:phv00206814 | Condition.condition_status: phv00206814 (HFAA14A) description \"Section 3: Medical History. Neurology: Stroke/TIA [Heart Failure Hospital Record\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']",
-    "ARIC-ingest/stroke.yaml | Condition@pht004102:phv00206998 | Condition.associated_participant: phv00207055 (SUBJECT_ID) description \"De-identified ARIC subject ID [Heart Failure Hospital Record Abstraction Form, H\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']",
-    "ARIC-ingest/stroke.yaml | Condition@pht004102:phv00206998 | Condition.associated_visit: phv00207055 (SUBJECT_ID) description \"De-identified ARIC subject ID [Heart Failure Hospital Record Abstraction Form, H\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']",
-    "ARIC-ingest/stroke.yaml | Condition@pht004102:phv00206998 | Condition.condition_status: phv00206998 (HFAA75) description \"Q75 - Stroke [Heart Failure Hospital Record Abstraction Form, HFA]\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']",
-    "ARIC-ingest/stroke.yaml | Condition@pht004102:phv00207025 | Condition.associated_participant: phv00207055 (SUBJECT_ID) description \"De-identified ARIC subject ID [Heart Failure Hospital Record Abstraction Form, H\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']",
-    "ARIC-ingest/stroke.yaml | Condition@pht004102:phv00207025 | Condition.associated_visit: phv00207055 (SUBJECT_ID) description \"De-identified ARIC subject ID [Heart Failure Hospital Record Abstraction Form, H\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']",
-    "ARIC-ingest/stroke.yaml | Condition@pht004102:phv00207025 | Condition.condition_status: phv00207025 (HFAA16Q) description \"Section 3: Medical History. HFA16q. Precipitating fact: Stroke/TIA [Heart Failur\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']"
-   ],
-   "FHS": [
-    "FHS-ingest/stroke.yaml | Condition@pht006023:phv00276965 | Condition.associated_visit: phv00276964 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']",
-    "FHS-ingest/stroke.yaml | Condition@pht006023:phv00276965 | Condition.associated_visit: phv00276964 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#2)",
-    "FHS-ingest/stroke.yaml | Condition@pht006023:phv00276965 | Condition.associated_visit: phv00276964 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#3)",
-    "FHS-ingest/stroke.yaml | Condition@pht006023:phv00276965 | Condition.associated_visit: phv00276964 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#4)",
-    "FHS-ingest/stroke.yaml | Condition@pht006023:phv00276965 | Condition.associated_visit: phv00276964 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#5)",
-    "FHS-ingest/stroke.yaml | Condition@pht006023:phv00276965 | Condition.associated_visit: phv00276964 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#6)",
-    "FHS-ingest/stroke.yaml | Condition@pht006023:phv00276966 | Condition.associated_visit: phv00276964 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']",
-    "FHS-ingest/stroke.yaml | Condition@pht006023:phv00276966 | Condition.associated_visit: phv00276964 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#2)",
-    "FHS-ingest/stroke.yaml | Condition@pht006023:phv00276966 | Condition.associated_visit: phv00276964 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#3)",
-    "FHS-ingest/stroke.yaml | Condition@pht006023:phv00276966 | Condition.associated_visit: phv00276964 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#4)",
-    "FHS-ingest/stroke.yaml | Condition@pht006023:phv00276966 | Condition.associated_visit: phv00276964 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#5)",
-    "FHS-ingest/stroke.yaml | Condition@pht006023:phv00276966 | Condition.associated_visit: phv00276964 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#6)",
-    "FHS-ingest/stroke.yaml | Condition@pht006024:phv00276971 | Condition.associated_visit: phv00276970 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']",
-    "FHS-ingest/stroke.yaml | Condition@pht006024:phv00276971 | Condition.associated_visit: phv00276970 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#2)",
-    "FHS-ingest/stroke.yaml | Condition@pht006024:phv00276971 | Condition.associated_visit: phv00276970 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#3)",
-    "FHS-ingest/stroke.yaml | Condition@pht006024:phv00276971 | Condition.associated_visit: phv00276970 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#4)",
-    "FHS-ingest/stroke.yaml | Condition@pht006024:phv00276971 | Condition.associated_visit: phv00276970 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#5)",
-    "FHS-ingest/stroke.yaml | Condition@pht006024:phv00276971 | Condition.associated_visit: phv00276970 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#6)",
-    "FHS-ingest/stroke.yaml | Condition@pht006024:phv00276972 | Condition.associated_visit: phv00276970 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']",
-    "FHS-ingest/stroke.yaml | Condition@pht006024:phv00276972 | Condition.associated_visit: phv00276970 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#2)",
-    "FHS-ingest/stroke.yaml | Condition@pht006024:phv00276972 | Condition.associated_visit: phv00276970 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#3)",
-    "FHS-ingest/stroke.yaml | Condition@pht006024:phv00276972 | Condition.associated_visit: phv00276970 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#4)",
-    "FHS-ingest/stroke.yaml | Condition@pht006024:phv00276972 | Condition.associated_visit: phv00276970 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#5)",
-    "FHS-ingest/stroke.yaml | Condition@pht006024:phv00276972 | Condition.associated_visit: phv00276970 (idtype) description \"Framingham Heart Study cohort identifier\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular'] (#6)"
+    "ARIC-ingest/hist_cor_bypg.yaml | Procedure@pht004143:phv00208846 | Procedure.procedure_status: phv00208846 (PHEA07A) description \"[Invasive procedures]. Have you ever had surgery on your heart, or on the arteri\" contains domain keyword(s) ['neck'] -- conflicts with file domain ['coronary']"
    ],
    "JHS": [
     "JHS-ingest/hist_cor_angio.yaml | Procedure@pht001963:phv00127731 | Procedure.procedure_concept: phv00127731 (MHXA52C) description \"Q52c. F. Invasive procedures. Have you had carotid endarterectomy? [Visit 1] [Me\" contains domain keyword(s) ['carotid'] -- conflicts with file domain ['coronary']",
@@ -274,8 +230,7 @@
     "JHS-ingest/hist_cor_angio.yaml | Procedure@pht008730:phv00401348 | Procedure.procedure_concept: phv00401348 (CarotidAngioHx) description \"Self-Reported history of Carotid Angioplasty\" contains domain keyword(s) ['carotid'] -- conflicts with file domain ['coronary']",
     "JHS-ingest/hist_cor_angio.yaml | Procedure@pht008730:phv00401348 | Procedure.procedure_status: phv00401348 (CarotidAngioHx) description \"Self-Reported history of Carotid Angioplasty\" contains domain keyword(s) ['carotid'] -- conflicts with file domain ['coronary']",
     "JHS-ingest/hist_cor_angio.yaml | Procedure@pht008731:phv00401476 | Procedure.procedure_concept: phv00401476 (CarotidAngioHx) description \"Self-Reported history of Carotid Angioplasty\" contains domain keyword(s) ['carotid'] -- conflicts with file domain ['coronary']",
-    "JHS-ingest/hist_cor_angio.yaml | Procedure@pht008731:phv00401476 | Procedure.procedure_status: phv00401476 (CarotidAngioHx) description \"Self-Reported history of Carotid Angioplasty\" contains domain keyword(s) ['carotid'] -- conflicts with file domain ['coronary']",
-    "JHS-ingest/stroke.yaml | Condition@pht008786:phv00403990 | Condition.condition_status: phv00403990 (SSFC1) description \"Q1. A. Stroke history. Since your last Jackson Heart Study exam in (mm/dd/yyyy),\" contains domain keyword(s) ['heart'] -- conflicts with file domain ['cerebrovascular']"
+    "JHS-ingest/hist_cor_angio.yaml | Procedure@pht008731:phv00401476 | Procedure.procedure_status: phv00401476 (CarotidAngioHx) description \"Self-Reported history of Carotid Angioplasty\" contains domain keyword(s) ['carotid'] -- conflicts with file domain ['coronary']"
    ]
   },
   "3.15": {
@@ -287,17 +242,6 @@
     "FHS-ingest/albumin_urine.yaml | MeasurementObservation@pht000031:phv00007968 | value_mappings on Quantity.value_decimal (phv00007968, B350) has key '2000', which is not a declared code, and the var_report records no coded value for the variable (all null, or uncoded), so no row is known to carry it. Declared: ['.']",
     "FHS-ingest/albumin_urine.yaml | MeasurementObservation@pht000031:phv00007968 | value_mappings on Quantity.value_decimal (phv00007968, B350) has key '3', which is not a declared code, and the var_report records no coded value for the variable (all null, or uncoded), so no row is known to carry it. Declared: ['.']",
     "FHS-ingest/albumin_urine.yaml | MeasurementObservation@pht000031:phv00007968 | value_mappings on Quantity.value_decimal (phv00007968, B350) has key '3000', which is not a declared code, and the var_report records no coded value for the variable (all null, or uncoded), so no row is known to carry it. Declared: ['.']"
-   ],
-   "JHS": [
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078, PDSA28A) has key 'C. $8,000 - 11,999', which is not a declared code, and the var_report records no coded value for the variable (all null, or uncoded), so no row is known to carry it. Declared: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M']",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078, PDSA28A) has key 'D. $12,000 - 15,999', which is not a declared code, and the var_report records no coded value for the variable (all null, or uncoded), so no row is known to carry it. Declared: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M']",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078, PDSA28A) has key 'E. $16,000 - 19,999', which is not a declared code, and the var_report records no coded value for the variable (all null, or uncoded), so no row is known to carry it. Declared: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M']",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078, PDSA28A) has key 'F. $20,000 - 24,999', which is not a declared code, and the var_report records no coded value for the variable (all null, or uncoded), so no row is known to carry it. Declared: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M']",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078, PDSA28A) has key 'G. $25,000 - 34,999', which is not a declared code, and the var_report records no coded value for the variable (all null, or uncoded), so no row is known to carry it. Declared: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M']",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078, PDSA28A) has key 'H. $35,000 - 49,999', which is not a declared code, and the var_report records no coded value for the variable (all null, or uncoded), so no row is known to carry it. Declared: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M']",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078, PDSA28A) has key 'I. $50,000 - 74,999', which is not a declared code, and the var_report records no coded value for the variable (all null, or uncoded), so no row is known to carry it. Declared: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M']",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078, PDSA28A) has key 'J. $75,000 - 99,999', which is not a declared code, and the var_report records no coded value for the variable (all null, or uncoded), so no row is known to carry it. Declared: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M']",
-    "JHS-ingest/fam_income.yaml | SdohObservation@pht001966:phv00128078 | value_mappings on Quantity.value_concept (phv00128078, PDSA28A) has key 'K. $100,000 or more', which is not a declared code, and the var_report records no coded value for the variable (all null, or uncoded), so no row is known to carry it. Declared: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M']"
    ]
   },
   "5.1": {
@@ -491,29 +435,6 @@
     "FHS-ingest/ven_thromb.yaml | Condition@pht006025:phv00276986 | Condition.associated_visit label 'FHS OMNI 1 VTR' not found in priority_variables_transform/FHS-ingest/visit.yaml",
     "FHS-ingest/ven_thromb.yaml | Condition@pht006025:phv00276986 | Condition.associated_visit label 'FHS OMNI 2 VTR' not found in priority_variables_transform/FHS-ingest/visit.yaml",
     "FHS-ingest/ven_thromb.yaml | Condition@pht006025:phv00276986 | Condition.associated_visit label 'FHS ORIGINAL VTR' not found in priority_variables_transform/FHS-ingest/visit.yaml"
-   ]
-  },
-  "5.8": {
-   "CARDIA": [
-    "CARDIA-ingest/ | cohort | # did not run for CARDIA: its detail index has no coll_interval (collection interval) for any variable, so collection-interval mismatches are not checked here"
-   ],
-   "HCHS": [
-    "HCHS-ingest/ | cohort | # did not run for HCHS: its detail index has no coll_interval (collection interval) for any variable, so collection-interval mismatches are not checked here"
-   ],
-   "JHS": [
-    "JHS-ingest/ | cohort | # did not run for JHS: its detail index has no coll_interval (collection interval) for any variable, so collection-interval mismatches are not checked here"
-   ],
-   "LTRC": [
-    "LTRC-ingest/ | cohort | # did not run for LTRC: its detail index has no coll_interval (collection interval) for any variable, so collection-interval mismatches are not checked here"
-   ],
-   "MESA": [
-    "MESA-ingest/ | cohort | # did not run for MESA: its detail index has no coll_interval (collection interval) for any variable, so collection-interval mismatches are not checked here"
-   ],
-   "SPIROMICS": [
-    "SPIROMICS-ingest/ | cohort | # did not run for SPIROMICS: its detail index has no coll_interval (collection interval) for any variable, so collection-interval mismatches are not checked here"
-   ],
-   "WHI": [
-    "WHI-ingest/ | cohort | # did not run for WHI: its detail index has no coll_interval (collection interval) for any variable, so collection-interval mismatches are not checked here"
    ]
   }
  }
