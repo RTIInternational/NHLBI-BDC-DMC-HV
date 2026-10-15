@@ -1,8 +1,9 @@
 """Every HV-Lint test runs against empty known-issue and baseline files, with no HVLINT_* mode set.
 
-A component's main() reads ``hv-lint/known_issues.yaml`` and ``hv-lint/warning_baseline.json``
-unless ``HVLINT_KNOWN_ISSUES`` / ``HVLINT_WARNING_BASELINE`` point elsewhere, and writes them under
-``HVLINT_PRUNE`` / ``HVLINT_UPDATE_BASELINE``. Without this fixture an in-process test passes or
+A component's main() reads ``hv-lint/baselines/known_issues.yaml`` and
+``hv-lint/baselines/warning_baseline.json`` unless ``HVLINT_KNOWN_ISSUES`` /
+``HVLINT_WARNING_BASELINE`` point elsewhere, and writes them under ``HVLINT_PRUNE`` /
+``HVLINT_UPDATE_BASELINE``. Without this fixture an in-process test passes or
 fails on whatever the committed files hold, and a shell that exported the prune variables would
 let pytest rewrite them. Subprocesses inherit the same environment.
 

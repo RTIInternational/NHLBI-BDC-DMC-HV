@@ -104,8 +104,8 @@ def _detect(tmp_path, changed: list[str], fail_pathspec: str = "") -> str:
 
 
 @pytest.mark.parametrize("tooling", ["hv-lint/phase-3/validate_semantic.py",
-                                     "hv-lint/known_issues.yaml",
-                                     "hv-lint/warning_baseline.json",
+                                     "hv-lint/baselines/known_issues.yaml",
+                                     "hv-lint/baselines/warning_baseline.json",
                                      ".github/workflows/hv_lint.yml"])
 def test_detect_lints_all_when_hv_lint_itself_changed(tmp_path, tooling):
     """Review round 2 B F1: a rule change shipped beside one cohort's specs was linted for that

@@ -489,7 +489,7 @@ def _real_subset(tmp_path, cohort: str, names: list[str]):
     # Entries for this cohort's other files would be stale here (a file not in the tree is a
     # deleted one), so only the copied files' entries are kept.
     keep = {f"file: {cohort}-ingest/{name}," for name in names}
-    lines = (HVLINT / "known_issues.yaml").read_text(encoding="utf-8").splitlines()
+    lines = (HVLINT / "baselines" / "known_issues.yaml").read_text(encoding="utf-8").splitlines()
     t.ki.write_text("".join(x + "\n" for x in lines
                             if f"file: {cohort}-ingest/" not in x or any(k in x for k in keep)),
                     encoding="utf-8")
@@ -648,7 +648,7 @@ def test_deleting_a_spec_with_an_entry_does_not_go_green_through_plain_prune(tmp
     logged = yaml.safe_load(t.ki.with_name("removed.yaml").read_text(encoding="utf-8"))
     assert [(x["rule"], x["file"], x["issue"]) for x in logged] == [
         ("5.11", "FHS-ingest/afib.yaml", 882)]
-    assert "appended to hv-lint/removed.yaml" in acked.stdout
+    assert "appended to hv-lint/baselines/removed.yaml" in acked.stdout
     assert K.load_entries(t.ki) == [] and run().returncode == 0
 
 

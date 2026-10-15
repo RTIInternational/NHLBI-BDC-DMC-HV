@@ -65,8 +65,8 @@ Indexes are committed to this repo (4.66 MB as committed: 0.51 MB basic, 4.15 MB
 | `hv-lint/_http.py` | -- | Self-contained HTTP caching layer for data fetching |
 | `hv-lint/_cohorts.py` | -- | The one cohort resolver: `--cohort` spelling -> ingest directory, declared release -> cache key, manifest provenance and the release check |
 | `hv-lint/_known_issues.py` | all | Known issues, stale-entry check and WARNING ratchet, called by every component (A7) |
-| `hv-lint/known_issues.yaml` | all | One entry per known ERROR finding, each with its issue and status (A7) |
-| `hv-lint/warning_baseline.json` | all | WARNING count per rule and cohort, ratcheted (A7) |
+| `hv-lint/baselines/known_issues.yaml` | all | One entry per known ERROR finding, each with its issue and status (A7) |
+| `hv-lint/baselines/warning_baseline.json` | all | WARNING count per rule and cohort, ratcheted (A7) |
 | `hv-lint/_visit_ids.py` | 1, 3, 5 | ast enumerator of id / associated_visit / associated_participant values (1.8, 5.1, 5.2, 5.11); the `Collected in:` interval parse (3.13, 5.8) |
 | `hv-lint/_expr.py` | 2 | ast readers for `expr` strings (2.4, 2.7, 2.10) |
 | `hv-lint/_derivations.py` | all | Nested class-derivation parsing and the every-depth slot walker |
@@ -150,7 +150,7 @@ linkml-map 0.5.3 (run with dm-bip's own schema step and map call) reaches anothe
 
 ### A7: Known Issues Are Written Down, One Entry per Finding
 
-Every phase fails CI on ERROR (`.github/workflows/hv_lint.yml`). A known finding is not skipped and not downgraded by its rule: it is listed in `hv-lint/known_issues.yaml`, one entry per finding, read by `hv-lint/_known_issues.py` in every component. An entry names its finding by **fingerprint**, never by a count or a block's position:
+Every phase fails CI on ERROR (`.github/workflows/hv_lint.yml`). A known finding is not skipped and not downgraded by its rule: it is listed in `hv-lint/baselines/known_issues.yaml`, one entry per finding, read by `hv-lint/_known_issues.py` in every component. An entry names its finding by **fingerprint**, never by a count or a block's position:
 
 - `rule`; `file` (cohort-relative, or `<C>-ingest/` for a finding about a whole cohort, such as a missing visit.yaml or a check that did not run);
 - `block`: the block's content identity, `Class@pht:phvs` (the phvs its slots read, minus `id`, `associated_*`, `age_*` and the keys of `joins:`; a Visit block's `id` labels; for a block that reads no phv, such as ResearchStudy, its literal `name` -- `ResearchStudy@pht003099:name~Framingham Heart Study` -- or `-` when it has none, so adding a slot does not re-key it). Inserting or deleting another block leaves it unchanged, and so does fixing a participant seed. Two identical blocks in one file get `#2`, `#3`;
@@ -167,14 +167,14 @@ A matching finding is reported at INFO with `[known issue #N, status]` appended.
 
 - **stale entry** (`KI`): an entry for a rule the component ran, on a file it scanned (or a cohort it ran in full, for a cohort-level entry), that matches nothing -- the issue is fixed;
 - **removed entry or row** (`KI` / `RATCHET`): one that matches nothing because its file no longer exists (deleted or renamed), or because no block of its file still has its class and table (deleted, or moved to another file), or because no block of its file still reads any phv its block identity names (one of several blocks on a table deleted). That is lost data, not a fix, so it is reported as "file removed" / "block removed" and a plain prune refuses it. A block whose identity changed but still reads one of those phvs (a 3.5 fix qualifies or joins on it; a repoint keeps the source) counts as fixed. Two gaps remain until a base-vs-head inventory (gate review B2): deleting a block whose phvs another block of the file also reads still reads as fixed (as does dropping a nested observation from a Set that stays), and a fix that replaces a block's only value phv reads as removed;
-- **new WARNING** (`RATCHET`): a WARNING or HIGH fingerprint that `hv-lint/warning_baseline.json` does not list. The ratchet compares fingerprints, so fixing one WARNING and adding another of the same rule fails;
+- **new WARNING** (`RATCHET`): a WARNING or HIGH fingerprint that `hv-lint/baselines/warning_baseline.json` does not list. The ratchet compares fingerprints, so fixing one WARNING and adding another of the same rule fails;
 - **fixed WARNING** (`RATCHET`): a baseline fingerprint, in scope, that no finding has.
 
 Fingerprints are unique per run (two findings with one fingerprint get ` (#2)`), so an entry matches at most one finding; a duplicate entry is rejected when the file is read.
 
 Two commands rewrite the files. Both run only under `run_all.py` and refuse a `--file` run, so a partial run never rewrites rows it did not see:
 
-- `HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all` removes ONLY entries and baseline rows that match nothing, and never adds one. Every stale-entry and fixed-WARNING message prints it. After a PR that fixes known issues, this one command is the whole bookkeeping. It writes only from a clean run: each component stages what it would remove, and `run_all.py` writes nothing when any phase failed or was skipped (`--skip`), or any component's run has an ERROR not in `known_issues.yaml` (a check that did not run is one) or a new WARNING. A partial fix that changes a finding's message, or a cohort whose checks did not run, would otherwise read as fixed; add the new entry or baseline row first, then prune. It also refuses any removed entry or row (above) unless `HVLINT_PRUNE_REMOVED=1` is set as well: `HVLINT_PRUNE=1 HVLINT_PRUNE_REMOVED=1 python hv-lint/run_all.py --cohort all` prunes them, lists each one, with its file and block, in the run summary, and appends each to `hv-lint/removed.yaml` (rule, file, block, message, issue, date, why), so the PR diff names every removal; CI lists the lines a PR adds there in its job summary.
+- `HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all` removes ONLY entries and baseline rows that match nothing, and never adds one. Every stale-entry and fixed-WARNING message prints it. After a PR that fixes known issues, this one command is the whole bookkeeping. It writes only from a clean run: each component stages what it would remove, and `run_all.py` writes nothing when any phase failed or was skipped (`--skip`), or any component's run has an ERROR not in `known_issues.yaml` (a check that did not run is one) or a new WARNING. A partial fix that changes a finding's message, or a cohort whose checks did not run, would otherwise read as fixed; add the new entry or baseline row first, then prune. It also refuses any removed entry or row (above) unless `HVLINT_PRUNE_REMOVED=1` is set as well: `HVLINT_PRUNE=1 HVLINT_PRUNE_REMOVED=1 python hv-lint/run_all.py --cohort all` prunes them, lists each one, with its file and block, in the run summary, and appends each to `hv-lint/baselines/removed.yaml` (rule, file, block, message, issue, date, why), so the PR diff names every removal; CI lists the lines a PR adds there in its job summary.
 - `HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all` rewrites the WARNING baseline from the run, so it can add rows as well as drop them: accepting a new WARNING is a reviewed diff of `warning_baseline.json`, one line per finding. It never adds a row for a rule whose finding is a lost or unlinked record -- 1.0 and 2.0 (a file with no blocks), 1.8 (a visit label the table's other blocks contradict), 2.4 (a required slot some rows are emitted without), 3.9 and 3.15 (observed codes dropped, a declared code never mapped), 5.2 (a visit label visit.yaml does not define), 5.12 (an id expression the visit checks could not read). For those it reports an ERROR and prints the `known_issues.yaml` line to add instead, so accepting one names the issue that tracks it. The rows of those rules already in the baseline (152 for 5.2 alone) stay until their migration (#885 gate v2). It also keeps a removed file's or block's row unless `HVLINT_PRUNE_REMOVED=1` is set. With both variables set, run_all.py exits 2 before any phase runs and writes nothing (a component run under it reports a KI ERROR instead).
 
 A `--file` run checks only that file's entries and rows. On main (430810cd, after #890 and #892, plus #885) the file holds 103 entries -- 1.12 56 (#872, #899), 2.4 28 (#884), 3.9 6 (#873, #789), 3.17 5 (#869, #873), 3.15 4 (#226), 3.19 3 (#884, #410), 3.16 1 (#884, WHI troponin); 89 defect, 4 dbgap-error, 8 pending (CARDIA A12CB* / A12EM* '0', #873 Q19; ARIC COMPLQ01's inverted-looking labels, #873; ARIC creat_bld b6 / b22, empty at v8 but not v9, #884; ARIC insulin_blood b3, its value_quantity commented out pending the unit decision, #410), 2 false-positive -- and every phase passes. Every `defect` and `pending` entry cites an open issue. Removing any one entry fails CI on exactly that finding.
@@ -197,7 +197,7 @@ where the source and mappings come from `condition_status` / `exposure_status` /
 | `WARNING` | Suspicious, needs human review | Does not fail |
 | `INFO` | Advisory, expected patterns | Does not fail |
 
-The `--fail-on` flag controls the threshold. CI runs every phase at `--fail-on error`; known findings are listed in `hv-lint/known_issues.yaml` (A7), and every WARNING and HIGH fingerprint is ratcheted against `hv-lint/warning_baseline.json`.
+The `--fail-on` flag controls the threshold. CI runs every phase at `--fail-on error`; known findings are listed in `hv-lint/baselines/known_issues.yaml` (A7), and every WARNING and HIGH fingerprint is ratcheted against `hv-lint/baselines/warning_baseline.json`.
 
 ### A10: CURIE Validation Does Not Check Ontology Existence
 
@@ -304,7 +304,7 @@ Detect blocks in different files of the same cohort that emit the same record: i
 - **Not compared**: provenance, evidence, age and other context slots -- two blocks that differ only there still emit the same fact twice. The finding names the slots that differ, or says the blocks are identical apart from `range:` annotations.
 - **Classes without a status / value slot** (Visit, Person, Demography, ...): compared on the whole block body, so only exact copies match.
 - **Within one file**: left to 1.2.
-- **Known issues**: `hv-lint/known_issues.yaml` (assumption A7): the 44 FHS `med_use.yaml` / `tak_*` / `hypert_trt.yaml` pairs (#872; which copy stays is #873, "#785 decision 1") and the 12 Condition pairs held with #899 (D94 option A; first listed in #881 section 2).
+- **Known issues**: `hv-lint/baselines/known_issues.yaml` (assumption A7): the 44 FHS `med_use.yaml` / `tak_*` / `hypert_trt.yaml` pairs (#872; which copy stays is #873, "#785 decision 1") and the 12 Condition pairs held with #899 (D94 option A; first listed in #881 section 2).
 - **Severity**: ERROR
 
 ### 1.13 populated_from and expr on One Slot
@@ -566,8 +566,8 @@ Validates that a status slot (`condition_status`, `exposure_status`, `procedure_
   - Conservative label parsing: hedged or missing-like labels are never judged ("Yes, not now", "Yes, doubtful", "Don't know", "Not sure", "No answer", "Not applicable", anything with "but"); a time-limited negative ("Not present now, formerly definite", "No longer") is not judged either, because HISTORICAL may carry it.
   - A negative label on a conditional follow-up (3.18) is not reported: "No" to "hospitalized for MI?" mapped PRESENT is right, the person had the MI.
 - **3.17b (unlabelled 1/2 flags)**: the variable has no code labels, its var_report shows codes 1 and 2 but never 0, and it is mapped `'0': ABSENT, '1': PRESENT`. `'0'` never fires and the "No" of a 1 = No / 2 = Yes flag is emitted PRESENT (CARDIA endpoint flags, fixed in 72d11db1). Needs the value-count index.
-- **Cannot see**: dbGaP labels that are themselves inverted (ARIC ECGMI32/41, COMPLQ01). Those fire on a correct mapping and are listed in `hv-lint/known_issues.yaml` as `dbgap-error` (#869) or `pending` (#873, COMPLQ01); report them in `transform_assessment/dbgap_errors_to_report.md`.
-- **Known issues**: `hv-lint/known_issues.yaml` (assumption A7).
+- **Cannot see**: dbGaP labels that are themselves inverted (ARIC ECGMI32/41, COMPLQ01). Those fire on a correct mapping and are listed in `hv-lint/baselines/known_issues.yaml` as `dbgap-error` (#869) or `pending` (#873, COMPLQ01); report them in `transform_assessment/dbgap_errors_to_report.md`.
+- **Known issues**: `hv-lint/baselines/known_issues.yaml` (assumption A7).
 - **Severity**: ERROR (enforced in the Phase 3 gate)
 
 ### 3.18 Conditional Follow-up Mapped to ABSENT

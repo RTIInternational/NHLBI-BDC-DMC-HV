@@ -323,7 +323,7 @@ def committed(monkeypatch):
 
 def test_every_entry_names_an_issue_and_a_status(committed):
     entries = K.load_entries()
-    assert entries, "hv-lint/known_issues.yaml is empty or missing"
+    assert entries, "hv-lint/baselines/known_issues.yaml is empty or missing"
     for e in entries:
         assert e.status in K.STATUSES, e
         assert re.fullmatch(r"\d\.\d+b?", e.rule), e
@@ -339,7 +339,7 @@ def test_every_entry_points_at_a_file_that_exists(committed):
 
 def test_committed_baseline_is_fingerprints(committed):
     base = K.load_baseline()
-    assert base, "hv-lint/warning_baseline.json is empty or missing"
+    assert base, "hv-lint/baselines/warning_baseline.json is empty or missing"
     for rule, by_cohort in base.items():
         for cohort, rows in by_cohort.items():
             assert rows == sorted(set(rows)), (rule, cohort)

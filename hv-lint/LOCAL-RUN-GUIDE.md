@@ -135,8 +135,8 @@ See [MAINTENANCE.md](MAINTENANCE.md) for full documentation on version bumps, ne
 
 ## Known Issues and the WARNING Baseline
 
-CI fails on every ERROR that `hv-lint/known_issues.yaml` does not list, on a listed entry that no
-longer matches, and on any change to the WARNING fingerprints in `hv-lint/warning_baseline.json`
+CI fails on every ERROR that `hv-lint/baselines/known_issues.yaml` does not list, on a listed entry that no
+longer matches, and on any change to the WARNING fingerprints in `hv-lint/baselines/warning_baseline.json`
 (HV-Lint-Reference A7).
 
 ```bash

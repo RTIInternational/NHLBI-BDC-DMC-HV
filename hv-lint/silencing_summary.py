@@ -23,6 +23,8 @@ from pathlib import Path
 import yaml
 
 HVLINT_DIR = Path(__file__).resolve().parent
+BASELINES_DIR = HVLINT_DIR / "baselines"
+REPO_SUBDIR = "hv-lint/baselines"
 FILES = ("known_issues.yaml", "warning_baseline.json", "removed.yaml")
 LIMIT = 200
 
@@ -62,11 +64,11 @@ def render(adds: dict[str, list]) -> str:
         lines.append("No known-issue entry, baseline row or removed.yaml line added.")
         return "\n".join(lines) + "\n"
     lines.append(f"- {len(ki)} known-issue entr{'y' if len(ki) == 1 else 'ies'} added or changed "
-                 f"(`hv-lint/known_issues.yaml`)")
+                 f"(`hv-lint/baselines/known_issues.yaml`)")
     lines.append(f"- {len(rows)} WARNING/HIGH baseline row(s) added "
-                 f"(`hv-lint/warning_baseline.json`)")
+                 f"(`hv-lint/baselines/warning_baseline.json`)")
     lines.append(f"- {len(rem)} removal(s) acknowledged: file or block REMOVED, not fixed "
-                 f"(`hv-lint/removed.yaml`)")
+                 f"(`hv-lint/baselines/removed.yaml`)")
     if ki:
         lines += ["", "### known_issues.yaml", "", "| rule | file | block | message | issue | "
                   "status |", "|---|---|---|---|---|---|"]
@@ -97,8 +99,8 @@ def main(argv: list[str] | None = None) -> int:
     src = p.add_mutually_exclusive_group(required=True)
     src.add_argument("--base", help="base branch ref; compared at its merge base with HEAD")
     src.add_argument("--base-dir", type=Path, help="a directory holding the base versions")
-    p.add_argument("--head-dir", type=Path, default=HVLINT_DIR,
-                   help="the directory holding the head versions (default: hv-lint/)")
+    p.add_argument("--head-dir", type=Path, default=BASELINES_DIR,
+                   help="the directory holding the head versions (default: hv-lint/baselines/)")
     args = p.parse_args(argv)
 
     head = {n: (args.head_dir / n).read_text(encoding="utf-8")
@@ -113,7 +115,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"silencing_summary: no merge base with {args.base}: {mb.stderr.strip()}",
                   file=sys.stderr)
             return 1
-        base = {n: _git_show(mb.stdout.strip(), f"hv-lint/{n}") for n in FILES}
+        base = {n: _git_show(mb.stdout.strip(), f"{REPO_SUBDIR}/{n}") for n in FILES}
     sys.stdout.write(render(added(base, head)))
     return 0
 

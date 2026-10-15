@@ -86,4 +86,5 @@ def test_class_without_status_matches_only_on_whole_body():
     assert run({"FHS-ingest/a.yaml": [visit], "FHS-ingest/b.yaml": [other]}) == []
 
 
-# Known issues are hv-lint/known_issues.yaml's (tests/test_known_issues.py), not this module's.
+# Known issues are hv-lint/baselines/known_issues.yaml's (tests/test_known_issues.py), not this
+# module's.

@@ -1,8 +1,8 @@
 """One known-issue mechanism and one WARNING ratchet for every HV-Lint rule (#885 part 4).
 
 Every phase fails CI on ERROR. What keeps main green is not a lower severity but a written
-exception: an entry in ``hv-lint/known_issues.yaml`` naming the finding, the issue that tracks
-it, and its status --
+exception: an entry in ``hv-lint/baselines/known_issues.yaml`` naming the finding, the issue
+that tracks it, and its status --
 
 * ``defect``          real; the fix is tracked in the named issue;
 * ``dbgap-error``     the mapping is right and the dbGaP label (or dictionary) is wrong;
@@ -30,10 +30,10 @@ is rejected when the file is read. What keeps the list honest, each an ERROR:
 * **removed entry/row** (``KI`` / ``RATCHET``): one that matches nothing because its file or its
   block no longer exists. That is lost data, not a fix: :data:`PRUNE_CMD` refuses it, and only
   :data:`PRUNE_REMOVED_CMD` removes it, naming each one in the run log and appending it to
-  ``hv-lint/removed.yaml``, so the PR diff shows the removal;
-* **new WARNING** (``RATCHET``): a WARNING fingerprint that ``hv-lint/warning_baseline.json``
-  does not list. Fixing one WARNING and adding another fails: the ratchet compares fingerprints,
-  not counts;
+  ``hv-lint/baselines/removed.yaml``, so the PR diff shows the removal;
+* **new WARNING** (``RATCHET``): a WARNING fingerprint that
+  ``hv-lint/baselines/warning_baseline.json`` does not list. Fixing one WARNING and adding
+  another fails: the ratchet compares fingerprints, not counts;
 * **fixed WARNING** (``RATCHET``): a baseline fingerprint, in scope, that no finding has.
 
 The two commands (both refuse anything but a ``run_all.py`` run without ``--file``, so a partial
@@ -67,8 +67,9 @@ import yaml
 _Loader = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
 
 HVLINT_DIR = Path(__file__).resolve().parent
-KNOWN_ISSUES_FILE = HVLINT_DIR / "known_issues.yaml"
-BASELINE_FILE = HVLINT_DIR / "warning_baseline.json"
+BASELINES_DIR = HVLINT_DIR / "baselines"
+KNOWN_ISSUES_FILE = BASELINES_DIR / "known_issues.yaml"
+BASELINE_FILE = BASELINES_DIR / "warning_baseline.json"
 STATUSES = ("defect", "dbgap-error", "false-positive", "pending")
 
 # run_all.py sets RUN_ALL_ENV for the phases it starts; the two rewriting modes need it.
@@ -587,7 +588,7 @@ def finalize(
     """
     checks = {str(c) for c in checks}
     extra: list = []
-    meta = "hv-lint/known_issues.yaml"
+    meta = "hv-lint/baselines/known_issues.yaml"
     if mode is None:
         if both_modes_set():
             extra.append(make_finding(meta, -1, "KI", "ERROR", BOTH_MODES_MESSAGE))
@@ -732,8 +733,8 @@ def finalize(
             text = (f"{verb} ({PRUNE_REMOVED_ENV}=1): REMOVED baseline row [{r}] {t} -- "
                     f"{gone_removed[g]}" if g in gone_removed
                     else f"{verb}: fixed WARNING [{r}] {t}")
-            extra.append(make_finding("hv-lint/warning_baseline.json", -1, "RATCHET", "INFO",
-                                      text))
+            extra.append(make_finding("hv-lint/baselines/warning_baseline.json", -1, "RATCHET",
+                                      "INFO", text))
     elif mode != "prune":
         for e in stale:
             if e.key in stale_removed:
@@ -769,14 +770,14 @@ def finalize(
         write_baseline(rows)
         for r, c, t in sorted(unbaselinable):
             extra.append(make_finding(
-                "hv-lint/warning_baseline.json", -1, "RATCHET", "ERROR",
+                "hv-lint/baselines/warning_baseline.json", -1, "RATCHET", "ERROR",
                 f"refusing to add a baseline row for new {severity_of[(r, c, t)]} [{r}] in "
                 f"{c}: {t}. "
                 + known_issue_instead(r, t)))
     else:
         for r, c, t in new:
             extra.append(make_finding(
-                "hv-lint/warning_baseline.json", -1, "RATCHET", "ERROR",
+                "hv-lint/baselines/warning_baseline.json", -1, "RATCHET", "ERROR",
                 f"new {severity_of[(r, c, t)]} [{r}] in {c}: {t}. " + (
                     known_issue_instead(r, t) if (r, c, t) in unbaselinable else
                     f"Fix it; or, if it is accepted, add it to the baseline in this PR "
@@ -792,7 +793,7 @@ def finalize(
                 else:
                     text = (f"WARNING [{r}] in {c} is fixed: {t}. Remove it from the baseline "
                             f"(and every other fixed row or entry) with: {PRUNE_CMD}")
-                extra.append(make_finding("hv-lint/warning_baseline.json", -1, "RATCHET",
+                extra.append(make_finding("hv-lint/baselines/warning_baseline.json", -1, "RATCHET",
                                           "ERROR", text))
 
     if unlisted:
