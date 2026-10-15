@@ -18,10 +18,10 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: STUDY_RECORD
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -74,7 +74,6 @@
         condition_status:
           populated_from: phv00283527
           value_mappings:
-            '0': ABSENT
             '1': PRESENT
         condition_provenance:
           value: HEALTH_RECORD
