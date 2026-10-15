@@ -478,7 +478,7 @@ A BARE `{phv}` or bare `populated_from` whose table is not the block's class tab
 
 Flags values the source holds that `value_mappings` drops (silent data loss), at every depth (nested `Quantity.value_concept` included).
 
-- **Reference set**: the var_report's OBSERVED values (`<release>_stats.json.gz`). A declared code no row carries loses nothing. A value written as its label (JHS) counts as mapped when the label is a key. Without var_report counts the declared codes are used, capped at WARNING; with neither, INFO "could not be validated".
+- **Reference set**: the var_report's OBSERVED values (`<release>_stats.json.gz`). A declared code no row carries loses nothing. A value written as its label (JHS) counts as mapped when the label is a key. Without var_report counts the declared codes are used, capped at WARNING, and a key spelled `"<code>. <label>"` also maps its code (JHS PDSA28A: `C. $8,000 - 11,999`); against an observed value that spelling is not accepted, because it never matches the bare code the var_report saw. With neither, INFO "could not be validated".
 - **Not reported**: the negative answer of a conditional follow-up (`check_status_semantic.detect_followup`; 3.18 rejects mapping it to ABSENT), a code the race/ethnicity sibling slot maps from the same PHV, a severity code labelled none / no / normal, or whose whole label is present / yes / positive (no grade; the status records presence; "Yes, severe" is still reported).
 - **Severity by rows lost** (share of observed rows the dropped value carries): ERROR from 50% on a high-impact slot (`race`, `sex`, `annotated_sex`, `ethnicity`, `condition_status`, `exposure_status`, `procedure_status`, `value_enum`), WARNING from 10%, INFO below. When no single code reaches the tier the slot's total loss reaches (three codes of 20% each), the largest dropped code is raised to it and says so. Skip labels (unknown, refused, missing, ...) are INFO.
 
@@ -501,6 +501,9 @@ Validates that the source label from dbGaP semantically matches the target OMOP 
 ### 3.12 PHV Description vs Concept Domain
 
 Validates that the dbGaP variable description does not conflict with the YAML file's clinical domain (e.g., "carotid" variable in a coronary file).
+
+- **Not checked**: id / visit linkage slots (`id`, `associated_participant`, `associated_visit`): they read the participant id, whose description says nothing about what the block measures (ARIC SUBJECT_ID "... [Heart Failure Hospital Record Abstraction Form, HFA]", FHS idtype "Framingham Heart Study cohort identifier").
+- **Ignored words**: a capitalized proper name ending in Study / Form / Questionnaire / Survey / Interview (`_PROPER_NAME_RE`) names a study or instrument, not the subject, so "Heart" in "Jackson Heart Study" or "Heart Failure ... Form" is not evidence.
 
 - **Severity**: WARNING
 
@@ -529,7 +532,7 @@ Against the var_report's observed values, at every depth:
 - key equal to an observed value except for case or spacing: **ERROR**, it never matches (linkml-map compares exact strings);
 - no key of the slot matches any observed value: **ERROR**, unless it is a severity slot whose observed values all mean "none" (MESA copd b5 / b17);
 - key neither observed nor declared: INFO (dead defensive key). A declared code no row carries is not reported.
-- Without var_report counts: a key outside the declared codes is a WARNING.
+- Without var_report counts: a key that is not a declared code, its label, or `"<code>. <label>"` is a WARNING.
 
 ### 3.16 Quantity Missing Unit
 

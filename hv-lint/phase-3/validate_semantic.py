@@ -132,6 +132,12 @@ DOMAIN_CONFLICTS: list[tuple[set[str], set[str]]] = [
     ({"weight"}, {"height"}),
 ]
 
+# Rule 3.12: a proper name ending in one of these words names a study, form or instrument, not the
+# variable's subject ("Jackson Heart Study", "[Heart Failure Hospital Record Abstraction Form,
+# HFA]"), so its words are not domain evidence.
+_PROPER_NAME_RE = re.compile(
+    r"\b(?:[A-Z][\w'/-]*\s+){1,8}(?:Study|Form|Questionnaire|Survey|Interview)\b")
+
 # ---------------------------------------------------------------------------
 # Data Structures
 # ---------------------------------------------------------------------------
@@ -287,6 +293,28 @@ def _filename_domain_keywords(filename: str) -> set[str]:
 # ---------------------------------------------------------------------------
 
 
+def code_key_forms(code: str, label: str | None, joined: bool = True) -> set[str]:
+    """The spellings a ``value_mappings`` key may use for a declared code.
+
+    The code itself, its label, and (``joined``) ``"<code>. <label>"`` -- the spelling of studies
+    whose data holds code and label together (JHS: observed ``"2. No"``; PDSA28A declares ``C`` =
+    "$8,000 - 11,999" and is mapped from ``"C. $8,000 - 11,999"``). The joined form is evidence
+    only when no var_report says what the data holds: against an observed value it is a key that
+    never matches, so callers on the observed basis pass ``joined=False``.
+    """
+    forms = {str(code)}
+    if label:
+        forms.add(str(label))
+        if joined:
+            forms.add(f"{code}. {label}")
+    return forms
+
+
+def _declared_forms(declared: dict, joined: bool = True) -> set[str]:
+    """Every key spelling that names some declared code."""
+    return {f for c, lbl in declared.items() for f in code_key_forms(c, lbl, joined)}
+
+
 def observed_values(stats, pf: str) -> dict[str, int] | None:
     """``{value: rows}`` observed for ``pf`` in the var_report, or None when it has no counts."""
     if not stats or pf not in stats:
@@ -358,7 +386,7 @@ def check_value_mappings_completeness(
 
         missing = []
         for code in sorted(universe):
-            if code in keys or (_label(code) and _label(code) in keys):
+            if keys & code_key_forms(code, _label(code), joined=basis == "declared"):
                 continue
             missing.append(code)
         if not missing:
@@ -595,7 +623,9 @@ def check_phv_domain_mismatch(
             continue
 
         for slot_name, slot_def in slot_derivs.items():
-            if not isinstance(slot_def, dict):
+            # An id / visit slot reads the participant id; its description says nothing about
+            # what the block measures.
+            if not isinstance(slot_def, dict) or slot_name in _known_issues._IDENTITY_SKIP:
                 continue
 
             # Collect all PHV refs in this slot
@@ -612,7 +642,7 @@ def check_phv_domain_mismatch(
                 if not detail:
                     continue
 
-                desc_lower = detail.description.lower()
+                desc_lower = _PROPER_NAME_RE.sub(" ", detail.description).lower()
                 desc_words = set(re.findall(r"[a-z]+", desc_lower))
 
                 for domain_a, conflict_b in DOMAIN_CONFLICTS:
@@ -972,13 +1002,14 @@ def check_phantom_codes(
         declared = {str(k): str(v) for k, v in ((detail.codes or {}) if detail else {}).items()}
         observed = observed_values(stats, pf)
         keys = [str(k) for k in vm]
+        named = _declared_forms(declared)
         where = f"value_mappings on {cls_name}.{slot_name} ({pf}{', ' + detail.name if detail else ''})"
 
         if observed is None:
             if not declared:
                 continue
             for key in keys:
-                if key not in declared and key not in declared.values():
+                if key not in named:
                     findings.append(Finding(
                         rel_path, block_idx, "3.15", "WARNING",
                         f"{where} has key '{key}', which is not a declared code, and the "
@@ -1004,7 +1035,7 @@ def check_phantom_codes(
                 continue
         for key in keys:
             if key in observed:
-                if declared and key not in declared and key not in declared.values():
+                if declared and key not in named:
                     findings.append(Finding(
                         rel_path, block_idx, "3.15", "INFO",
                         f"{where} key '{key}' is observed ({observed[key]:,} rows) but not in the "
@@ -1018,7 +1049,7 @@ def check_phantom_codes(
                     f"{where} key '{key}' never matches: the data holds '{twin}' "
                     f"({observed[twin]:,} rows), which differs only in case or spacing",
                 ))
-            elif twin is None and key not in declared and key not in declared.values():
+            elif twin is None and key not in _declared_forms(declared, joined=False):
                 findings.append(Finding(
                     rel_path, block_idx, "3.15", "INFO",
                     f"{where} key '{key}' matches no observed value (dead key)",
