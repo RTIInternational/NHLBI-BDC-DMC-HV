@@ -80,6 +80,105 @@ def test_511_visit_seed_must_equal_participant_seed(tmp_path):
     assert sum("differs from participant seed" in x.message for x in f) == 1
 
 
+# 5.11 against an unseen study: the participant ID comes from the cache, not from a name list.
+
+def _novel_detail(*, tables: int = 4, id_name: str = "PARTID") -> dict:
+    """A study whose every table carries ``id_name``; pht000001 also holds a cohort code, and
+    pht000099 (a dbGaP Subject table) keys by ``SUBJ_KEY`` and holds an id-sounding code."""
+    d: dict = {}
+    n = 0
+    for t in range(1, tables + 1):
+        pht = f"pht{t:06d}"
+        for name, desc in ((id_name, "Participant identifier"), (f"VAR{t}", "a measurement")):
+            n += 1
+            d[f"phv{n:08d}"] = {"name": name, "pht": pht, "description": desc}
+    d["phv00000901"] = {"name": "STUDYCODE", "pht": "pht000001", "description": "cohort code"}
+    d["phv00000902"] = {"name": "SUBJ_KEY", "pht": "pht000099", "description": "Subject ID"}
+    d["phv00000903"] = {"name": "ARM_TYPE", "pht": "pht000099",
+                        "description": "Study arm identifier"}
+    return d
+
+
+def _seed_block(pht: str, seed: str) -> dict:
+    return {"class_derivations": {"MeasurementObservation": {
+        "populated_from": pht,
+        "slot_derivations": {
+            "associated_participant": {
+                "expr": f'uuid5("https://w3id.org/bdchm/Participant", str({{{seed}}}) + ":NEW")'},
+            "associated_visit": {
+                "expr": f'uuid5("https://w3id.org/bdchm/Visit", str({{{seed}}}) + ":NEW V1")'},
+        }}}}
+
+
+def _511_novel(tmp_path, block, detail):
+    path = _write(tmp_path, "x.yaml", [block])
+    return vvs.check_5_11_participant_seed([path], tmp_path, detail)
+
+
+def test_511_novel_study_id_name_is_derived_from_the_cache():
+    ids = vvs.participant_ids(_novel_detail())
+    assert ids.name == "partid" and ids.fallback is None
+    assert "partid" not in vvs.FALLBACK_PARTICIPANT_ID_NAMES   # not the list doing the work
+
+
+def test_511_novel_study_id_seed_is_accepted(tmp_path):
+    """PARTID is in no fixed list: before the metadata derivation this block was a false ERROR."""
+    assert _511_novel(tmp_path, _seed_block("pht000002", "phv00000003"), _novel_detail()) == []
+
+
+def test_511_novel_study_cohort_code_seed_still_errors(tmp_path):
+    f = _511_novel(tmp_path, _seed_block("pht000001", "phv00000901"), _novel_detail())
+    assert [(x.check, x.severity) for x in f] == [("5.11", "ERROR")]
+    assert "STUDYCODE" in f[0].message and "not a participant ID" in f[0].message
+
+
+def test_511_table_without_the_study_id_accepts_its_own_subject_id(tmp_path):
+    """A Subject / GENEVA-style table has no PARTID; its own subject identifier keys it."""
+    assert _511_novel(tmp_path, _seed_block("pht000099", "phv00000902"), _novel_detail()) == []
+
+
+def test_511_table_without_the_study_id_rejects_a_code_that_reads_as_an_identifier(tmp_path):
+    """FHS idtype reads "cohort identifier": an id-sounding code in such a table is still not a
+    participant."""
+    f = _511_novel(tmp_path, _seed_block("pht000099", "phv00000903"), _novel_detail())
+    assert len(f) == 1 and "ARM_TYPE" in f[0].message and f[0].severity == "ERROR"
+
+
+def test_511_fhs_idtype_is_rejected_even_in_a_table_without_shareid():
+    ids = vvs.participant_ids(fhs_detail())
+    assert ids.name == "shareid"
+    assert not ids.accepts("idtype", "pht999999", "Framingham Heart Study cohort identifier")
+
+
+def test_511_fallback_is_used_and_reported_when_the_cache_names_no_id(tmp_path):
+    """Two tables that share no name: the metadata does not answer. The fixed list decides, and
+    a WARNING says so -- a fallback is not a metadata-verified pass."""
+    detail = {"phv00000001": {"name": "SUBJECT_ID", "pht": "pht000001", "description": ""},
+              "phv00000002": {"name": "PARTID", "pht": "pht000002", "description": ""}}
+    ids = vvs.participant_ids(detail)
+    assert ids.name is None and ids.fallback
+    ok = _511_novel(tmp_path, _seed_block("pht000001", "phv00000001"), detail)
+    assert [(x.check, x.severity) for x in ok] == [("5.11", "WARNING")]
+    assert "fixed fallback list" in ok[0].message
+    bad = _511_novel(tmp_path, _seed_block("pht000002", "phv00000002"), detail)
+    assert sorted(x.severity for x in bad) == ["ERROR", "WARNING"]
+
+
+def test_511_every_current_cohort_derives_its_id_from_metadata():
+    """The measurement the 5.11 reference entry records: no current cohort needs the fallback."""
+    import _cohorts
+    want = {"ARIC": "subject_id", "CARDIA": "individual_id", "CHS": "individual_id",
+            "COPDGene": "subject_id", "FHS": "shareid", "HCHS": "subject_id",
+            "JHS": "subject_id", "LTRC": "subject_id", "MESA": "sidno",
+            "SPIROMICS": "subject_id", "WHI": "subjid"}
+    got = {}
+    for cohort in want:
+        key = _cohorts.cache_key_for(cohort, str(CACHE))
+        got[cohort] = vvs.participant_ids(
+            _cohorts.load_cache_artifact(CACHE, key, "_detail")).name  # type: ignore[arg-type]
+    assert got == want
+
+
 # -- 2.12 bare None ------------------------------------------------------------------------------
 
 def _212(block):

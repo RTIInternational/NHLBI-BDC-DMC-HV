@@ -1173,12 +1173,97 @@ def check_5_10_uuid5_namespace(
     return findings
 
 
-#: dbGaP names of a participant-ID variable. A seed named anything else (FHS ``idtype``, the
-#: cohort code 0/1/2/3/7/72) collapses every row of a block onto one fake participant per value.
-PARTICIPANT_ID_NAMES = frozenset(n.casefold() for n in (
+#: Fallback names of a participant-ID variable, used ONLY when the cohort's detail index names
+#: no study subject ID (:func:`participant_ids`), and reported as a 5.11 WARNING when used.
+#: The metadata derivation finds every current cohort's ID itself (hv-lint/HV-Lint-Reference.md,
+#: 5.11), so a name absent here is not a defect.
+FALLBACK_PARTICIPANT_ID_NAMES = frozenset(n.casefold() for n in (
     "shareid", "SUBJECT_ID", "SUBJID", "Individual_ID", "sidno", "New_SUBJID", "GENEVA_ID",
-    "dbGaP_Subject_ID",
 ))
+
+#: The column dbGaP adds to every distributed data file. It is in no data dictionary, so no
+#: detail index can name it; a bare ``{dbGaP_Subject_ID}`` seed is a participant ID everywhere.
+_DBGAP_SUBJECT_COLUMN = "dbgap_subject_id"
+
+#: Tokens that make a variable an identifier, and tokens that make it an identifier of something
+#: other than a participant -- a sample, a family, a cohort or group code (FHS idtype reads
+#: "cohort identifier") -- so a seed on those is still an ERROR.
+_ID_TOKENS = frozenset({"id", "identifier", "identification", "subjid", "subjectid"})
+_NOT_PARTICIPANT_TOKENS = frozenset({
+    "sample", "samp", "sampid", "sampleid", "family", "famid", "vial", "analyte",
+    "cohort", "type", "idtype", "group", "visit", "exam",
+})
+
+
+def _tokens(text: str) -> set[str]:
+    text = re.sub(r"([a-z])([A-Z])", r"\1 \2", text or "")
+    return {t for t in re.split(r"[^0-9a-z]+", text.casefold()) if t}
+
+
+@dataclass
+class ParticipantIds:
+    """Which dbGaP variables of one cohort are participant IDs, and where that answer came from.
+
+    ``name`` is the study subject ID (casefolded) or ``None`` when the metadata names none, in
+    which case ``fallback`` holds the reason and :data:`FALLBACK_PARTICIPANT_ID_NAMES` decides;
+    :func:`check_5_11_participant_seed` reports every cohort whose seeds it decided.
+    """
+    name: str | None
+    phts_with_name: frozenset[str] = frozenset()
+    fallback: str | None = None
+
+    def accepts(self, seed_name: str, pht: str | None, description: str = "") -> bool:
+        folded = seed_name.casefold()
+        if folded == _DBGAP_SUBJECT_COLUMN:
+            return True
+        if self.name is None:
+            return folded in FALLBACK_PARTICIPANT_ID_NAMES
+        if folded == self.name:
+            return True
+        # A table without the study subject ID (the dbGaP Subject and sample-mapping tables, a
+        # GENEVA or ESP table) keys its rows by an identifier of its own: accepted only there,
+        # and only when name or description reads as an identifier of a participant.
+        if pht is None or pht in self.phts_with_name:
+            return False
+        toks = _tokens(seed_name) | _tokens(description)
+        return bool(toks & _ID_TOKENS) and not toks & _NOT_PARTICIPANT_TOKENS
+
+
+def participant_ids(detail_idx: dict[str, dict]) -> ParticipantIds:
+    """The study subject ID of a cohort, from its detail index.
+
+    dbGaP requires every subject-level dataset of a study to carry the submitted subject ID, so
+    the name present in the most of the study's tables is that ID -- a structural signal, not a
+    name list. Sample, family and cohort-code names are not candidates (FHS idtype, in 283 of
+    586 tables, is a code; shareid is in 565). The winner must be in a strict majority of the
+    tables and strictly ahead of the runner-up; otherwise the metadata does not answer, the
+    fixed fallback list decides, and 5.11 says so. Per-cohort measurements:
+    hv-lint/HV-Lint-Reference.md, 5.11.
+    """
+    names_by_pht: dict[str, set[str]] = {}
+    for rec in detail_idx.values():
+        if isinstance(rec, dict) and rec.get("pht") and rec.get("name"):
+            names_by_pht.setdefault(rec["pht"], set()).add(rec["name"].casefold())
+    n_tables = len(names_by_pht)
+    if not n_tables:
+        return ParticipantIds(None, fallback="the detail index lists no table")
+    counts: dict[str, int] = {}
+    for names in names_by_pht.values():
+        for name in names:
+            # A sample ID recurs as widely as the subject ID in a study with few tables (HCHS:
+            # SAMPLE_ID and SUBJECT_ID are each in 3 of 5), and is never the participant.
+            if not _tokens(name) & _NOT_PARTICIPANT_TOKENS:
+                counts[name] = counts.get(name, 0) + 1
+    if not counts:
+        return ParticipantIds(None, fallback="every variable name is a sample, family or code")
+    ranked = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+    top, n_top = ranked[0]
+    runner_up = ranked[1][1] if len(ranked) > 1 else 0
+    if n_top * 2 <= n_tables or n_top == runner_up:
+        return ParticipantIds(None, fallback=(
+            f"no variable name recurs in a strict majority of its {n_tables} tables ahead of "
+            f"every other ('{top}' is in {n_top}, the runner-up in {runner_up})"))
+    return ParticipantIds(top, frozenset(p for p, names in names_by_pht.items() if top in names))
 
 
 def _seeds(slot_def) -> list[_visit_ids.Seed]:
@@ -1191,6 +1276,7 @@ def _seeds(slot_def) -> list[_visit_ids.Seed]:
 
 def check_5_11_participant_seed(
     yaml_files: list[Path], hv_root: Path, detail_idx: dict[str, dict],
+    ids: ParticipantIds | None = None,
 ) -> list[Finding]:
     """5.11: the seed of every participant / visit id is the table's participant ID.
 
@@ -1198,7 +1284,8 @@ def check_5_11_participant_seed(
     ``str({phv})`` seeds are read by the shared enumerator and checked BY NAME against the detail
     index:
 
-      (a) a seed whose dbGaP name is not a participant ID (``idtype``, ``IDTYPE``, ...);
+      (a) a seed that is not a participant ID (``idtype``, ``IDTYPE``, ...), as
+          :func:`participant_ids` derives it from the same index;
       (b) a visit seed set that differs from the participant seed set at the same level (the
           participant is inherited from the enclosing class when a nested one has none);
       (c) an unqualified seed in no enclosing table (the class's ``populated_from`` and those of
@@ -1210,14 +1297,17 @@ def check_5_11_participant_seed(
     second defect in a block that is already a known issue is a finding of its own.
     """
     findings: list[Finding] = []
+    if ids is None:
+        ids = participant_ids(detail_idx)
+    fallback_files: list[str] = []      # files whose seeds the fixed list decided
 
-    def name_of(seed: _visit_ids.Seed) -> tuple[str | None, str | None]:
+    def name_of(seed: _visit_ids.Seed) -> tuple[str | None, str | None, str]:
         if not seed.phv.startswith("phv"):
-            return seed.phv, None        # a bare column name such as {dbGaP_Subject_ID}
+            return seed.phv, None, ""    # a bare column name such as {dbGaP_Subject_ID}
         rec = detail_idx.get(seed.phv)
         if not rec:
-            return None, None
-        return rec.get("name"), rec.get("pht")
+            return None, None, ""
+        return rec.get("name"), rec.get("pht"), rec.get("description") or ""
 
     for yf in yaml_files:
         rel = yf.relative_to(hv_root).as_posix()
@@ -1239,11 +1329,13 @@ def check_5_11_participant_seed(
                 own_part = _seeds(slots.get("associated_participant"))
                 part = own_part or inherited
                 for seed in visit + own_part:
-                    name, pht = name_of(seed)
+                    name, pht, desc = name_of(seed)
                     label = f"{{{seed.phv}}}" + (f" ({name}, {pht})" if pht else "")
                     if name is None:
                         continue
-                    if name.casefold() not in PARTICIPANT_ID_NAMES:
+                    if ids.name is None:
+                        fallback_files.append(rel)
+                    if not ids.accepts(name, pht, desc):
                         reasons.append(f"seed {label} is not a participant ID")
                     if pht and not seed.table and tables and pht not in tables:
                         reasons.append(f"seed {label} is in another table than "
@@ -1268,6 +1360,14 @@ def check_5_11_participant_seed(
                     file=rel, block=idx, check="5.11", severity="ERROR",
                     message=f"participant / visit id seed: {reason}",
                 ))
+    # A seed judged by the fixed list is not judged by the metadata: say so, once per cohort,
+    # so a quiet 5.11 is not read as metadata-verified.
+    if fallback_files:
+        findings.append(Finding(
+            file=fallback_files[0], block=0, check="5.11", severity="WARNING",
+            message=(f"participant / visit id seed: the detail index names no study subject ID "
+                     f"({ids.fallback}), so seeds were checked against the fixed fallback list "
+                     f"{sorted(FALLBACK_PARTICIPANT_ID_NAMES)} instead")))
     return findings
 
 
@@ -1585,7 +1685,8 @@ def main() -> int:
                     f"in {args.cache_dir}), so checks 5.8 and 5.11 DID NOT RUN"))
                 unrun_check = True
             else:
-                # 5.11: participant / visit seeds, by dbGaP variable name
+                # 5.11: participant / visit seeds, against the study subject ID the detail
+                # index names
                 all_findings.extend(
                     check_5_11_participant_seed(yaml_files, hv_root, detail_idx)
                 )

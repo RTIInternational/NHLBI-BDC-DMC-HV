@@ -705,9 +705,34 @@ Validates that all `uuid5()` expressions use the canonical bdchm namespace URL `
 
 The variable that seeds a participant or visit uuid5 must be the table's participant ID. For every Visit `id`, `associated_visit` and `associated_participant` at any depth, the `str({phv})` seeds are read by the shared enumerator and checked BY NAME against the detail index:
 
-- (a) the seed's dbGaP name is not a participant ID (`shareid`, `SUBJECT_ID`, `SUBJID`, `Individual_ID`, `sidno`, `New_SUBJID`, `GENEVA_ID`, `dbGaP_Subject_ID`). FHS `IDTYPE` / `idtype` is the cohort code (0/1/2/3/7/72), so every row of the block collapses onto one fake participant per code (#882);
+- (a) the seed is not a participant ID. FHS `IDTYPE` / `idtype` is the cohort code (0/1/2/3/7/72), so every row of the block collapses onto one fake participant per code (#882);
 - (b) the visit seed differs from the participant seed at the same level (a nested class inherits the participant of its parent);
 - (c) an unqualified seed is in no enclosing table -- the class's `populated_from` or that of a class around it, as 3.5 reads reachability: a bare reference to another table is None, so participant and visit are emitted empty (FHS bdy_hgt b42).
+
+**Which variable is the participant ID comes from the cohort's detail index, not a name list** (`participant_ids`), so a new study whose subject ID is named anything (`PARTID`) is checked without an edit here:
+
+- **Study subject ID.** dbGaP requires every subject-level dataset to carry the submitted subject ID, so the variable NAME present in the most of the study's tables is that ID. Sample, family and cohort/group-code names (`SAMPLE_ID`, `FAMID`, `idtype`, ...) are not candidates. The winner must be in a strict majority of the tables and strictly ahead of the runner-up.
+- **A table without it** (the dbGaP Subject and sample-mapping tables, a GENEVA or ESP table) keys its rows by an identifier of its own: there, a seed whose name or description reads as an identifier (`id`, `identifier`, `subjid`) and not as a sample, family or code is accepted (CARDIA `New_SUBJID` "Subject ID (GENEVA)", `GENEVA_ID`). In a table that HAS the study subject ID, only that variable is accepted.
+- **`dbGaP_Subject_ID`**, the column dbGaP adds to every distributed file and no data dictionary lists, is accepted everywhere as a bare `{dbGaP_Subject_ID}` seed.
+- **Fallback.** When the index names no study subject ID (no majority, a tie, no named variables), seeds are checked against a fixed list (`shareid`, `SUBJECT_ID`, `SUBJID`, `Individual_ID`, `sidno`, `New_SUBJID`, `GENEVA_ID`) and **a 5.11 WARNING says so** -- a fallback is not a metadata-verified pass. A cohort with no detail index is an ERROR ("5.8/5.11 DID NOT RUN"), as before.
+
+Measured 2026-10-15 on the committed cache -- the derived study subject ID, tables carrying it, and the strongest other candidate -- correct for all 11 cohorts, none on the fallback:
+
+| Cohort | Release | Subject ID | In tables | Runner-up |
+|---|---|---|---|---|
+| ARIC | phs000280.v8 | `SUBJECT_ID` | 361 / 368 | `Vers` 91 |
+| CARDIA | phs000285.v3 | `Individual_ID` | 320 / 328 | `E09EXDAT` 10 |
+| CHS | phs000287.v7 | `Individual_ID` | 56 / 65 | `STDYTIME` 21 |
+| COPDGene | phs000179.v7 | `SUBJECT_ID` | 6 / 8 | `SEX` 2 |
+| FHS | phs000007.v35 | `shareid` | 565 / 586 | `ffq_val` 25 (`idtype` 283, excluded as a code) |
+| HCHS | phs000810.v2 | `SUBJECT_ID` | 3 / 5 | `BODY_SITE` 2 (`SAMPLE_ID` 3, excluded as a sample) |
+| JHS | phs000286.v7 | `SUBJECT_ID` | 106 / 114 | `VERS` 37 |
+| LTRC | phs001662.v4 | `SUBJECT_ID` | 22 / 27 | `DAYS_SINCE_BASELINE` 19 |
+| MESA | phs000209.v13 | `sidno` | 90 / 97 | `race1c` 9 |
+| SPIROMICS | phs001119.v1 | `SUBJECT_ID` | 3 / 4 | `CONSENT` 1 |
+| WHI | phs000200.v12 | `SUBJID` | 87 / 100 | `ASCSOURCE` 11 |
+
+Seeds the current specs use: the study subject ID everywhere, plus CARDIA `New_SUBJID` (28) and `GENEVA_ID` (2), each in a table without `Individual_ID`. Rejected alternatives: the table's first variable (column order is not recoverable from the cache; by lowest accession it is `IDTYPE` in 75 FHS tables and `SUBJECT_ID` in only 157 of 368 ARIC tables) and the description alone (FHS `idtype` reads "cohort identifier").
 
 Name-based on purpose: shareid and idtype are adjacent accessions in FHS tables, but the distance varies by table. One finding per reason, so a second defect in a block already listed as a known issue is its own finding. Main before #882: 383 blocks, all FHS (255 IDTYPE, 127 idtype, 1 other-table shareid); after #882: 1, FHS afib b0 (IDTYPE phv00001558, held for #883 item 11).
 
