@@ -82,9 +82,12 @@ The concept name joins the files to each other and to the harmonization pipeline
 
 ## Enum values: name or meaning CURIE
 
-For any BDC-HM enum slot the transform spec may hold the permissible-value title (for example
-`MALE`, `DEAD`) or its CURIE key (for example `OMOP:8507`). The ingest pipeline emits the
-CURIE.
+For a BDC-HM enum keyed by CURIE (sex, race, ethnicity, vital status, severity, family
+relationship, smoking, education, occupation, SDOH type, drug route, procedure and measurement
+type) the transform spec may hold the permissible-value title (for example `MALE`, `DEAD`) or
+its CURIE key (for example `OMOP:8507`). The ingest pipeline emits the CURIE. An enum keyed by
+name, such as `ProvenanceEnum` or the condition status, takes the value name only; several
+provenance values have no CURIE.
 
 Retired codes are replaced: unknown sex, race and ethnicity use `OMOP:45877986` (not
 `OMOP:8552`, which other enums, such as occupation, still use); the retired severity code `OMOP:3272197` is replaced by `MODERATE`
@@ -97,7 +100,8 @@ This applies to every class, including existing specs.
 - A missing code (a period, `M`, `Missing`) writes no row.
 - Refused, do not know, and any asked-but-unanswered value write `UNKNOWN`
   (`UNKNOWN_IF_EVER_SMOKED` for smoking), so a researcher can see the question was asked.
-- Still to settle: classes with no `UNKNOWN` value, such as the family income bracket text.
+- A slot whose enum has no `UNKNOWN` value is left empty when the answer is not known
+  (`vital_status`). Still to settle: the family income bracket text.
 
 ## Specimen
 
