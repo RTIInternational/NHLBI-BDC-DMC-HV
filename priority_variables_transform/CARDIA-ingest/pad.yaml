@@ -366,7 +366,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118426}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00118475 == 2, {phv00118476} * 365))
+          expr: case(({phv00118475} == 2, {phv00118476} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118426}) + ":CARDIA YEAR 10")'
         condition_concept:
@@ -391,7 +391,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00119801}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00119856 == 2, {phv00119859} * 365))
+          expr: case(({phv00119856} == 2, {phv00119859} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
         condition_concept:
@@ -416,7 +416,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116953}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00117001 == 2, {phv00117002} * 365))
+          expr: case(({phv00117001} == 2, {phv00117002} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116953}) + ":CARDIA YEAR 7")'
         condition_concept:
