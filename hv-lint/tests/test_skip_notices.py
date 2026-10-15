@@ -108,7 +108,11 @@ def test_58_reports_not_applicable_as_info_not_a_ratcheted_warning(tmp_path):
     res = E.phase5(t)
     assert "[5.8] 5.8 not applicable for cohort FHS: no collection-interval metadata" \
         in res.stdout, res.stdout[-2000:]
-    assert not [x for x in res.stdout.splitlines() if "[5.8]" in x and "INFO" not in x]
+    # Under GITHUB_ACTIONS an INFO prints as a ``::notice`` annotation, so test for what must
+    # not appear (a WARNING or ERROR) rather than for the word INFO.
+    assert not [x for x in res.stdout.splitlines()
+                if "[5.8]" in x and ("WARNING" in x or "ERROR" in x
+                                     or x.startswith(("::warning", "::error")))]
     assert "new WARNING [5.8]" not in res.stdout
 
 
