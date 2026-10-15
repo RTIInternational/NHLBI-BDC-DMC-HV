@@ -276,8 +276,12 @@ def test_210_reversed_guard_is_not_guarded():
 
 
 def test_24_case_without_default():
-    assert _expr.outer_case_lacks_default("case(({phv00000001} == 1, 'OMOP:1'))")
-    assert not _expr.outer_case_lacks_default("case(({phv00000001} == 1, 'X'), (True, 'Y'))")
+    assert _expr.outer_case_gap("case(({phv00000001} == 1, 'OMOP:1'))") == "no-default"
+    assert _expr.outer_case_gap("case(({phv00000001} == 1, 'X'), (True, 'Y'))") is None
+    assert _expr.outer_case_gap("case(({phv00000001} == 1, 'X'), (True, None))") == "null-default"
+    # the first (True, ...) arm is the catch-all; a later one is unreachable
+    assert _expr.outer_case_gap("case((True, 'Y'), (True, None))") is None
+    assert _expr.outer_case_gap("{phv00000001}") is None
 
 
 # -- Phase 5 -------------------------------------------------------------------------------------

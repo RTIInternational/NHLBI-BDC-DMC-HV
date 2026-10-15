@@ -825,14 +825,23 @@ def validate_class_derivations(
                     ))
                     continue
                 # Presence is not population: a required slot that IS a case() with no
-                # (True, ...) arm is null on every row no arm matches.
+                # (True, ...) arm, or whose catch-all is None, is null on every row no other
+                # arm matches. The two messages differ, and each is part of its fingerprint.
                 req_def = slot_derivs.get(req_slot) if slot_derivs else None
                 req_expr = req_def.get("expr") if isinstance(req_def, dict) else None
-                if isinstance(req_expr, str) and _expr.outer_case_lacks_default(req_expr):
+                gap = _expr.outer_case_gap(req_expr) if isinstance(req_expr, str) else None
+                if gap == "no-default":
                     findings.append(Finding(
                         rel_path, block_idx, "2.4", "WARNING",
                         f"{path_prefix}{class_name}.{req_slot} is required but its case() has "
                         f"no (True, ...) arm -- rows no arm matches are emitted without it"
+                    ))
+                elif gap == "null-default":
+                    findings.append(Finding(
+                        rel_path, block_idx, "2.4", "WARNING",
+                        f"{path_prefix}{class_name}.{req_slot} is required but its case() "
+                        f"catch-all is (True, None) -- rows no other arm matches are emitted "
+                        f"without it"
                     ))
         if class_name in ctx.recommended_slots:
             for rec_slot in ctx.recommended_slots[class_name]:

@@ -45,21 +45,24 @@ def case_result_literals(expr: str) -> list[str] | None:
     return out
 
 
-def outer_case_lacks_default(expr: str) -> bool:
-    """True when the expression IS a ``case()`` with no ``(True, ...)`` arm.
+def outer_case_gap(expr: str) -> str | None:
+    """How a ``case()`` expression leaves rows null: ``"no-default"``, ``"null-default"`` or None.
 
-    Such a slot is null on every row no arm matches, so a required slot written this way passes
-    a presence check while emitting nothing on those rows.
+    ``"no-default"``: the expression IS a ``case()`` with no ``(True, ...)`` arm. ``"null-default"``:
+    its first ``(True, ...)`` arm -- the one that catches every row no earlier arm matches --
+    returns literal ``None``. Either way a required slot written so passes a presence check while
+    emitting nothing on those rows. None for any other expression.
     """
     tree = parse(expr)
     if not (isinstance(tree, ast.Call) and isinstance(tree.func, ast.Name)
             and tree.func.id == "case"):
-        return False
+        return None
     for arm in tree.args:
         if (isinstance(arm, ast.Tuple) and len(arm.elts) == 2
                 and isinstance(arm.elts[0], ast.Constant) and arm.elts[0].value is True):
-            return False
-    return True
+            val = arm.elts[1]
+            return "null-default" if isinstance(val, ast.Constant) and val.value is None else None
+    return "no-default"
 
 
 def _norm(value) -> str:

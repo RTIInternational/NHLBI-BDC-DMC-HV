@@ -100,3 +100,33 @@ def test_113_populated_from_and_expr():
                           "expr": "None if str({phv00118957}) == 'M' else float({phv00118957})"}}}}}
     f = vys.check_expr_with_value_mappings(block, 0, "x.yaml")
     assert [(x.check, x.severity) for x in f] == [("1.13", "INFO")]
+
+
+# -- 2.4 required slot written as case() ---------------------------------------------------------
+
+def _24(expr: str, required: bool) -> list:
+    cd = {"Condition": {"populated_from": "pht000001", "slot_derivations": {
+        "condition_status": {"expr": expr}}}}
+    ctx = vmc.ValidationContext(
+        required_slots={"Condition": {"condition_status"}} if required else {})
+    return [x for x in vmc.validate_class_derivations(cd, 0, "x.yaml", ctx) if x.check == "2.4"]
+
+
+def test_24_null_catch_all_on_required_slot_warns():
+    f = _24("case(({phv00000001} == 1, 'PRESENT'), (True, None))", required=True)
+    assert [(x.severity, "catch-all is (True, None)" in x.message) for x in f] == [("WARNING", True)]
+
+
+def test_24_populated_catch_all_does_not_warn():
+    assert _24("case(({phv00000001} == 1, 'PRESENT'), (True, 'ABSENT'))", required=True) == []
+
+
+def test_24_null_catch_all_on_optional_slot_does_not_warn():
+    assert _24("case(({phv00000001} == 1, 'PRESENT'), (True, None))", required=False) == []
+
+
+def test_24_no_default_message_is_unchanged():
+    f = _24("case(({phv00000001} == 1, 'PRESENT'))", required=True)
+    assert [x.message for x in f] == ["Condition.condition_status is required but its case() has "
+                                      "no (True, ...) arm -- rows no arm matches are emitted "
+                                      "without it"]
