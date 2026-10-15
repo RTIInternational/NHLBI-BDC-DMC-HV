@@ -185,7 +185,7 @@ Rules 1.2 (within a file) and 1.12 (across files) share one identity, `check_cro
 
 `(class, populated_from table, source, concept, associated_visit, value_mappings)`
 
-where the source and mappings come from `condition_status` / `exposure_status` / `procedure_status`, or from the Quantity value slot / `value_enum` for observations, and the concept from `condition_concept` / `drug_concept` / `procedure_concept` / `observation_type`. Other classes (MeasurementObservationSet, Visit, Demography, ...) are identified by their whole body. Context slots (provenance, ages, method_type) are not part of the identity: two blocks that differ only there still emit the same records twice.
+where the source and mappings come from `condition_status` / `exposure_status` / `procedure_status`, or from the Quantity value slot / `value_enum` for observations, and the concept from `condition_concept` / `drug_concept` / `procedure_concept` / `observation_type`. A slot's source is its effective one, in linkml-map's own precedence (`object_transformer.py`, the `value` / `expr` / `populated_from` chain): `value`, else `expr`, else `populated_from`. A `populated_from` sitting under an `expr` is dead (rule 1.13) and is not compared, and `value_mappings` count only on the `populated_from` path, since under a `value` or `expr` they are never applied (rule 1.11). Other classes (MeasurementObservationSet, Visit, Demography, ...) are identified by their whole body. Context slots (provenance, ages, method_type) are not part of the identity: two blocks that differ only there still emit the same records twice.
 
 ### A9: Severity Levels and Exit Code Behavior
 
@@ -299,7 +299,7 @@ Detect a slot derivation (at any nesting depth) that sets both `expr` and `value
 
 ### 1.12 Cross-File Identical Blocks
 
-Detect blocks in different files of the same cohort that emit the same record: identical on class, `populated_from` table, source (the status / value slot's `populated_from` or `expr`), concept (`drug_concept`, `condition_concept`, `procedure_concept` or `observation_type`), `associated_visit`, and the status / value slot's `value_mappings`. Covers every class, DrugExposure included (#879; 13 identical DrugExposure pairs were removed by hand in #833).
+Detect blocks in different files of the same cohort that emit the same record: identical on class, `populated_from` table, source (the status / value slot's effective source: `value`, else `expr`, else `populated_from`, as linkml-map evaluates them -- A8), concept (`drug_concept`, `condition_concept`, `procedure_concept` or `observation_type`), `associated_visit`, and the status / value slot's `value_mappings`. Covers every class, DrugExposure included (#879; 13 identical DrugExposure pairs were removed by hand in #833).
 
 - **Not compared**: provenance, evidence, age and other context slots -- two blocks that differ only there still emit the same fact twice. The finding names the slots that differ, or says the blocks are identical apart from `range:` annotations.
 - **Classes without a status / value slot** (Visit, Person, Demography, ...): compared on the whole block body, so only exact copies match.

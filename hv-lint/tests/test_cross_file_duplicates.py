@@ -88,3 +88,43 @@ def test_class_without_status_matches_only_on_whole_body():
 
 # Known issues are hv-lint/baselines/known_issues.yaml's (tests/test_known_issues.py), not this
 # module's.
+
+
+def measurement(populated_from="phv00113000", expr=None):
+    value = {"populated_from": populated_from}
+    if expr is not None:
+        value["expr"] = expr
+    return {"class_derivations": {"MeasurementObservation": {
+        "populated_from": "pht001570", "slot_derivations": {
+            "associated_visit": {"expr": VISIT},
+            "observation_type": {"value": "OMOP:3036277"},
+            "value_quantity": {"class_derivations": [{"Quantity": {"slot_derivations": {
+                "value_decimal": value}}}]},
+        }}}}
+
+
+def test_expr_beats_a_dead_populated_from_in_the_identity():
+    # linkml-map evaluates expr before populated_from (rule 1.13), so two blocks sharing a dead
+    # populated_from but differing in expr emit different values: not a duplicate.
+    a = measurement(expr="{phv00113000} * 2.54")
+    b = measurement(expr="{phv00113001} * 2.54")
+    assert run({"CARDIA-ingest/a.yaml": [a], "CARDIA-ingest/b.yaml": [b]}) == []
+    assert xfd.block_identities(a) != xfd.block_identities(b)
+
+
+def test_same_expr_with_different_dead_populated_from_is_a_duplicate():
+    a = measurement(populated_from="phv00113000", expr="{phv00113000} * 2.54")
+    b = measurement(populated_from="phv00113999", expr="{phv00113000} * 2.54")
+    f = run({"CARDIA-ingest/a.yaml": [a], "CARDIA-ingest/b.yaml": [b]})
+    assert [(x.check, x.file) for x in f] == [
+        ("1.12", "priority_variables_transform/CARDIA-ingest/b.yaml")]
+    assert xfd.block_identities(a) == xfd.block_identities(b)
+
+
+def test_source_precedence_matches_linkml_map():
+    assert xfd._src({"populated_from": "p", "expr": "e", "value": "v"}) == "v"
+    assert xfd._src({"populated_from": "p", "expr": "e"}) == "e"
+    assert xfd._src({"populated_from": "p", "expr": ""}) == "p"
+    # value_mappings are applied only on the populated_from path; under an expr they are dead.
+    assert xfd._vm_sig({"expr": "e", "value_mappings": {"1": "PRESENT"}}) == ""
+    assert xfd._vm_sig({"populated_from": "p", "value_mappings": {"1": "PRESENT"}}) != ""

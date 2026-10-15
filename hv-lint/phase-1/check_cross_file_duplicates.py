@@ -10,7 +10,8 @@ blocks across all files of a cohort.
 Two blocks are identical when they agree on all of:
 
     class, populated_from table, source (the status / value slot's
-    populated_from or expr), concept (drug_concept / condition_concept /
+    effective source: value, else expr, else populated_from -- linkml-map's
+    own precedence, so a dead populated_from under an expr is ignored), concept (drug_concept / condition_concept /
     procedure_concept / observation_type), associated_visit, and the
     status / value slot's value_mappings.
 
@@ -97,16 +98,32 @@ def _d(val) -> dict:
     return val if isinstance(val, dict) else {}
 
 
+# linkml-map's own precedence for a slot's source (object_transformer.py, the
+# `if slot_derivation.value ... elif expr ... elif populated_from` chain): a
+# constant `value` beats `expr`, which beats `populated_from`. The identity must
+# key on the source that is EVALUATED, or two blocks whose effective exprs differ
+# fingerprint identical through a shared dead populated_from (rule 1.13).
+_SOURCE_PRECEDENCE = ("value", "expr", "populated_from")
+
+
+def _present(slot: dict, key: str) -> bool:
+    v = slot.get(key)
+    return v is not None and v != ""
+
+
 def _src(slot: dict) -> str:
-    """The slot's source: populated_from, else expr, else value."""
-    for key in ("populated_from", "expr", "value"):
-        v = slot.get(key)
-        if v is not None and v != "":
-            return str(v)
+    """The slot's effective source: value, else expr, else populated_from."""
+    for key in _SOURCE_PRECEDENCE:
+        if _present(slot, key):
+            return str(slot[key])
     return ""
 
 
 def _vm_sig(slot: dict) -> str:
+    # value_mappings apply only on the populated_from path; under a value or an
+    # expr they are dead (rule 1.11) and say nothing about what is emitted.
+    if _present(slot, "value") or _present(slot, "expr"):
+        return ""
     vm = slot.get("value_mappings")
     if not isinstance(vm, dict):
         return ""
