@@ -698,7 +698,7 @@ def test_the_managers_forward_the_all_sentinel_lowercase(monkeypatch, capsys, ma
         argv = ["run_all.py", "--cohort", token, "--no-report"]
     else:
         monkeypatch.setattr(mod, "run_component",
-                            lambda name, cohort, fail_on: (seen.append(cohort), 0)[1])
+                            lambda name, cohort, fail_on, cache_dir=None: (seen.append(cohort), 0)[1])
         argv = ["run_phase1.py", "--cohort", token]
     monkeypatch.setattr(sys, "argv", argv)
     assert mod.main() == 0

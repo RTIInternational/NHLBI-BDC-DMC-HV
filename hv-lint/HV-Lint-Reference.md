@@ -40,14 +40,14 @@ HV-Lint is organized into four phases with increasing data requirements:
 
 ### dbGaP Cache Architecture
 
-Phases 3 and 5 use **compressed JSON indexes** (committed in `hv-lint/dbgap-cache/`) instead of raw XML. The artifacts are named by **study release**, not by cohort, so two releases of one study can sit side by side:
+Phases 3 and 5, and Phase 1's rules 1.8 and 1.14, use **compressed JSON indexes** (committed in `hv-lint/dbgap-cache/`) instead of raw XML. The artifacts are named by **study release**, not by cohort, so two releases of one study can sit side by side:
 
 1. **Basic index** (`<phs######>.<v#>.json.gz`, e.g. `phs000280.v8.json.gz`) -- maps each base PHV to base PHT. Used by rules 3.1-3.5 and by Phase 5 checks 5.3 and 5.4.
 2. **Extended detail index** (`<phs######>.<v#>_detail.json.gz`) -- adds variable name, type, unit, description, coded values, and collection interval (`coll_interval`). Used by rules 3.9-3.18 and 5.8.
 3. **Value-count index** (`<release>_stats.json.gz`, e.g. `phs000287.v7_stats.json.gz`) -- for every variable the var_report non-null count `n` (absent when the var_report has no `<stat>`: unknown, never 0), and for each coded variable the count of each observed code (`c`) (dbGaP's published aggregate summaries; no participant data). Used by rules 3.9, 3.15, 3.17, 3.18, 3.19, 5.2 and 5.12. Built by `hv-lint/build_phv_stats_index.py` from the `*.var_report.xml` files of the pinned release (~1.4 MB for all cohorts); a variable whose table has no var_report has no entry, so its n is unknown, not 0; `update_data.py` does not fetch var_reports yet.
 4. **`manifest.json`** -- one entry per release key: cohort, study, study version, PHV and PHT counts, source directory and build date, plus an `artifacts` record per file (its sha256 and PHV/PHT counts), the `_stats` and `_tables` files included. The index builders and `build_phv_stats_index.py` write it; it is the only record of which release a file holds. Every cache read goes through `_cohorts.load_cache_artifact`, which fails closed when a file's bytes or counts differ from its record -- a release label alone cannot catch another release's file copied over this one's name. Per-release counts live there, not in this document.
 
-**Which release is linted** is the cohort's *declared* release: `current_version` in `hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml`. Phases 3 and 5 compare it with the cache's manifest entry before reading the index, and the run fails, **regardless of `--fail-on`**, when:
+**Which release is linted** is the cohort's *declared* release: `current_version` in `hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml`. Phases 3 and 5 and Phase 1's `check_cross_file_pht_consistency.py` (1.8, 1.14) compare it with the cache's manifest entry before reading the index (`_cohorts.release_check_error`), and the run fails, **regardless of `--fail-on`**, when:
 
 - the manifest records a different release, or has no entry for the key;
 - the cohort declares no release;
@@ -753,9 +753,12 @@ All phase runners accept `--hv-root` to specify an alternate HV repo clone and `
 **Phase 1:**
 ```bash
 python hv-lint/phase-1/run_phase1.py \
+  --cache-dir hv-lint/dbgap-cache \
   --cohort ARIC \
   --fail-on error
 ```
+
+`--cache-dir` is optional and passed only to `check_cross_file_pht_consistency.py` (1.8, 1.14), the one Phase 1 component that reads the cache; without it that component uses `hv-lint/dbgap-cache`. `run_all.py` forwards its own `--cache-dir` to Phases 1, 3 and 5 (`--expect-study` to Phase 3 only).
 
 **Phase 2:**
 ```bash

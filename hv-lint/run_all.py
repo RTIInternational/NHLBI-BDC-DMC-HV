@@ -38,7 +38,7 @@ PHASES = {
     "phase1": {
         "script": SCRIPT_DIR / "phase-1" / "run_phase1.py",
         "label": "Phase 1 -- YAML Structure & Formatting",
-        "needs_cache": False,
+        "needs_cache": True,
     },
     "phase2": {
         "script": SCRIPT_DIR / "phase-2" / "run_phase2.py",

@@ -106,7 +106,7 @@ python hv-lint/phase-5/run_phase5.py --cohort ARIC --fail-on error
 | `--skip <component>` | All phases | Skip one or more sub-components by name |
 | `--bdchm-ref <ref>` | Phase 2 | Git ref for BDCHM schema (default: the pinned `BDCHM_REF`, HM 3fe055ed) |
 | `--bdchm-schema <path>` | Phase 2 | Local schema file (overrides `--bdchm-ref`) |
-| `--cache-dir <path>` | Phase 3, 5, run_all | Path to index directory (default: auto-detected from script location) |
+| `--cache-dir <path>` | Phase 1 (1.8 / 1.14 only), 3, 5, run_all | Path to index directory (default: auto-detected from script location) |
 | `--hv-root <path>` | All phases | Override HV repo root detection |
 
 ---

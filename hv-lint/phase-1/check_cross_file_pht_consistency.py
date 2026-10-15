@@ -30,10 +30,13 @@ Checks:
 
 A missing input is a failure, never a skip: a cohort in TABLE_NAME_COHORTS (1.8's name arm) or
 VISIT_EVIDENCE (1.14) whose index is absent exits 1 naming the check that did not run.
+Every cohort's cache must hold the release the cohort declares (``_cohorts.release_check_error``,
+the same check Phase 3 and Phase 5 run); a mismatch or an undeclared release exits 1.
 
 Usage:
     python hv-lint/phase-1/check_cross_file_pht_consistency.py
     python hv-lint/phase-1/check_cross_file_pht_consistency.py --cohort MESA
+    python hv-lint/phase-1/check_cross_file_pht_consistency.py --cache-dir <dir>
 """
 
 from __future__ import annotations
@@ -438,6 +441,12 @@ def main() -> int:
     details: dict = {}
     findings_na: list[Finding] = []
     for name, key in _cohorts.cohorts_to_load(args.cohort, cache_dir, base_dir):
+        # The release this component reads is checked before any of its metadata is used, so a
+        # stale but valid cache cannot pass (or fail) 1.8 / 1.14 against the wrong release.
+        release_error = _cohorts.release_check_error(name, cache_dir, key)
+        if release_error:
+            print(release_error, file=sys.stderr)
+            return 1
         # The 1.14 detail read sits inside this try so an integrity failure of either artifact
         # is reported, never raised.
         try:
