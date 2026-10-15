@@ -1,0 +1,60 @@
+bdchm slot	bdchm value enum	description	Example source variable description
+MeasurementObservation.range_low		Use this slot to report the lower limit of detection if available	
+MeasurementObservation.range_high		Use this slot to report the upper limit of detection, if available	
+MeasurementObservation.observation_type		This slot will always have a CURIE from OMOP, OBA, NCIT, EFO, etc.	
+MeasurementObservation.associated_artifact		This slot will be an identifier to a File, QuestionnaireResponse, or Assay. Use this to link a measurement observation to an entity that generated it. For example, a CESD score should have a link to the QuestionnaireResponse from which it is derived.	
+MeasurementObservation.body_site		Use this slot to specify where on the body a measurement was taken. For example, blood pressure can be measured from multiple places on the body. This will always be a CURIE from uberon.	
+MeasurementObservation.body_position		Use this slot to specify what position the Participant was in when the measurement was taken in those instances where those are relevant. Examples include blood pressure and height. Body position does not matter for measurements resulting from blood or urine assays, for example.	
+MeasurementObservation.body_position	SITTING_POSITION	The patient is in a sitting position during the measurement or observation	
+MeasurementObservation.body_position	ORTHOSTATIC_BODY_POSITION	The patient is in a standing position during the measurement or observation	
+MeasurementObservation.body_position	SUPINE_BODY_POSITION	The patient is lying on their back during the measurement or observation	
+MeasurementObservation.body_position	PRONE_BODY_POSITION	The patient is lying on their stomach during the measurement or observation	
+MeasurementObservation.measured_by		Use this slot to specify the occupation of the person who collected the measurement. This is often specified for blood pressure measurements.	
+MeasurementObservation.measured_by	PHYSICIAN	A medical doctor (MD) or doctor of osteopathic medicine (DO)	
+MeasurementObservation.measured_by	NURSE	A registered nurse (RN), licensed practical nurse (LPN), or other nursing professional	
+MeasurementObservation.measured_by	TECHNICIAN	A healthcare worker trained to perform specific technical tasks	
+MeasurementObservation.measured_by	OTHER_HEALTHCARE_PROFESSIONAL	Any other type of healthcare professional involved in performing an activity	
+MeasurementObservation.qualifier			
+MeasurementObservation.qualifier	AVERAGE	An average or mean of measurements taken across a time period	
+MeasurementObservation.qualifier	MINIMUM	The minimum value among measurements taken across a time period. Sometimes a measurement will be listed as best or worst. Whether or not this translates to a minimum or maximum depends on the measurements and what it means for disease state or organ function.	
+MeasurementObservation.qualifier	MAXIMUM	The maximum value among measurements taken across a time period. Sometimes a measurement will be listed as best or worst. Whether or not this translates to a minimum or maximum depends on the measurements and what it means for disease state or organ function.	
+MeasurementObservation.qualifier	SUM	The sum of measurements taken across a time period	
+MeasurementObservation.qualifier	FIRST_MEASUREMENT	The first measurement taken in a series of measurements across a time period.	
+MeasurementObservation.qualifier	LAST_MEASUREMENT	The last measurement taken in a series of measurements across a time period.	
+MeasurementObservation.instrument			
+MeasurementObservation.associated_visit		Use this slot to link a MeasurementObservation to a specific visit or exam. 	
+MeasurementObservation.associated_participant		Use this slot to link a MeasurementObservation to a specific Participant	
+MeasurementObservation.age_at_observation		Use this slot to specify the age of the Participant at the time of the MeasurementObservation. This will often be the same as the age at visit, but not always. An example, is when a Participant gives a weight at a specific, previous age.	
+MeasurementObservation.method_type		Use this slot to specify the method used to make the observation. Examples include anthropometry, ultrasound, CBC, and calculation.	
+MeasurementObservation.performed_by		Use this slot to specify the Organization that performed the measurement. This will often be a clinic or an analytical lab.	
+MeasurementObservation.value_string		Use this slot to contain the value of the MeasurementObservation if that value is a String.	
+MeasurementObservation.value_boolean		Use this slot to contain the value of the MeasurementObservation if that value is a Boolean.	
+MeasurementObservation.value_quantity		Use this slot to contain the value of the MeasurementObservation if that value is an Integer or Decimal.	
+MeasurementObservation.value_enum		Use this slot to contain the value of the MeasurementObservation if that value is an Enum.	
+MeasurementObservation.context		Use this slot to specify any relevant context for the MeasurementObservation. For example, this can record if the measurement was taken relative to fasting, exercise, or taking a bronchodilator.	
+Quantity		This entity is the range for range_low, range_high, and value_quantity slots. It will contain a numerical value and the metadata about that value.	
+Quantity.value_decimal		Use this slot to contain float numbers	
+Quantity.value_integer		Use this slot to contain integers. Many scores can only be integer values.	
+Quantity.value_concept		Use this slot to contain values that are not enumerative, but also are not numbers. For example, a range like 3.4-8.0 would go here.	
+Quantity.unit		Use this slot to hold the unit represented as UCUM	
+Quantity.operator		Use this slot when the value is reported as being greater than or less than a number	
+Quantity.operator	LESS_THAN	The quantity is less than a specified value	
+Quantity.operator	LESS_THAN_OR_EQUAL_TO	The quantity is less than or equal to a specified value	
+Quantity.operator	EQUAL_TO	The quantity is equal to a specified value - this will be rarely, if ever used	
+Quantity.operator	GREATER_THAN_OR_EQUAL_TO	The quantity is greater than or equal to a specified value	
+Quantity.operator	GREATER_THAN	The quantity is greater than a specified value	
+Context		This entity is the range for context	
+Context.activity		Use this slot to specify the type of activity	
+Context.relative_timing		Use this slot to specify when the activity occurred relative to the measurement being taken	
+Context.relative_timing	AFTER	Occurring later than	
+Context.relative_timing	BEFORE	Occurring prior to	
+Context.relative_timing	CONCURRENT_WITH	Occurring simultaneous to	
+Activity		This entity is the range for the activity slot	
+Activity.activity_type		Use this slot to specify the type of activity	
+Activity.activity_type	FASTING	Abstaining from intake of food or liquid	
+Activity.activity_type	BRONCHODILATOR_MEDICATION_USE	The act of taking one or more medication in the class of bronchodilators	
+Activity.activity_type	DIABETES_MEDICATION_USE	The act of taking one or more medication used in control of diabetes	
+Activity.activity_type	ANTIHYPERLIPIDEMICS_MEDICATION_USE	The act of taking one or more medication in the class of antihyperlipidemics	
+Activity.activity_type	PHYSICAL_ACTIVITY	The act of engaging in aerobic movement	
+Activity.activity_type	MEDICAL_PROCEDURE	When did the measurement occur in relation to a therapeutic or diagnostic procedure undertaken in the context of healthcare or research	
+Activity.time_duration		Use this slot to specify the duration of the activity. For example if the fasting was for 8 hours or 12 hours.	
