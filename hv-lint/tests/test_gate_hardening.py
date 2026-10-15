@@ -1,11 +1,11 @@
-"""The independent gate review (2026-10-08): each test fails if its guard is removed.
+"""The independent #885 gate review (2026-10-08): each test fails if its guard is removed.
 
 B6: HIGH findings are ratcheted, and an undeclared CURIE prefix is an ERROR. B7: a non-string
 value_mappings key is an ERROR (1.15). S2/N4: the frozen linkml-map keys fail Phase 2 in CI. N2:
 2.0 is ratcheted. N3: yamllint truthy is an error. The component main() paths for B3 and B4 are
 in test_known_issues_e2e.py.
 
-Run: python -m pytest hv-lint/tests/test_gate_review_885.py
+Run: python -m pytest hv-lint/tests/test_gate_hardening.py
 """
 
 import re

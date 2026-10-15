@@ -9,7 +9,7 @@ whose input is missing fails.
 
 Each case drives the component's real main().
 
-Run: python -m pytest hv-lint/tests/test_skip_notices_885.py
+Run: python -m pytest hv-lint/tests/test_skip_notices.py
 """
 
 import shutil

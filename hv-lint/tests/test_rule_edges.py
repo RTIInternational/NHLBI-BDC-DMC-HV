@@ -1,10 +1,11 @@
-"""Rule edges review round 1 (B 7) found unpinned: each test fails if the guarded line is removed.
+"""Rule edges the #885 review round 1 (B 7) found unpinned: each test fails if the guarded line
+is removed.
 
 3.9 severity by share (per code and over the slot), the race / ethnicity sibling suppression,
 3.4 on a wrong table qualifier, the 3.5 nested-table exemption, and 2.7 at ERROR in all three
 assignment forms. The component main() paths are in test_known_issues_e2e.py.
 
-Run: python -m pytest hv-lint/tests/test_rule_edges_885.py
+Run: python -m pytest hv-lint/tests/test_rule_edges.py
 """
 
 import sys

@@ -41,7 +41,7 @@ jobs:
   # fixtures, no network. Some tests read the shipped specs: COPDGene bdy_hgt.yaml and FHS
   # visit.yaml (test_visit_label_extraction.py), every *-ingest/ cohort has a
   # _manifest-<cohort>.yaml and a visit.yaml (test_cohorts.py), every id expression parses
-  # (test_rule_fixes_885.py), and every known_issues.yaml entry names a file that exists
+  # (test_known_cases.py), and every known_issues.yaml entry names a file that exists
   # (test_known_issues.py). So a spec PR that adds a cohort without a declaration or a
   # visit.yaml, changes FHS visit ids, writes an id expression the enumerator cannot read, or
   # deletes a file a known issue names fails this job. ENFORCED: these pin the resolver every

@@ -6,7 +6,7 @@
 - The known-issue identity of a block that reads no phv (ResearchStudy).
 - 1.14: a single-label block whose own dbGaP metadata names a different exam.
 
-Run: python -m pytest hv-lint/tests/test_refinements_885.py
+Run: python -m pytest hv-lint/tests/test_rules_through_main.py
 """
 
 import copy

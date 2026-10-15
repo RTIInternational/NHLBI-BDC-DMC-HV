@@ -3,7 +3,7 @@
 Blocks are copied verbatim from HV main 731984f5 into tests/fixtures/known_cases/, so a later
 data fix does not change what these tests prove. dbGaP metadata comes from the committed cache.
 
-Run: python -m pytest hv-lint/tests/test_rule_fixes_885.py
+Run: python -m pytest hv-lint/tests/test_known_cases.py
 """
 
 import sys

@@ -1,6 +1,6 @@
 """Coverage gaps from #885 part 6: a check that did not run must not read as a pass.
 
-Run: python -m pytest hv-lint/tests/test_coverage_885.py
+Run: python -m pytest hv-lint/tests/test_ci_coverage.py
 """
 
 import importlib.util
