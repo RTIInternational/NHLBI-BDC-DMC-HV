@@ -67,28 +67,18 @@ The concept name joins the files to each other and to the harmonization pipeline
   lowercase with underscores, no `.yaml` (for example `blood_pressure`). One file per
   concept; several concepts may share a file. It decides where output goes only; it is never
   the concept's identity. When the file HV currently writes a concept to disagrees with this
-  column, the guide column wins and the existing blocks move. Exceptions still pending Anne's
-  decision are noted on the concept row (today: Cardiovascular disease, and the spirometry
-  concepts). "Use when" sentences that tell sibling concepts apart go in the `VT notes` column
-  where the file has one, and otherwise in the concept description, tagged as below.
+  column, the guide column wins and the existing blocks move.
+  "Use when" sentences that tell sibling concepts apart go in the `VT notes` column
+  where the file has one, and otherwise in the concept description.
 - Example lists are `|`-separated. Labels and descriptions do not need to line up one to one.
   Example descriptions are copied verbatim from dbGaP, typos included, because they are used
   to match real source text.
 
 - `VT notes` -- an optional last column for the harmonization (virtual) team's notes, added only
   where needed (today: `Condition Concepts.tsv` and `MeasurementObservation Variables.tsv`).
-  Notes are a few short plain sentences, with no tabs, newlines or pipes. Each note starts with
-  its source: `[Anne F###]` (or `[Anne F###, F###]`) where it states one of Anne's rulings
-  (F### is the finding it came from), `[Anne #NNN]` where it states a ruling she gave in HV
-  issue or PR NNN, or `[DRAFT]` where it is the team's draft for her review. A tag covers its
-  sentence and the sentences after it, up to the next tag, the next numbered rule such as
-  `(2)`, or the end of the cell. Text no tag covers is Anne's. The readMe itself states the
-  agreed conventions and is not tagged. Existing `Notes` and team notes columns are left
-  untouched, and the empty trailing `DrugExposure Concepts` columns are kept.
-- `[DRAFT for Anne]` -- the same marker inside other cells: drafted target units and
-  conversions, and team sentences in description or Metadata text (in files with no `VT notes`
-  column). An `[Anne F###]` tag inside such text marks a sentence that states her ruling. Tag
-  scope is as defined in the `VT notes` bullet above. On acceptance, strip the marker.
+  Notes are a few short plain sentences, with no tabs, newlines or pipes. Existing `Notes` and
+  team notes columns are left untouched, and the empty trailing `DrugExposure Concepts`
+  columns are kept.
 
 ## Enum values: name or meaning CURIE
 
@@ -96,8 +86,8 @@ For a BDC-HM enum keyed by CURIE (sex, race, ethnicity, vital status, severity, 
 relationship, smoking, education, occupation, SDOH type, drug route, procedure and measurement
 type) the transform spec may hold the permissible-value title, where the enum has one (for
 example `MALE`, `DEAD`), or its CURIE key (for example `OMOP:8507`). Procedure, measurement type
-and occupation values have no title: write the CURIE. The ingest is expected to emit the CURIE
-(dm-bip name-to-CURIE translation to be confirmed by a test). An enum keyed by
+and occupation values have no title: write the CURIE. The ingest is expected to emit the CURIE.
+An enum keyed by
 name, such as `ProvenanceEnum` or the condition status, takes the value name only; several
 provenance values have no CURIE.
 
@@ -113,9 +103,9 @@ This applies to every class, including existing specs.
   class (Person, Demography) it leaves the slot empty.
 - Refused, do not know, and any asked-but-unanswered value write `UNKNOWN`
   (`UNKNOWN_IF_EVER_SMOKED` for smoking), so a researcher can see the question was asked.
-- [DRAFT for Anne] A slot with no `UNKNOWN` value (`vital_status`, numeric values) is left
+- A slot with no `UNKNOWN` value (`vital_status`, numeric values) is left
   empty when the answer is not known; `cause_of_death` follows its own rule (5) in Person
-  Metadata. Still to settle: this bullet, and the family income bracket text.
+  Metadata.
 
 ## Specimen
 
