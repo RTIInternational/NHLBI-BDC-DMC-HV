@@ -1,6 +1,6 @@
 bdchm slot	bdchm value enum	description	Example source variable description
 MeasurementObservation.range_low		Use this slot to report the lower limit of detection if available	
-MeasurementObservation.range_high		Use this slot to report the upper limit of detection, if available	
+MeasurementObservation.range_high		Use this slot to report the upper limit of detection, if available. Upper-limit-of-normal and reference-range variables (ARIC HRAA43CC, HFAA39C, HRAA43EE, HFAA40C, HRAA43DD, HFAA41C, HFAA42C; WHI BNPULN, PROBNPULN) are NOT loaded as measurements and never populate value_quantity. Delete them rather than store them in range_high.	
 MeasurementObservation.observation_type		This slot will always have a CURIE from OMOP, OBA, NCIT, EFO, etc.	
 MeasurementObservation.associated_artifact		This slot will be an identifier to a File, QuestionnaireResponse, or Assay. Use this to link a measurement observation to an entity that generated it. For example, a CESD score should have a link to the QuestionnaireResponse from which it is derived.	
 MeasurementObservation.body_site		Use this slot to specify where on the body a measurement was taken. For example, blood pressure can be measured from multiple places on the body. This will always be a CURIE from uberon.	
@@ -30,8 +30,8 @@ MeasurementObservation.performed_by		Use this slot to specify the Organization t
 MeasurementObservation.value_string		Use this slot to contain the value of the MeasurementObservation if that value is a String.	
 MeasurementObservation.value_boolean		Use this slot to contain the value of the MeasurementObservation if that value is a Boolean.	
 MeasurementObservation.value_quantity		Use this slot to contain the value of the MeasurementObservation if that value is an Integer or Decimal.	
-MeasurementObservation.value_enum		Use this slot to contain the value of the MeasurementObservation if that value is an Enum.	
-MeasurementObservation.context		Use this slot to specify any relevant context for the MeasurementObservation. For example, this can record if the measurement was taken relative to fasting, exercise, or taking a bronchodilator.	
+MeasurementObservation.value_enum		Use this slot to contain the value of the MeasurementObservation if that value is an Enum. Categorical MeasurementObservation (currently only Cigarette smoking status) writes value_enum from the SmokingStatus values listed in Variables. Either the enum name or its meaning CURIE is accepted in the transform spec; the ingest is expected to emit the CURIE.	
+MeasurementObservation.context		Use this slot to specify any relevant context for the MeasurementObservation. For example, this can record if the measurement was taken relative to fasting, exercise, or taking a bronchodilator. Fasting: Context activity FASTING with relative_timing AFTER on every row whose variable states fasting, with time_duration taken from the cohort's hours-since-last-meal variable when one exists. Where the source states only a threshold (fasting >= 8 hours), keep it in method_type. A plain lab variable whose cohort records hours fasted in another variable (for example MESA or CHS lipids) gets Context FASTING on every row, with time_duration = the hours. Bronchodilator: AFTER for post-bronchodilator values, no context for unstated; see the spirometry rule on the FEV1 concept row.	
 Quantity		This entity is the range for range_low, range_high, and value_quantity slots. It will contain a numerical value and the metadata about that value.	
 Quantity.value_decimal		Use this slot to contain float numbers	
 Quantity.value_integer		Use this slot to contain integers. Many scores can only be integer values.	
@@ -44,8 +44,8 @@ Quantity.operator	EQUAL_TO	The quantity is equal to a specified value - this wil
 Quantity.operator	GREATER_THAN_OR_EQUAL_TO	The quantity is greater than or equal to a specified value	
 Quantity.operator	GREATER_THAN	The quantity is greater than a specified value	
 Context		This entity is the range for context	
-Context.activity		Use this slot to specify the type of activity	
-Context.relative_timing		Use this slot to specify when the activity occurred relative to the measurement being taken	
+Context.activity		Use this slot to specify the type of activity. FASTING with relative_timing AFTER goes on every row whose variable states fasting; rows of a plain lab variable whose cohort records hours fasted also get FASTING.	
+Context.relative_timing		Use this slot to specify when the activity occurred relative to the measurement being taken. Bronchodilator: AFTER for post-bronchodilator values, no context for unstated.	
 Context.relative_timing	AFTER	Occurring later than	
 Context.relative_timing	BEFORE	Occurring prior to	
 Context.relative_timing	CONCURRENT_WITH	Occurring simultaneous to	
