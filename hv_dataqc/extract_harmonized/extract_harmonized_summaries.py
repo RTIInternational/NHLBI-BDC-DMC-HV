@@ -1129,7 +1129,11 @@ def main(argv: list[str] | None = None) -> None:
             label_map = load_label_map(label_map_path)
             print(f"Label map: {len(label_map)} entries from {label_map_path.name}")
         except FileNotFoundError:
-            print(f"WARNING: label map not found at {label_map_path} -- bdc_label will be None for all entries")
+            raise SystemExit(
+                f"ERROR: label map not found at {label_map_path}. Every bdc_label would "
+                "be blank and the extract would be cached. Fix the path, or pass "
+                "--label-map '' to extract without labels."
+            )
 
     # Resolve mapped-data directories
     if args.mapped_data_dirs:
