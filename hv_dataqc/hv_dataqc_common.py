@@ -45,7 +45,14 @@ def write_json_atomic(
 ) -> None:
     """Write strict JSON via temp file then atomic replace.
 
-    Creates parent directories as needed.
+    Sanitizes the structure (``json_safe``) then streams it to disk.  Creates
+    parent directories as needed.
+
+    Note: very large structures hold a sanitized copy briefly during the
+    ``json_safe`` pass.  Callers producing huge artifacts (e.g. the source
+    extractor) should bound the structure itself — for example by not emitting
+    the multi-PHV joint-distribution crosstabs when they are not needed —
+    rather than relying on the writer to stream a multi-gigabyte dict.
     """
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = path.with_name(f"{path.name}.tmp")
@@ -59,6 +66,111 @@ def write_json_atomic(
                 default=default,
                 allow_nan=False,
             )
+        tmp_path.replace(path)
+    finally:
+        if tmp_path.exists():
+            tmp_path.unlink()
+
+
+# --- Table S4/S5 additions (2026-08) ----------------------------------------
+# Everything from here to the end of write_xlsx() was added for the
+# supplementary tables and is currently used ONLY by them:
+# transform_assessment/spec_phv_report.py (S4) and
+# extract_harmonized/table_s5/report.py (S5).  Nothing in the QC pipeline calls
+# it.  Kept here rather than in transform_assessment/ because both consumers
+# need it and this is the shared module they already import.
+#
+# Flagging the boundary because this module has other authors.  If it grows,
+# moving these into their own xlsx helper is queued -- see
+# transform_assessment/README.md "Also queued, lower priority".
+
+# Number-format strings (Excel) shared by the S4/S5 xlsx writers.
+XLSX_FMT_COUNT = "#,##0"        # integer counts with thousands separators
+XLSX_FMT_DECIMAL = "#,##0.00"  # 2-decimal stats with thousands separators
+
+
+def coerce_number(value: Any) -> Any:
+    """Return value as int/float if it is numeric (or a numeric string), else as-is.
+
+    Writing real numbers (not pre-formatted strings) is what lets the cell
+    number-format apply, so the reader gets commas / fixed decimals without any
+    manual Excel formatting.
+    """
+    if value is None or isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return value
+    s = str(value).strip()
+    if s == "":
+        return None
+    try:
+        f = float(s.replace(",", ""))
+    except ValueError:
+        return value
+    return int(f) if f.is_integer() else f
+
+
+def write_xlsx(
+    path: Path,
+    headers: list[str],
+    rows: "list[list[Any]]",
+    *,
+    column_formats: "list[str | None] | None" = None,
+    sheet_title: str = "Sheet1",
+    freeze_header: bool = True,
+) -> None:
+    """Write a single-sheet .xlsx with per-column number formats.
+
+    Numeric cells are written as numbers and given *column_formats[i]* (an Excel
+    format string, or None to leave as text/general), so thousands separators
+    and fixed decimals come from the cell format — no manual Excel step. Columns
+    are auto-sized to their content. Creates parent dirs; writes atomically.
+
+    Args:
+        headers: column header labels (row 1).
+        rows: list of row value lists, aligned to *headers*.
+        column_formats: optional per-column Excel number-format string; None for
+            a column means leave values as-is (text). Shorter lists are padded
+            with None.
+        sheet_title: worksheet name.
+        freeze_header: freeze row 1 so the header stays visible when scrolling.
+    """
+    from openpyxl import Workbook  # local import: optional dependency
+
+    fmts = list(column_formats or [])
+    fmts += [None] * (len(headers) - len(fmts))
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = sheet_title
+    ws.append(headers)
+
+    widths = [len(str(h)) for h in headers]
+    for row in rows:
+        out_cells: list[Any] = []
+        for ci, raw in enumerate(row):
+            val = coerce_number(raw) if fmts[ci] is not None else raw
+            out_cells.append(val)
+            shown = "" if val is None else str(val)
+            if len(shown) > widths[ci]:
+                widths[ci] = len(shown)
+        ws.append(out_cells)
+        for ci, fmt in enumerate(fmts):
+            if fmt is not None:
+                cell = ws.cell(row=ws.max_row, column=ci + 1)
+                if isinstance(cell.value, (int, float)) and not isinstance(cell.value, bool):
+                    cell.number_format = fmt
+
+    from openpyxl.utils import get_column_letter
+    for ci, w in enumerate(widths):
+        ws.column_dimensions[get_column_letter(ci + 1)].width = min(max(w + 2, 8), 60)
+    if freeze_header:
+        ws.freeze_panes = "A2"
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = path.with_name(f"{path.name}.tmp")
+    try:
+        wb.save(tmp_path)
         tmp_path.replace(path)
     finally:
         if tmp_path.exists():
@@ -99,28 +211,66 @@ def load_phv_name_map(
     return phv_names
 
 
+# Maximum number of distinct values enumerated in a categorical distribution.
+# Genuine dbGaP categorical variables have well under this many codes; a higher
+# count indicates a free-text / date / identifier-like column whose full value
+# enumeration would bloat the artifact.
+# Above the cap we keep the most frequent values and
+# fold the remainder into an "__other__" bucket, so counts still reconcile while
+# no long tail of rare values is enumerated.
+MAX_CATEGORICAL_KEYS = 100
+
+
 def categorical_stats(series: pd.Series) -> dict[str, Any]:
-    """Return value distribution for a categorical series."""
+    """Return value distribution for a categorical series.
+
+    Distribution keys are normalized via ``normalize_category_key`` so that
+    values differing only by dtype/formatting (``1.0`` vs ``1``, ``" 1 "`` vs
+    ``1``) collapse to a single key. This keeps the source and harmonized
+    extractors dtype-independent and prevents false C7/C12 category mismatches;
+    counts for values that normalize to the same key are summed. When the number
+    of distinct keys exceeds ``MAX_CATEGORICAL_KEYS`` the distribution is
+    truncated to the most frequent keys plus an ``"__other__"`` aggregate.
+    """
     n_total = int(len(series))
     n_missing = int(series.isna().sum())
     n_valid = n_total - n_missing
-    counts = series.value_counts(dropna=True, sort=True)
-    distribution: dict[str, dict[str, Any]] = {}
-    for val, cnt in counts.items():
-        distribution[str(val)] = {
-            "n": int(cnt),
-            "pct": round(100.0 * int(cnt) / n_valid, 2) if n_valid > 0 else 0.0,
-        }
 
-    return {
+    counts = series.value_counts(dropna=True, sort=True)
+    agg: dict[str, int] = {}
+    for val, cnt in counts.items():
+        key = normalize_category_key(val)
+        agg[key] = agg.get(key, 0) + int(cnt)
+
+    n_distinct = len(agg)
+    truncated = n_distinct > MAX_CATEGORICAL_KEYS
+    if truncated:
+        ordered = sorted(agg.items(), key=lambda kv: kv[1], reverse=True)
+        agg = dict(ordered[:MAX_CATEGORICAL_KEYS])
+        other_n = sum(n for _, n in ordered[MAX_CATEGORICAL_KEYS:])
+        if other_n:
+            agg["__other__"] = other_n
+
+    distribution: dict[str, dict[str, Any]] = {
+        key: {
+            "n": n,
+            "pct": round(100.0 * n / n_valid, 2) if n_valid > 0 else 0.0,
+        }
+        for key, n in agg.items()
+    }
+
+    result: dict[str, Any] = {
         "type": "categorical",
         "n_total": n_total,
         "n_valid": n_valid,
         "n_missing": n_missing,
         "pct_missing": round(n_missing / n_total * 100, 2) if n_total > 0 else 0.0,
-        "n_distinct": int(series.nunique(dropna=True)),
+        "n_distinct": n_distinct,
         "distribution": distribution,
     }
+    if truncated:
+        result["distribution_truncated"] = True
+    return result
 
 
 def continuous_stats(series: pd.Series) -> dict[str, Any]:

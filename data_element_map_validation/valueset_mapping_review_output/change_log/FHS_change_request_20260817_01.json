@@ -1,0 +1,303 @@
+{
+  "submitted_date": "2026-08-17",
+  "study": "FHS",
+  "curator": "Curator",
+  "changes": {
+    "FHS::confirmed::albumin_urine.yaml": {
+      "study": "FHS",
+      "change_request": "OMOP:3029937",
+      "original_curie": "OBA:VT0002871",
+      "slot": "observation_type",
+      "yaml_files": [
+        "albumin_urine.yaml"
+      ],
+      "notes": "https://athena.ohdsi.org/search-terms/terms/3029937 or can be dual mapped to \nhttp://purl.obolibrary.org/obo/OBA_VT0002871. The amount of a albumin type when measured in urine",
+      "applied": true,
+      "saved_date": "2026-08-10",
+      "applied_date": "2026-08-17",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `albumin_urine.yaml` [observation_type] → `OMOP:3029937` (10 block(s) updated)",
+        "✓ CSV: 21 row(s) → `OMOP:3029937` for `albumin_urine.yaml` [observation_type]"
+      ]
+    },
+    "FHS::confirmed::asthma.yaml": {
+      "study": "FHS",
+      "change_request": "MONDO:0004979",
+      "original_curie": "HP:0003193",
+      "slot": "condition_concept",
+      "yaml_files": [
+        "asthma.yaml"
+      ],
+      "notes": "Should use asthma condition curie - http://purl.obolibrary.org/obo/MONDO_0004979 - bronchial disease that is characterized by chronic inflammation and narrowing of the airways along with the Historical status, i.e. condition_concept = MONDO:0004979 with condition_status=HISTORICAL",
+      "applied": false,
+      "saved_date": "2026-08-10",
+      "apply_results": [
+        "⚠ `condition_concept` has 84 blocks with differing values (`HP:0003193`, `HP:0012393`, `HP:0030828`, `MONDO:0004784`, `MONDO:0004979`, `MONDO:0005492`, `MONDO:0024355`, `MONDO:0850282`) — cannot apply uniformly. Edit the YAML file directly.",
+        "✓ CSV: 93 row(s) → `MONDO:0004979` for `asthma.yaml` [condition_concept]"
+      ]
+    },
+    "FHS::confirmed::bnp.yaml": {
+      "study": "FHS",
+      "change_request": "OBA:2045303",
+      "original_curie": "OBA:2045303",
+      "slot": "observation_type",
+      "yaml_files": [
+        "bnp.yaml"
+      ],
+      "notes": "Source data element: phv00055159 =B-TYPE NATRIURETIC PEPTIDE (PG/ML)\nLOINC:\nBNP SerPl-mCnc-LOINC:30934-4=Natriuretic peptide B [Mass/volume] in Serum or Plasma maps to OMOP:3011960\nOBA: \nhttp://purl.obolibrary.org/obo/OBA_2045303 =natriuretic peptides B level\nWe will keep to OBA terms.",
+      "applied": true,
+      "saved_date": "2026-08-10",
+      "applied_date": "2026-08-17",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `bnp.yaml` [observation_type] → `OBA:2045303` (3 block(s) updated)",
+        "✓ CSV: 4 row(s) → `OBA:2045303` for `bnp.yaml` [observation_type]"
+      ]
+    },
+    "FHS::confirmed::fast_gluc_bld.yaml": {
+      "study": "FHS",
+      "change_request": "OBA:2090000",
+      "original_curie": "OMOP:4156660",
+      "slot": "observation_type",
+      "yaml_files": [
+        "fast_gluc_bld.yaml"
+      ],
+      "notes": "level of glucose in blood during fasting\nhttp://purl.obolibrary.org/obo/OBA_2090000",
+      "applied": true,
+      "saved_date": "2026-08-10",
+      "applied_date": "2026-08-17",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `fast_gluc_bld.yaml` [observation_type] → `OBA:2090000` (12 block(s) updated)",
+        "✓ CSV: 16 row(s) → `OBA:2090000` for `fast_gluc_bld.yaml` [observation_type]"
+      ]
+    },
+    "FHS::confirmed::fibrin.yaml": {
+      "study": "FHS",
+      "change_request": "OMOP:3016407",
+      "original_curie": "OBA:0000061",
+      "slot": "observation_type",
+      "yaml_files": [
+        "fibrin.yaml"
+      ],
+      "notes": "https://athena.ohdsi.org/search-terms/terms/3016407\nBLOOD ANALYSIS: FIBRINOGEN (MG/100 ML)\nLOINC:3255-7 — \"Fibrinogen [Mass/volume] in Platelet poor plasma by Coagulation assay\" (the classic Clauss-method fibrinogen test, most commonly used in cohort studies).\nvs\ncirculating fibrinogen levels\nhttp://purl.obolibrary.org/obo/OBA_0000061\nOBA:0000061",
+      "applied": true,
+      "saved_date": "2026-08-11",
+      "applied_date": "2026-08-17",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `fibrin.yaml` [observation_type] → `OMOP:3016407` (8 block(s) updated)",
+        "✓ CSV: 15 row(s) → `OMOP:3016407` for `fibrin.yaml` [observation_type]"
+      ]
+    },
+    "FHS::confirmed::lactate.yaml": {
+      "study": "FHS",
+      "change_request": "OMOP:3014111",
+      "original_curie": "OBA:VT0010616",
+      "slot": "observation_type",
+      "yaml_files": [
+        "lactate.yaml"
+      ],
+      "notes": "OBA:VT0010616 - this one states blood lactate amount\nhttp://purl.obolibrary.org/obo/OBA_VT0010616\nHowever the variable describes in dbGap states that value represents a plasma concentration (a specific, quantified measurement, not a generic/qualitative result), assayed via LC/MS — a quantitative platform reporting molar concentration values. That matches 2524-7's fully-specified structure: known property (Moles/volume), known specimen (Serum or Plasma), known scale (quantitative). ",
+      "applied": true,
+      "saved_date": "2026-08-14",
+      "applied_date": "2026-08-17",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `lactate.yaml` [observation_type] → `OMOP:3014111` (3 block(s) updated)",
+        "✓ CSV: 5 row(s) → `OMOP:3014111` for `lactate.yaml` [observation_type]"
+      ]
+    },
+    "FHS::confirmed::lympho_pct.yaml": {
+      "study": "FHS",
+      "change_request": "OBA:0003352",
+      "original_curie": "OMOP:37208690",
+      "slot": "observation_type",
+      "yaml_files": [
+        "lympho_pct.yaml"
+      ],
+      "notes": "`observation_type`: ✓ OMOP:37208690 matches YAML. Measurement/procedure agent → `LOINC:26474-7, LOINC:30525-0` (\"LYMPHOCYTES (METPATH lab profile)\"). OBA agent → OBA:0003352 (\"LYMPHOCYTES (METPATH lab profile)\"). ⚠ **Vocab/slot mismatch**: LOINC encodes assay procedures (the *how*) and belongs in `method_type`. OBA/OMOP encode biological attributes (the *what*) — the correct vocabulary for `observation_type`. This agent suggestion is a vocabulary/slot mismatch, not a quality improvement. → Agent suggests LOINC:26474-7; Recommended action cites OBA:0003352 — manual curator review advised. → Current YAML OMOP:37208690 differs from Recommended OBA:0003352.",
+      "applied": true,
+      "saved_date": "2026-08-14",
+      "applied_date": "2026-08-17",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `lympho_pct.yaml` [observation_type] → `OBA:0003352` (1 block(s) updated)",
+        "✓ CSV: 2 row(s) → `OBA:0003352` for `lympho_pct.yaml` [observation_type]"
+      ]
+    },
+    "FHS::confirmed::tot_chol_bld.yaml": {
+      "study": "FHS",
+      "change_request": "OBA:VT0000180",
+      "original_curie": "OBA:VT0000180",
+      "slot": "observation_type",
+      "yaml_files": [
+        "tot_chol_bld.yaml"
+      ],
+      "notes": "Leaving it as OBA:VT0000180, but note \nthe variable phv00001581 states the TOTAL CHOLESTEROL SERUM & PLASMA and OMOP:2212267 is \nCholesterol, serum or whole blood, total",
+      "applied": true,
+      "saved_date": "2026-08-14",
+      "applied_date": "2026-08-17",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `tot_chol_bld.yaml` [observation_type] → `OBA:VT0000180` (35 block(s) updated)",
+        "✓ CSV: 65 row(s) → `OBA:VT0000180` for `tot_chol_bld.yaml` [observation_type]"
+      ]
+    },
+    "FHS::confirmed::tak_statin.yaml": {
+      "study": "FHS",
+      "change_request": "ATC:C10AA",
+      "original_curie": "ATC:C10A",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_statin.yaml"
+      ],
+      "notes": "C10AA =HMG CoA reductase inhibitors— the specific subclass covering lovastatin, pravastatin, fluvastatin, atorvastatin, rosuvastatin, and pitavastatin — i.e., statins exactly as named in the variable",
+      "applied": false,
+      "saved_date": "2026-08-14",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_statin.yaml`",
+        "✓ CSV: 9 row(s) → `ATC:C10AA` for `tak_statin.yaml` [drug_concept]"
+      ]
+    },
+    "FHS::confirmed::tak_orlhypoag.yaml": {
+      "study": "FHS",
+      "change_request": "OMOP:1594973",
+      "original_curie": "RxCUI:2404",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_orlhypoag.yaml"
+      ],
+      "notes": "OMOP:1594973=chlorpropamide\nhttps://athena.ohdsi.org/search-terms/terms/1594973\nORAL HYPOGLYCEMICS: CHLORPROPAMIDE",
+      "applied": false,
+      "saved_date": "2026-08-15",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_orlhypoag.yaml`",
+        "✓ CSV: 24 row(s) → `OMOP:1594973` for `tak_orlhypoag.yaml` [drug_concept]"
+      ]
+    },
+    "FHS::confirmed::angina.yaml": {
+      "study": "FHS",
+      "change_request": "MONDO:0006805",
+      "original_curie": "HP:0001681",
+      "slot": "condition_concept",
+      "yaml_files": [
+        "angina.yaml"
+      ],
+      "notes": "",
+      "applied": true,
+      "saved_date": "2026-08-17",
+      "applied_date": "2026-08-17",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `angina.yaml` [condition_concept] → `MONDO:0006805` (1 block(s) updated)",
+        "✓ CSV: 5 row(s) → `MONDO:0006805` for `angina.yaml` [condition_concept]"
+      ]
+    },
+    "FHS::confirmed::obesity.yaml": {
+      "study": "FHS",
+      "change_request": "MONDO:0011122",
+      "original_curie": "MONDO:0005139",
+      "slot": "condition_concept",
+      "yaml_files": [
+        "obesity.yaml"
+      ],
+      "notes": "http://purl.obolibrary.org/obo/MONDO_0011122\nand OMOP:433736\nhttps://athena.ohdsi.org/search-terms/terms/433736\n",
+      "applied": true,
+      "saved_date": "2026-08-17",
+      "applied_date": "2026-08-17",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `obesity.yaml` [condition_concept] → `MONDO:0011122` (13 block(s) updated)",
+        "✓ CSV: 38 row(s) → `MONDO:0011122` for `obesity.yaml` [condition_concept]"
+      ]
+    },
+    "FHS::confirmed::tak_cenactag.yaml": {
+      "study": "FHS",
+      "change_request": "OMOP: 1398937",
+      "original_curie": "RxCUI:2599",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_cenactag.yaml"
+      ],
+      "notes": "https://athena.ohdsi.org/search-terms/terms/1398937\nHas form (RxNorm) - ingredient of \nclonidine hydrochloride",
+      "applied": false,
+      "saved_date": "2026-08-17",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_cenactag.yaml`",
+        "✓ CSV: 21 row(s) → `OMOP: 1398937` for `tak_cenactag.yaml` [drug_concept]"
+      ]
+    },
+    "FHS::confirmed::tak_aldorecepblk.yaml": {
+      "study": "FHS",
+      "change_request": "OMOP:970250",
+      "original_curie": "RxCUI:9997",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_aldorecepblk.yaml"
+      ],
+      "notes": "https://athena.ohdsi.org/search-terms/terms/970250",
+      "applied": false,
+      "saved_date": "2026-08-17",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_aldorecepblk.yaml`",
+        "✓ CSV: 4 row(s) → `OMOP:970250` for `tak_aldorecepblk.yaml` [drug_concept]"
+      ]
+    },
+    "FHS::confirmed::stroke.yaml": {
+      "study": "FHS",
+      "change_request": "MONDO:0005098",
+      "original_curie": "HP:0001297",
+      "slot": "condition_concept",
+      "yaml_files": [
+        "stroke.yaml"
+      ],
+      "notes": "condition should override phenotype for condition_concept",
+      "applied": true,
+      "saved_date": "2026-08-17",
+      "applied_date": "2026-08-17",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `stroke.yaml` [condition_concept] → `MONDO:0005098` (17 block(s) updated)",
+        "✓ CSV: 29 row(s) → `MONDO:0005098` for `stroke.yaml` [condition_concept]"
+      ]
+    },
+    "FHS::confirmed::sodium_blood.yaml": {
+      "study": "FHS",
+      "change_request": "OMOP:3001838",
+      "original_curie": "OBA:VT0001776",
+      "slot": "observation_type",
+      "yaml_files": [
+        "sodium_blood.yaml"
+      ],
+      "notes": "Sodium [Moles/volume] in Red Blood Cellshttps://athena.ohdsi.org/search-terms/terms/3001838",
+      "applied": true,
+      "saved_date": "2026-08-17",
+      "applied_date": "2026-08-17",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `sodium_blood.yaml` [observation_type] → `OMOP:3001838` (2 block(s) updated)",
+        "✓ CSV: 3 row(s) → `OMOP:3001838` for `sodium_blood.yaml` [observation_type]"
+      ]
+    },
+    "FHS::confirmed::pad.yaml": {
+      "study": "FHS",
+      "change_request": "MONDO:0005294",
+      "original_curie": "MONDO:0005386",
+      "slot": "condition_concept",
+      "yaml_files": [
+        "pad.yaml"
+      ],
+      "notes": "MONDO:0005294\nperipheral vascular disease\nhttp://purl.obolibrary.org/obo/MONDO_0005294",
+      "applied": true,
+      "saved_date": "2026-08-17",
+      "applied_date": "2026-08-17",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `pad.yaml` [condition_concept] → `MONDO:0005294` (6 block(s) updated)",
+        "✓ CSV: 10 row(s) → `MONDO:0005294` for `pad.yaml` [condition_concept]"
+      ]
+    }
+  }
+}

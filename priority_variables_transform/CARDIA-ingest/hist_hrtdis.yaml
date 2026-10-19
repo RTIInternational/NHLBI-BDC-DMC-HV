@@ -5,7 +5,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113019}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00113035 == 2, {phv00113036} * 365))
+          expr: case(({phv00113035} == 2, {phv00113036} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113019}) + ":CARDIA YEAR 0")'
         condition_concept:
@@ -18,10 +18,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -31,7 +31,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113019}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00113038 == 2, {phv00113039} * 365))
+          expr: case(({phv00113038} == 2, {phv00113039} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113019}) + ":CARDIA YEAR 0")'
         condition_concept:
@@ -44,10 +44,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -68,10 +68,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -81,7 +81,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00114388}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00114401 == 2, {phv00114402} * 365))
+          expr: case(({phv00114401} == 2, {phv00114402} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00114388}) + ":CARDIA YEAR 2")'
         condition_concept:
@@ -93,10 +93,10 @@
             '2': HISTORICAL
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -106,7 +106,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00114388}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00114404 == 2, {phv00114406} * 365))
+          expr: case(({phv00114404} == 2, {phv00114406} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00114388}) + ":CARDIA YEAR 2")'
         condition_concept:
@@ -119,10 +119,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -143,10 +143,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -156,7 +156,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00115423}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00115433 == 2, {phv00115434} * 365))
+          expr: case(({phv00115433} == 2, {phv00115434} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115423}) + ":CARDIA YEAR 5")'
         condition_concept:
@@ -169,10 +169,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -182,7 +182,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00115423}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00115437 == 2, {phv00115438} * 365))
+          expr: case(({phv00115437} == 2, {phv00115438} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115423}) + ":CARDIA YEAR 5")'
         condition_concept:
@@ -195,10 +195,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -208,7 +208,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116953}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00116964 == 2, {phv00116965} * 365))
+          expr: case(({phv00116964} == 2, {phv00116965} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116953}) + ":CARDIA YEAR 7")'
         condition_concept:
@@ -221,10 +221,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -234,7 +234,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116953}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00116968 == 2, {phv00116969} * 365))
+          expr: case(({phv00116968} == 2, {phv00116969} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116953}) + ":CARDIA YEAR 7")'
         condition_concept:
@@ -247,10 +247,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -260,7 +260,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118426}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00118438 == 2, {phv00118439} * 365))
+          expr: case(({phv00118438} == 2, {phv00118439} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118426}) + ":CARDIA YEAR 10")'
         condition_concept:
@@ -273,10 +273,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -286,7 +286,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118426}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00118442 == 2, {phv00118443} * 365))
+          expr: case(({phv00118442} == 2, {phv00118443} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118426}) + ":CARDIA YEAR 10")'
         condition_concept:
@@ -299,10 +299,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -312,7 +312,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00119801}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00119811 == 2, {phv00119816} * 365))
+          expr: case(({phv00119811} == 2, {phv00119816} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
         condition_concept:
@@ -324,10 +324,10 @@
             '1': ABSENT
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -337,7 +337,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00119801}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00119813 == 2, {phv00119818} * 365))
+          expr: case(({phv00119813} == 2, {phv00119818} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
         condition_concept:
@@ -349,9 +349,9 @@
             '1': ABSENT
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF

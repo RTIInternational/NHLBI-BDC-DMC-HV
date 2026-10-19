@@ -12,15 +12,15 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00159568}) + ":COPDGene")'
         condition_concept:
-          value: HP:0001297
+          value: MONDO:0005098
         condition_status:
           populated_from: phv00159619
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: Medical History Questionnaire
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: Medical History Questionnaire
         relationship_to_participant:
           value: ONESELF

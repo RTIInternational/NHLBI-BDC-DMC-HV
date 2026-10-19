@@ -15,57 +15,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001474
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00101324}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
-        condition_concept:
-          value: MONDO:0005009
-          range: string
-        condition_status:
-          populated_from: phv00101495
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001475
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00102174}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00102174}) + ":CHS YEAR 11")'
-        condition_concept:
-          value: MONDO:0005009
-          range: string
-        condition_status:
-          populated_from: phv00102643
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -90,7 +40,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         relationship_to_participant:
           value: ONESELF

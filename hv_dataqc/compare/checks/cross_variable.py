@@ -73,15 +73,28 @@ def check_c12_value_mapping_coverage(match: dict, phv_value_codes: dict[str, set
             if missing_codes:
                 detail["missing_codes"] = missing_codes
                 sentinel_missing = [code for code in missing_codes if _is_null_sentinel_code(code)]
-                semantic_missing = [code for code in missing_codes if code not in sentinel_missing]
+                # Only WARN for codes that actually appear in the source data —
+                # codes defined in dbGaP but never observed cannot cause a
+                # harmonization gap in practice.
+                semantic_missing = [
+                    code for code in missing_codes
+                    if code not in sentinel_missing and observed_counts.get(code, 0) > 0
+                ]
+                # Non-sentinel codes defined in dbGaP but absent from actual data → INFO
+                unobserved_missing = [
+                    code for code in missing_codes
+                    if code not in sentinel_missing and observed_counts.get(code, 0) == 0
+                ]
                 if sentinel_missing:
                     detail["missing_sentinel_codes"] = sentinel_missing
                 if semantic_missing:
                     detail["missing_semantic_codes"] = semantic_missing
+                if unobserved_missing:
+                    detail["missing_unobserved_codes"] = unobserved_missing
+                # All semantic_missing codes are observed by definition
                 observed_bits = [
                     f"{code} (n={observed_counts[code]})"
-                    for code in missing_codes
-                    if observed_counts.get(code, 0) > 0
+                    for code in semantic_missing
                 ]
                 suffix = f"; observed: {', '.join(observed_bits)}" if observed_bits else ""
                 if semantic_missing:
@@ -91,10 +104,17 @@ def check_c12_value_mapping_coverage(match: dict, phv_value_codes: dict[str, set
                     )
                     status = "WARN"
                 else:
-                    message = (
-                        f"YAML mapping does not explicitly handle null/sentinel code(s): "
-                        f"{', '.join(sentinel_missing)}{suffix}"
-                    )
+                    info_parts = []
+                    if sentinel_missing:
+                        info_parts.append(
+                            f"null/sentinel code(s): {', '.join(sentinel_missing)}"
+                        )
+                    if unobserved_missing:
+                        info_parts.append(
+                            f"code(s) defined in dbGaP but absent from source data: "
+                            f"{', '.join(unobserved_missing)}"
+                        )
+                    message = "YAML mapping does not explicitly handle " + "; ".join(info_parts)
                     status = "INFO"
                 results.append(CheckResult(
                     "C12", f"{phv_id} [{mapping_kind}]", status,

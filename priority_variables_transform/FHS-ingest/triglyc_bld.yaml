@@ -32,11 +32,11 @@
           value: OMOP:4042590
           range: string
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 7")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 7")'
         age_at_observation:
           expr: '{pht003099.phv00177942} * 365'
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001035}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001036}) + ":FHS")'
         method_type:
           value: fasting minimum 12 hrs
           range: string          
@@ -162,11 +162,11 @@
           value: OBA:VT0002644
           range: string
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010694}) + ":FHS OFFSPRING EXAM 7")'
         age_at_observation:
           expr: '{pht003099.phv00177942} * 365'
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00010139}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00010694}) + ":FHS")'
         method_type:
           value: fasting minimum 12 hrs
           range: string          
@@ -214,11 +214,11 @@
           value: OMOP:4041722
           range: string
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071888}) + ":FHS OFFSPRING EXAM 8")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071899}) + ":FHS OFFSPRING EXAM 8")'
         age_at_observation:
           expr: '{pht003099.phv00177944} * 365'
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071888}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071899}) + ":FHS")'
         method_type:
           value: fasting minimum 12 hrs
           range: string          
@@ -396,11 +396,11 @@
           value: OMOP:4041722
           range: string
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00081012}) + ":" + case(({phv00081047} == ''20'', ''FHS ORIGINAL EXAM 20''), ({phv00081047} == ''21'', ''FHS ORIGINAL EXAM 21''), (True, ''FHS UNKNOWN VISIT'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00081048}) + ":" + case(({phv00081047} == ''20'', ''FHS ORIGINAL EXAM 20''), ({phv00081047} == ''21'', ''FHS ORIGINAL EXAM 21''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
           expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), ({phv00081047} == 21, {pht003099.phv00177970} * 365))          
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00081012}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00081048}) + ":FHS")'
         method_type:
           value: fasting minimum 12 hrs
           range: string          

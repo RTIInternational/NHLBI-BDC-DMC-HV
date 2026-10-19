@@ -1,0 +1,42 @@
+{
+  "submitted_date": "2026-08-21",
+  "study": "HCHS",
+  "curator": "Curator",
+  "changes": {
+    "HCHS::confirmed::tak_aceinhib.yaml": {
+      "study": "HCHS",
+      "change_request": "ATC:C09A",
+      "original_curie": "ATC:C09A",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_aceinhib.yaml"
+      ],
+      "notes": "ATC:C09A = ACE inhibitors, plain",
+      "applied": false,
+      "saved_date": "2026-06-15",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_aceinhib.yaml`",
+        "✓ CSV: 2 row(s) → `ATC:C09A` for `tak_aceinhib.yaml` [drug_concept]"
+      ]
+    },
+    "HCHS::confirmed::waist_hip.yaml::phv00226399": {
+      "study": "HCHS",
+      "phv": "phv00226399",
+      "change_request": "OBA:2100052",
+      "original_curie": "OMOP:4087501",
+      "slot": "observation_type",
+      "yaml_files": [
+        "waist_hip.yaml"
+      ],
+      "notes": "OMOP:4087501 is more accurate",
+      "applied": true,
+      "saved_date": "2026-08-21",
+      "applied_date": "2026-08-21",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `waist_hip.yaml` [observation_type] → `OBA:2100052` (block for phv `phv00226399`, line 1)",
+        "✓ CSV: 1 row(s) → `OBA:2100052` for `waist_hip.yaml` [observation_type] (phv `phv00226399`)"
+      ]
+    }
+  }
+}

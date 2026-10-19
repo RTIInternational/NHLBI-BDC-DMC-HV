@@ -1,0 +1,22 @@
+{
+  "submitted_date": "2026-08-19",
+  "study": "HCHS",
+  "curator": "stephanie",
+  "changes": {
+    "HCHS::confirmed::spirometry.yaml": {
+      "study": "HCHS",
+      "change_request": "OMOP:3011505",
+      "original_curie": "OMOP:3002094",
+      "slot": "observations",
+      "yaml_files": ["spirometry.yaml"],
+      "notes": "Follow-up correction to HCHS_change_request_20260819_01.json (same day). That fix had wrongly applied the target CURIE to the 'AGE' variable (phv00226251), which only ever appears in the YAML as age_at_observation, never as observation_type. Its OMOP:3002094 pairing in the CSV was a pre-existing cross-product row-generation artifact, unrelated to the FVC finding. Per curator instruction (do not change this from what it was), reverted all 6 rows for that phv (not just the 1 that matched original_curie) back to their true per-row original values from git history (f5c7bc65^). No YAML change made or needed. Real target-fix count for this finding is 6 (not 7).",
+      "applied": true,
+      "applied_date": "2026-08-19",
+      "applied_by": "stephanie",
+      "apply_results": [
+        "CSV: 6 row(s) reverted from OMOP:3011505 (wrongly applied) back to correct original per-row values for phv00226251",
+        "YAML: no change (this phv has no observation_type field)"
+      ]
+    }
+  }
+}

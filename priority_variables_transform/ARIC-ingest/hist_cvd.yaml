@@ -13,11 +13,12 @@
           value_mappings:
             'N': ABSENT
             'Y': PRESENT
+            'U': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: HEALTH_RECORD
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -36,7 +37,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -55,7 +56,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -75,7 +76,7 @@
             '1': PRESENT
             'T': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -94,7 +95,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "Definition 3"
           range: string
@@ -109,7 +110,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00209045}) + ":ARIC EXAM 3")'
         condition_concept:
-          value: MONDO:0005010
+          value: MONDO:0005252
         condition_status:
           populated_from: phv00208973
           value_mappings:
@@ -117,7 +118,7 @@
             'Y': PRESENT
             'U': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "self-report questionnaire"
           range: string
@@ -132,7 +133,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00209097}) + ":ARIC EXAM 4")'
         condition_concept:
-          value: MONDO:0005010
+          value: MONDO:0005252
         condition_status:
           populated_from: phv00209064
           value_mappings:
@@ -140,10 +141,10 @@
             'Y': PRESENT
             'U': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -163,7 +164,7 @@
             '1': PRESENT
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -182,7 +183,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -202,7 +203,7 @@
             '1': PRESENT
             'T': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -222,7 +223,7 @@
             '1': PRESENT
             'T': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -242,7 +243,7 @@
             '1': PRESENT
             'T': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -263,11 +264,11 @@
             N: ABSENT
             Y: PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -289,11 +290,11 @@
             N: ABSENT
             Y: PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -315,11 +316,11 @@
             N: ABSENT
             Y: PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -341,11 +342,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "Definition 3"
-          range: string
+        # associated_evidence:
+        #   value: "Definition 3"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -367,7 +368,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -390,7 +391,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF

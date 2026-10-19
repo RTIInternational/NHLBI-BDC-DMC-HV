@@ -7,7 +7,13 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         drug_concept:
-          expr: 'case(({phv00100556} == 1, "NDFRT:N0000175418"))'
+          value: NDFRT:N0000175418
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00100556
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '.': UNKNOWN

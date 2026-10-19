@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00203796
           value_mappings:
@@ -15,10 +15,10 @@
             'Y': PRESENT
             'U': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "death investigation record"
-          range: string
+          value: DEATH_RECORD
+        # associated_evidence:
+        #   value: "death investigation record"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -30,7 +30,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00203982
           value_mappings:
@@ -38,10 +38,10 @@
             'Y': PRESENT
             'U': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: HEALTH_RECORD
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -53,14 +53,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00204727
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "Hypertension, definition 4"
           range: string
@@ -75,14 +75,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00204728
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "Hypertension, definition 5"
           range: string
@@ -97,14 +97,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00204729
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "Hypertension, definition 6"
           range: string
@@ -119,14 +119,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00204855
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "hypertension, definition 4"
           range: string
@@ -141,14 +141,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00204856
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "hypertension, definition 5"
           range: string
@@ -163,14 +163,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00204857
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "hypertension, definition 6"
           range: string
@@ -185,17 +185,17 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00206804
           value_mappings:
             'N': ABSENT
             'Y': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: HEALTH_RECORD
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -207,17 +207,17 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005149
         condition_status:
           populated_from: phv00206806
           value_mappings:
             'N': ABSENT
             'Y': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: HEALTH_RECORD
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -229,7 +229,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207155}) + ":ARIC EXAM 2")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00207064
           value_mappings:
@@ -237,10 +237,10 @@
             'Y': PRESENT
             'U': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -252,7 +252,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207407}) + ":ARIC EXAM 1")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00207311
           value_mappings:
@@ -260,10 +260,10 @@
             'Y': PRESENT
             'U': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -275,7 +275,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00209045}) + ":ARIC EXAM 3")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00208966
           value_mappings:
@@ -283,10 +283,10 @@
             'Y': PRESENT
             'U': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -298,14 +298,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296190}) + ":ARIC EXAM 5")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005149
         condition_status:
           populated_from: phv00296245
           value_mappings:
             'N': ABSENT
             'Y': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "echocardiogram"
           range: string
@@ -320,14 +320,13 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00419900}) + ":ARIC Medical Conditions Update Form")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00419903
           value_mappings:
-            'N': ABSENT
             'Y': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "self-report questionnaire"
           range: string
@@ -342,14 +341,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507808}) + ":ARIC EXAM 7")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00507812
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -361,14 +360,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00511966
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "Hypertension, Definition 4"
           range: string
@@ -383,14 +382,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00511967
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "Hypertension, Definition 5"
           range: string
@@ -405,14 +404,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00511968
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "Hypertension, Definition 6"
           range: string
@@ -427,7 +426,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516587}) + ":ARIC EXAM 2")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00516637
           value_mappings:
@@ -435,7 +434,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "self-report questionnaire"
           range: string
@@ -450,14 +449,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516796}) + ":ARIC EXAM 5")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00516820
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -469,13 +469,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516885}) + ":ARIC EXAM 6")'
         condition_concept:
-          value: HP:0000822
+          value: MONDO:0005044
         condition_status:
           populated_from: phv00516889
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF

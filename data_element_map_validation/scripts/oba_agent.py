@@ -122,17 +122,29 @@ def get_oba_id(description: str, **kwargs) -> str | None:
         >>> get_oba_id("body mass index")
         'OBA:0001547'
     """
+    oba_id, _score = get_oba_id_with_score(description, **kwargs)
+    return oba_id
+
+
+def get_oba_id_with_score(description: str, **kwargs) -> tuple[str | None, float]:
+    """Like get_oba_id, but also returns the top match's similarity score.
+
+    The score is the same composite label/synonym similarity used to rank
+    candidates in search_oba_terms — a text-match confidence, not a
+    guarantee of ontological correctness. Callers can bucket it into
+    curator-facing confidence tiers (see generate_curie_mapreview.py).
+    """
     results = search_oba_terms(description, **kwargs)
     if results:
-        return results[0]["oba_id"]
+        return results[0]["oba_id"], _similarity(description, results[0])
 
     cleaned = _extract_measurement_term(description)
     if cleaned.lower() != description.lower():
         results2 = search_oba_terms(cleaned, **kwargs)
         if results2:
-            return results2[0]["oba_id"]
+            return results2[0]["oba_id"], _similarity(cleaned, results2[0])
 
-    return None
+    return None, 0.0
 
 
 @click.command()

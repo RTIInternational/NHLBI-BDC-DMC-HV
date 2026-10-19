@@ -9,10 +9,15 @@
         age_at_exposure_start:
           expr: case(({phv00083083} == 1, {phv00082999} * 365))
         drug_concept:
-          expr: case(({phv00083083} == 1, "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00083083
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001111
@@ -24,10 +29,15 @@
         age_at_exposure_start:
           expr: case(({phv00083084} == 1, {phv00082999} * 365))
         drug_concept:
-          expr: case(({phv00083084} == 1, "ATC:C09BA"))
+          value: ATC:C09BA
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00083084
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001116
@@ -39,10 +49,15 @@
         age_at_exposure_start:
           expr: case(({phv00085328} == 1, {phv00085237} * 365))
         drug_concept:
-          expr: case(({phv00085328} == 1, "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00085328
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001116
@@ -54,10 +69,15 @@
         age_at_exposure_start:
           expr: case(({phv00085329} == 1, {phv00085237} * 365))
         drug_concept:
-          expr: case(({phv00085329} == 1, "ATC:C09BA"))
+          value: ATC:C09BA
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00085329
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001118
@@ -67,10 +87,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         drug_concept:
-          expr: case(({phv00086001} == 1, "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00086001
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001118
@@ -80,10 +105,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         drug_concept:
-          expr: case(({phv00086002} == 1, "ATC:C09BA"))
+          value: ATC:C09BA
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00086002
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001119
@@ -93,10 +123,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         drug_concept:
-          expr: case(({phv00086483} == 1, "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00086483
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001119
@@ -106,10 +141,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         drug_concept:
-          expr: case(({phv00086484} == 1, "ATC:C09BA"))
+          value: ATC:C09BA
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00086484
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001120
@@ -119,10 +159,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         drug_concept:
-          expr: case(({phv00086920} == 1, "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00086920
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001120
@@ -132,10 +177,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         drug_concept:
-          expr: case(({phv00086921} == 1, "ATC:C09BA"))
+          value: ATC:C09BA
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00086921
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001121
@@ -147,10 +197,15 @@
         age_at_exposure_start:
           expr: case(({phv00087304} == 1, {phv00087154} * 365))
         drug_concept:
-          expr: case(({phv00087304} == 1, "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00087304
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001121
@@ -162,10 +217,15 @@
         age_at_exposure_start:
           expr: case(({phv00087305} == 1, {phv00087154} * 365))
         drug_concept:
-          expr: case(({phv00087305} == 1, "ATC:C09BA"))
+          value: ATC:C09BA
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00087305
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht003086
@@ -175,10 +235,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         drug_concept:
-          expr: case(({phv00175329} == 1, "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00175329
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht003086
@@ -188,10 +253,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         drug_concept:
-          expr: case(({phv00175330} == 1, "ATC:C09BA"))
+          value: ATC:C09BA
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00175330
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht003091
@@ -201,10 +271,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         drug_concept:
-          expr: case(({phv00176752} == 1, "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00176752
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht003091
@@ -214,7 +289,12 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         drug_concept:
-          expr: case(({phv00176753} == 1, "ATC:C09BA"))
+          value: ATC:C09BA
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00176753
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

@@ -14,6 +14,8 @@
           - MeasurementObservation:
               populated_from: pht013308
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00528692}) + ":SPIROMICS")'
                 observation_type:
                   value: OMOP:4152194
                 body_position:
@@ -22,6 +24,8 @@
                   value: Right arm
                 method_type:
                   value: average
+                qualifier:
+                  value: AVERAGE
                 age_at_observation:
                   expr: '{phv00528706} * 365'
                 value_quantity:
@@ -36,6 +40,8 @@
           - MeasurementObservation:
               populated_from: pht013308
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00528692}) + ":SPIROMICS")'
                 observation_type:
                   value: OMOP:4154790
                 body_position:
@@ -44,6 +50,8 @@
                   value: Right arm
                 method_type:
                   value: average
+                qualifier:
+                  value: AVERAGE
                 age_at_observation:
                   expr: '{phv00528706} * 365'
                 value_quantity:

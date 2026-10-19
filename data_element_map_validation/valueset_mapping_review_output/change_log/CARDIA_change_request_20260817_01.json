@@ -1,0 +1,59 @@
+{
+  "submitted_date": "2026-08-17",
+  "study": "CARDIA",
+  "curator": "stephanie",
+  "changes": {
+    "CARDIA::confirmed::vege_serving.yaml": {
+      "study": "CARDIA",
+      "change_request": "OMOP:37311566",
+      "original_curie": "OMOP:4042886",
+      "slot": "observation_type",
+      "yaml_files": [
+        "vege_serving.yaml"
+      ],
+      "notes": "",
+      "applied": true,
+      "saved_date": "2026-08-17",
+      "applied_date": "2026-08-17",
+      "applied_by": "stephanie",
+      "apply_results": [
+        "✓ YAML `vege_serving.yaml` [observation_type] → `OMOP:37311566` (2 block(s) updated)",
+        "✓ CSV: 22 row(s) → `OMOP:37311566` for `vege_serving.yaml` [observation_type]"
+      ]
+    },
+    "CARDIA::confirmed::tak_insulin.yaml": {
+      "study": "CARDIA",
+      "change_request": "ATC:A10A",
+      "original_curie": "MeSH:D007328",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_insulin.yaml"
+      ],
+      "notes": "",
+      "applied": false,
+      "saved_date": "2026-08-17",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_insulin.yaml`",
+        "✓ CSV: 1 row(s) → `ATC:A10A` for `tak_insulin.yaml` [drug_concept]"
+      ]
+    },
+    "CARDIA::confirmed::creat_bld.yaml": {
+      "study": "CARDIA",
+      "change_request": "OMOP:3020564",
+      "original_curie": "OBA:2050096",
+      "slot": "observation_type",
+      "yaml_files": [
+        "creat_bld.yaml"
+      ],
+      "notes": "Creatinine [Moles/volume] in Serum or Plasma\nhttps://athena.ohdsi.org/search-terms/terms/3020564",
+      "applied": true,
+      "saved_date": "2026-08-17",
+      "applied_date": "2026-08-17",
+      "applied_by": "stephanie",
+      "apply_results": [
+        "✓ YAML `creat_bld.yaml` [observation_type] → `OMOP:3020564` (2 block(s) updated)",
+        "✓ CSV: 2 row(s) → `OMOP:3020564` for `creat_bld.yaml` [observation_type]"
+      ]
+    }
+  }
+}

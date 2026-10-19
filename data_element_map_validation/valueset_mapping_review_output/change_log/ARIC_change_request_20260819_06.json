@@ -1,0 +1,47 @@
+{
+  "submitted_date": "2026-08-19",
+  "study": "ARIC",
+  "curator": "stephanie",
+  "changes": {
+    "ARIC::confirmed::hist_hrtfail.yaml": {
+      "study": "ARIC",
+      "change_request": "MONDO:0005009",
+      "original_curie": "MONDO:0005252",
+      "slot": "condition_concept",
+      "yaml_files": [
+        "hist_hrtfail.yaml"
+      ],
+      "notes": "Curator override (2026-08-19): rejected agent-suggested MONDO:0005252 (general heart failure) for phv00207050 (HFAA28L). Variable description reads 'Congestive heart failure/ Pulmonary vascular congestion' — MONDO:0005009 (congestive heart failure) is the correct concept and was already the live YAML value. CSV source corrected from MONDO:0005252 to MONDO:0005009 to match. All other condition_concept blocks in hist_hrtfail.yaml remain MONDO:0005252 (general heart failure) — this is the only CHF-specific variable in the file.",
+      "applied": true,
+      "applied_date": "2026-08-19",
+      "applied_by": "stephanie",
+      "apply_results": [
+        "YAML: already MONDO:0005009 at phv00207050 block (curator-verified, no change needed)",
+        "CSV: 1 row(s) updated (phv00207050) MONDO:0005252 -> MONDO:0005009"
+      ]
+    },
+    "ARIC::confirmed::spirometry.yaml": {
+      "study": "ARIC",
+      "change_request": "OMOP:3003197",
+      "original_curie": "OMOP:3002094",
+      "slot": "observations",
+      "yaml_files": [
+        "spirometry.yaml"
+      ],
+      "notes": "Data-integrity fix (2026-08-19): the 2026-08-17 app Submit (commit f5c7bc65) had a CSV-apply bug that blanket-overwrote all 195 CSV rows tagged (spirometry.yaml, observations) to a single malformed value 'OMOP: 3003197', regardless of each row's original CURIE. This corrupted 166 rows that actually held 8 other distinct concepts (FEV1, FEV1/FVC ratio, predicted FVC/FEV1/ratio: OMOP:3005600, 3011505, 3011708, 3022891, 3024594, 4176265, 4196583, 4241837). Those 166 rows were restored to their original values from git history (commit f5c7bc65^). Only the 28 rows that genuinely held OMOP:3002094 (FVC, liters) were updated to the intended target OMOP:3003197 (clean, no stray space), matching the 4 corresponding YAML blocks (populated_from pht004147, pht004148, pht006467, pht006468). Root-cause code fix applied to curator_review_app.py's _apply_csv() to prevent recurrence: CSV row matching is now scoped to rows whose current CURIE equals the finding's original_curie, not just (yaml_file, slot).",
+      "applied": true,
+      "applied_date": "2026-08-19",
+      "applied_by": "stephanie",
+      "apply_results": [
+        "YAML: 4 block(s) updated: OMOP:3002094 -> OMOP:3003197",
+        "CSV: 28 row(s) updated to OMOP:3003197; 166 previously-corrupted row(s) restored to original distinct values (see notes)"
+      ]
+    }
+  },
+  "code_fix": {
+    "file": "curator_review_app.py",
+    "function": "_apply_csv",
+    "description": "Added original_curie parameter; CSV rows are now only updated when their current CURIE matches the reviewed finding's original_curie, mirroring the existing multi-value safety check in _apply_yaml. Prevents a (yaml_file, slot) pair that spans multiple distinct pre-existing CURIEs from being blanket-overwritten.",
+    "caller_updated": "submit_all() now passes val.get(\"original_curie\", \"\") through to _apply_csv()"
+  }
+}

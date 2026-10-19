@@ -1,31 +1,5 @@
 - class_derivations:
     Condition:
-      populated_from: pht003298
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
-        age_at_condition_start:
-          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
-        condition_concept:
-          value: MONDO:0004848
-        condition_status:
-          populated_from: phv00190626
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
       populated_from: pht001575
       slot_derivations:
         associated_participant:
@@ -33,20 +7,21 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113261}) + ":CARDIA YEAR 0")'
         age_at_condition_start:
-          expr: "None if str({phv00113387}) == 'M' else float({phv00113387}) * 365"
+          expr: "None if str({phv00113380}) != '2' else (None if str({phv00113383}) == 'M' else float({phv00113383}) * 365)"
         condition_concept:
-          value: MONDO:0004848
+          value: MONDO:0004849
         condition_status:
           populated_from: phv00113380
           value_mappings:
             '1': ABSENT
             '2': PRESENT
+            'M': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -59,20 +34,21 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113261}) + ":CARDIA YEAR 0")'
         age_at_condition_start:
-          expr: "None if str({phv00113387}) == 'M' else float({phv00113387}) * 365"
+          expr: "None if str({phv00113380}) != '2' else (None if str({phv00113383}) == 'M' else float({phv00113383}) * 365)"
         condition_concept:
-          value: MONDO:0004848
+          value: MONDO:0004849
         condition_status:
           populated_from: phv00113381
           value_mappings:
             '1': ABSENT
             '2': PRESENT
+            'M': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -85,20 +61,21 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113261}) + ":CARDIA YEAR 0")'
         age_at_condition_start:
-          expr: "None if str({phv00113387}) == 'M' else float({phv00113387}) * 365"
+          expr: "None if str({phv00113380}) != '2' else (None if str({phv00113383}) == 'M' else float({phv00113383}) * 365)"
         condition_concept:
-          value: MONDO:0004848
+          value: MONDO:0004849
         condition_status:
           populated_from: phv00113382
           value_mappings:
             '1': ABSENT
             '2': PRESENT
+            'M': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -111,19 +88,20 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116953}) + ":CARDIA YEAR 7")'
         condition_concept:
-          value: MONDO:0004848
+          value: MONDO:0004849
         condition_status:
           populated_from: phv00117054
           value_mappings:
             '1': ABSENT
             '2': PRESENT
-            '8': ABSENT
+            '8': UNKNOWN
+            'M': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -136,19 +114,19 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118426}) + ":CARDIA YEAR 10")'
         condition_concept:
-          value: MONDO:0004848
+          value: MONDO:0004849
         condition_status:
           populated_from: phv00118534
           value_mappings:
             '1': ABSENT
             '2': PRESENT
-            '8': ABSENT
+            '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -161,21 +139,21 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
         age_at_condition_start:
-          expr: "None if str({phv00119967}) == 'M' else float({phv00119967}) * 365"
+          expr: "None if str({phv00119922}) == 'M' else float({phv00119922}) * 365"
         condition_concept:
-          value: MONDO:0004848
+          value: MONDO:0004849
         condition_status:
           populated_from: phv00119914
           value_mappings:
             '1': ABSENT
             '2': PRESENT
-            '8': ABSENT
+            '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -188,19 +166,19 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
         age_at_condition_start:
-          expr: "None if str({phv00119967}) == 'M' else float({phv00119967}) * 365"
+          expr: "None if str({phv00119922}) == 'M' else float({phv00119922}) * 365"
         condition_concept:
-          value: MONDO:0004848
+          value: MONDO:0004849
         condition_status:
           populated_from: phv00119923
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string

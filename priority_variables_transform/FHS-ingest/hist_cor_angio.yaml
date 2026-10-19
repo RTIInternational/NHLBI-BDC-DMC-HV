@@ -7,12 +7,17 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004939}) + ":FHS ORIGINAL EXAM 21")'
         procedure_concept:
+          value: OMOP:4184832
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        procedure_status:
           populated_from: phv00004772
           value_mappings:
-            '1': OMOP:4184832
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+            '0': ABSENT
+            '2': UNKNOWN
+            '.': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     Procedure:
       populated_from: pht000024
@@ -22,27 +27,37 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
         procedure_concept:
+          value: OMOP:4184832
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        procedure_status:
           populated_from: phv00005072
           value_mappings:
-            '1': OMOP:4184832
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+            '2': UNKNOWN
+            '0': ABSENT
+            '1': PRESENT
+            '.': UNKNOWN
 - class_derivations:
     Procedure:
       populated_from: pht000026
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00006031}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00006325}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006031}) + ":FHS ORIGINAL EXAM 24")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006325}) + ":FHS ORIGINAL EXAM 24")'
         procedure_concept:
+          value: OMOP:4184832
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        procedure_status:
           populated_from: phv00006202
           value_mappings:
-            '1': OMOP:4184832
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+            '2': UNKNOWN
+            '0': ABSENT
+            '.': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     Procedure:
       populated_from: pht000027
@@ -52,12 +67,17 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006663}) + ":FHS ORIGINAL EXAM 25")'
         procedure_concept:
+          value: OMOP:4184832
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        procedure_status:
           populated_from: phv00006598
           value_mappings:
-            '1': OMOP:4184832
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+            '0': ABSENT
+            '2': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
 - class_derivations:
     Procedure:
       populated_from: pht000028
@@ -67,12 +87,17 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
         procedure_concept:
+          value: OMOP:4184832
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        procedure_status:
           populated_from: phv00007032
           value_mappings:
-            '1': OMOP:4184832
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+            '1': PRESENT
+            '.': UNKNOWN
+            '0': ABSENT
+            '2': UNKNOWN
 - class_derivations:
     Procedure:
       populated_from: pht000029
@@ -82,12 +107,17 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007534}) + ":FHS ORIGINAL EXAM 27")'
         procedure_concept:
+          value: OMOP:4184832
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        procedure_status:
           populated_from: phv00007465
           value_mappings:
-            '1': OMOP:4184832
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+            '0': ABSENT
+            '2': UNKNOWN
+            '.': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     Procedure:
       populated_from: pht000034
@@ -97,12 +127,17 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009579}) + ":FHS OFFSPRING EXAM 5")'
         procedure_concept:
+          value: OMOP:4184832
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        procedure_status:
           populated_from: phv00009388
           value_mappings:
-            '1': OMOP:4184832
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+            '2': UNKNOWN
+            '0': ABSENT
+            '1': PRESENT
+            '.': UNKNOWN
 - class_derivations:
     Procedure:
       populated_from: pht000035
@@ -112,27 +147,37 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         procedure_concept:
+          value: OMOP:4184832
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        procedure_status:
           populated_from: phv00009896
           value_mappings:
-            '1': OMOP:4184832
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+            '2': UNKNOWN
+            '0': ABSENT
+            '.': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     Procedure:
       populated_from: pht000036
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00010139}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00010694}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010694}) + ":FHS OFFSPRING EXAM 7")'
         procedure_concept:
+          value: OMOP:4184832
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        procedure_status:
           populated_from: phv00010351
           value_mappings:
-            '1': OMOP:4184832
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+            '.': UNKNOWN
+            '1': PRESENT
+            '2': UNKNOWN
+            '0': ABSENT
 - class_derivations:
     Procedure:
       populated_from: pht000395
@@ -142,12 +187,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == ''1'', ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == ''7'', ''FHS OMNI 1 SHHS EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         procedure_concept:
+          value: OMOP:4184832
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        procedure_status:
           populated_from: phv00055299
           value_mappings:
-            '1': OMOP:4184832
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+            '0': ABSENT
+            '1': PRESENT
+            '8': UNKNOWN
 - class_derivations:
     Procedure:
       populated_from: pht000692
@@ -157,24 +206,34 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00070736}) + ":FHS ORIGINAL EXAM 28")'
         procedure_concept:
+          value: OMOP:4184832
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        procedure_status:
           populated_from: phv00070491
           value_mappings:
-            '1': OMOP:4184832
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+            '.': UNKNOWN
+            '1': PRESENT
+            '2': UNKNOWN
+            '0': ABSENT
 - class_derivations:
     Procedure:
       populated_from: pht000747
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072044}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072580}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072044}) + ":FHS OFFSPRING EXAM 8")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072580}) + ":FHS OFFSPRING EXAM 8")'
         procedure_concept:
+          value: OMOP:4184832
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        procedure_status:
           populated_from: phv00072203
           value_mappings:
-            '1': OMOP:4184832
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+            '.': UNKNOWN

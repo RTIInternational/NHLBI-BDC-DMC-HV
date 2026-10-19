@@ -11,6 +11,8 @@
           - MeasurementObservation:
               populated_from: pht001969
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128197}) + ":JHS")'
                 observation_type:
                   value: "OMOP:4176265"
                 method_type:
@@ -29,6 +31,8 @@
           - MeasurementObservation:
               populated_from: pht001969
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128197}) + ":JHS")'
                 observation_type:
                   value: "OMOP:4241837"
                 method_type:
@@ -47,6 +51,8 @@
           - MeasurementObservation:
               populated_from: pht001969
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128197}) + ":JHS")'
                 observation_type:
                   value: "OMOP:3011505"
                 method_type:
@@ -59,9 +65,9 @@
                       populated_from: pht001969
                       slot_derivations:
                         value_decimal:
-                          populated_from: phv00128214
+                          expr: '{phv00128214} / 100'
                         unit:
-                          value: "%"
+                          value: "{ratio}"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht001969
@@ -75,6 +81,8 @@
           - MeasurementObservation:
               populated_from: pht001969
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128197}) + ":JHS")'
                 observation_type:
                   value: "OMOP:4176265"
                 method_type:
@@ -91,6 +99,8 @@
           - MeasurementObservation:
               populated_from: pht001969
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128197}) + ":JHS")'
                 observation_type:
                   value: "OMOP:4241837"
                 method_type:
@@ -107,6 +117,8 @@
           - MeasurementObservation:
               populated_from: pht001969
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128197}) + ":JHS")'
                 observation_type:
                   value: "OMOP:3011505"
                 method_type:
@@ -117,9 +129,9 @@
                       populated_from: pht001969
                       slot_derivations:
                         value_decimal:
-                          populated_from: phv00128224
+                          expr: '{phv00128224} / 100'
                         unit:
-                          value: "%"
+                          value: "{ratio}"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht001969
@@ -133,6 +145,8 @@
           - MeasurementObservation:
               populated_from: pht001969
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128197}) + ":JHS")'
                 observation_type:
                   value: "OMOP:4176265"
                 method_type:
@@ -149,6 +163,8 @@
           - MeasurementObservation:
               populated_from: pht001969
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128197}) + ":JHS")'
                 observation_type:
                   value: "OMOP:4241837"
                 method_type:
@@ -165,6 +181,8 @@
           - MeasurementObservation:
               populated_from: pht001969
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128197}) + ":JHS")'
                 observation_type:
                   value: "OMOP:3011505"
                 method_type:
@@ -175,9 +193,9 @@
                       populated_from: pht001969
                       slot_derivations:
                         value_decimal:
-                          populated_from: phv00128234
+                          expr: '{phv00128234} / 100'
                         unit:
-                          value: "%"
+                          value: "{ratio}"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht008729
@@ -186,13 +204,15 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
-        age_at_observation:
-          expr: "{phv00401085} * 365"
         observations:
           class_derivations:
           - MeasurementObservation:
               populated_from: pht008729
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
+                age_at_observation:
+                  expr: "{phv00401085} * 365"
                 observation_type:
                   value: "OMOP:4176265"
                 method_type:
@@ -209,6 +229,10 @@
           - MeasurementObservation:
               populated_from: pht008729
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
+                age_at_observation:
+                  expr: "{phv00401085} * 365"
                 observation_type:
                   value: "OMOP:4241837"
                 method_type:

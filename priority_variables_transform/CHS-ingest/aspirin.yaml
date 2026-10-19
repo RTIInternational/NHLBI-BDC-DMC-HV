@@ -7,23 +7,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         drug_concept:
-          expr: 'case(({phv00099556} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001450
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00098771}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
-        drug_concept:
-          expr: 'case(({phv00099589} == 1, "RxCUI:1191"))'
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
+        exposure_status:
+          populated_from: phv00099556
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001452
@@ -33,10 +26,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         drug_concept:
-          expr: 'case(({phv00100472} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00100472
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001452
@@ -46,10 +45,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         drug_concept:
-          expr: 'case(({phv00100528} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00100528
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001474
@@ -59,10 +64,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
         drug_concept:
-          expr: 'case(({phv00101609} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00101609
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001474
@@ -72,10 +83,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
         drug_concept:
-          expr: 'case(({phv00102106} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00102106
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001475
@@ -85,10 +101,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00102174}) + ":CHS YEAR 11")'
         drug_concept:
-          expr: 'case(({phv00102788} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00102788
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001475
@@ -98,10 +119,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00102174}) + ":CHS YEAR 11")'
         drug_concept:
-          expr: 'case(({phv00103079} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00103079
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001488
@@ -111,10 +137,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00103781}) + ":CHS YEAR 3")'
         drug_concept:
-          expr: 'case(({phv00104364} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00104364
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001488
@@ -124,10 +156,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00103781}) + ":CHS YEAR 3")'
         drug_concept:
-          expr: 'case(({phv00104397} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00104397
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001489
@@ -137,10 +174,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00104468}) + ":CHS YEAR 4")'
         drug_concept:
-          expr: 'case(({phv00104770} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00104770
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001489
@@ -150,10 +193,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00104468}) + ":CHS YEAR 4")'
         drug_concept:
-          expr: 'case(({phv00105027} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00105027
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001490
@@ -163,23 +211,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         drug_concept:
-          expr: 'case(({phv00105632} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
-        drug_concept:
-          expr: 'case(({phv00106448} == 1, "RxCUI:1191"))'
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
+        exposure_status:
+          populated_from: phv00105632
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001491
@@ -189,10 +229,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         drug_concept:
-          expr: 'case(({phv00106531} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00106531
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001491
@@ -202,10 +248,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         drug_concept:
-          expr: 'case(({phv00107373} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00107373
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001492
@@ -215,10 +266,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
         drug_concept:
-          expr: 'case(({phv00108073} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00108073
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001492
@@ -228,10 +285,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
         drug_concept:
-          expr: 'case(({phv00108234} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00108234
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001493
@@ -241,10 +303,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00108303}) + ":CHS YEAR 7")'
         drug_concept:
-          expr: 'case(({phv00108721} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00108721
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001493
@@ -254,10 +321,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00108303}) + ":CHS YEAR 7")'
         drug_concept:
-          expr: 'case(({phv00108988} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00108988
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001494
@@ -267,10 +339,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109056}) + ":CHS YEAR 8")'
         drug_concept:
-          expr: 'case(({phv00109457} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00109457
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001494
@@ -280,10 +358,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109056}) + ":CHS YEAR 8")'
         drug_concept:
-          expr: 'case(({phv00109699} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00109699
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001495
@@ -293,10 +376,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         drug_concept:
-          expr: 'case(({phv00110117} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00110117
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001495
@@ -306,10 +395,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         drug_concept:
-          expr: 'case(({phv00110641} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00110641
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht003699
@@ -319,10 +413,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         drug_concept:
-          expr: 'case(({phv00197495} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00197495
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht003699
@@ -332,10 +431,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         drug_concept:
-          expr: 'case(({phv00197526} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00197526
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht003700
@@ -345,7 +449,12 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         drug_concept:
-          expr: 'case(({phv00199044} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00199044
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

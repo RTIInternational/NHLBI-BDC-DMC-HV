@@ -8,9 +8,15 @@
 # via associated_visit in their measurement YAML files -- they do not
 # produce their own Visit entities for visit-years already covered here.
 #
-# Cross-table age formula: ({phv00078437} * 365) + {DAYS_phv}
+# Cross-table age formula:
+#   ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {DAYS_phv}
 #   phv00078437 = AGE at screening in years (from pht000998 / f2_rel1)
-#   DAYS_phv = days since enrollment (table-specific)
+#   phv00078436 = F2DAYS, the screening day counted from randomization/
+#     enrollment (median -105, min -1672); subtracting it moves the age
+#     from the screening date to day 0
+#   DAYS_phv = days since randomization/enrollment (table-specific)
+#   Each block declares joins: pht000998 (source_key = its own table's
+#   SUBJID, lookup_key phv00078435); a bare {phv00078437} resolves to None.
 #
 # Tier 1: 10 blocks from dedicated per-visit questionnaire forms
 # Gap-fill: 5 blocks from Tier 2 tables for visit-years with no Tier 1 form
@@ -28,7 +34,9 @@
 
 # Block 1: WHI SCREENING
 # Source: f2_rel1 (pht000998) -- Eligibility/Screening form
-# AGE (phv00078437) is in this table; F2DAYS ~ 0 at screening
+# AGE (phv00078437) is the age on this form's (screening) date, so the
+# screening visit uses AGE alone (F2DAYS is the screening day's offset
+# from day 0; see the header)
 - class_derivations:
     Visit:
       populated_from: pht000998
@@ -43,6 +51,12 @@
           expr: '{phv00078437} * 365'
         age_at_visit_end:
           expr: '{phv00078437} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 
 # Block 2: WHI YEAR 1
 # Source: f48_rel1 (pht001014) -- Year 1 Annual questionnaire
@@ -50,6 +64,10 @@
 - class_derivations:
     Visit:
       populated_from: pht001014
+      joins:
+        pht000998:
+          source_key: phv00079556
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00079556}) + ":WHI YEAR 1")'
@@ -58,15 +76,25 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00079556}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00079557}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00079557}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00079557}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00079557}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # Block 3: WHI YEAR 3
 # Source: f143_rel1 (pht000990) -- Year 3 Annual questionnaire
 - class_derivations:
     Visit:
       populated_from: pht000990
+      joins:
+        pht000998:
+          source_key: phv00077450
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077450}) + ":WHI YEAR 3")'
@@ -75,15 +103,27 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00077450}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00077451}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00077451}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00077451}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00077451}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        # Protocol phd001958 8.5: all OS participants completed a Clinical Center
+        # visit at three years, in addition to the mailed follow-up questionnaire.
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 
 # Block 4: WHI YEAR 4
 # Source: f144_rel1 (pht000991) -- Year 4 Annual questionnaire
 - class_derivations:
     Visit:
       populated_from: pht000991
+      joins:
+        pht000998:
+          source_key: phv00077671
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077671}) + ":WHI YEAR 4")'
@@ -92,15 +132,25 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00077671}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00077672}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00077672}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00077672}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00077672}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # Block 5: WHI YEAR 5
 # Source: f145_rel1 (pht000992) -- Year 5 Annual questionnaire
 - class_derivations:
     Visit:
       populated_from: pht000992
+      joins:
+        pht000998:
+          source_key: phv00077797
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077797}) + ":WHI YEAR 5")'
@@ -109,15 +159,25 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00077797}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00077798}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00077798}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00077798}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00077798}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # Block 6: WHI YEAR 6
 # Source: f146_rel1 (pht000993) -- Year 6 Annual questionnaire
 - class_derivations:
     Visit:
       populated_from: pht000993
+      joins:
+        pht000998:
+          source_key: phv00077907
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077907}) + ":WHI YEAR 6")'
@@ -126,15 +186,25 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00077907}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00077908}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00077908}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00077908}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00077908}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # Block 7: WHI YEAR 7
 # Source: f147_rel1 (pht000994) -- Year 7 Annual questionnaire
 - class_derivations:
     Visit:
       populated_from: pht000994
+      joins:
+        pht000998:
+          source_key: phv00078109
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078109}) + ":WHI YEAR 7")'
@@ -143,15 +213,25 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078109}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00078110}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00078110}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00078110}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00078110}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # Block 8: WHI YEAR 8
 # Source: f148_rel1 (pht000995) -- Year 8 Annual questionnaire
 - class_derivations:
     Visit:
       populated_from: pht000995
+      joins:
+        pht000998:
+          source_key: phv00078233
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078233}) + ":WHI YEAR 8")'
@@ -160,15 +240,25 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078233}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00078234}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00078234}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00078234}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00078234}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # Block 9: WHI YEAR 9
 # Source: f149_rel1 (pht000996) -- Year 9 Annual questionnaire
 - class_derivations:
     Visit:
       populated_from: pht000996
+      joins:
+        pht000998:
+          source_key: phv00078357
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078357}) + ":WHI YEAR 9")'
@@ -177,26 +267,15 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078357}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00078358}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00078358}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00078358}'
-
-# Block 10: WHI EXTENSION
-# Source: ext_rel2 (pht003395) -- Extension study data
-- class_derivations:
-    Visit:
-      populated_from: pht003395
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00192296}) + ":WHI EXTENSION")'
-        name:
-          value: WHI EXTENSION
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192296}) + ":WHI")'
-        age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00192298}'
-        age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00192298}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00078358}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # ------------------------------------------
 # GAP-FILL: Visit-years with no dedicated form
@@ -211,6 +290,10 @@
 - class_derivations:
     Visit:
       populated_from: pht001019
+      joins:
+        pht000998:
+          source_key: phv00079849
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: "case(({phv00079850} == 3 and {phv00079851} == 2, uuid5('https://w3id.org/bdchm/Visit', str({phv00079849}) + ':WHI YEAR 2')), (True, None))"
@@ -219,9 +302,15 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00079849}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00079852}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00079852}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00079852}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00079852}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 
 # Block 12: WHI YEAR 10
 # Source: ecg_rel2 (pht002118) -- Electrocardiogram
@@ -230,6 +319,10 @@
 - class_derivations:
     Visit:
       populated_from: pht002118
+      joins:
+        pht000998:
+          source_key: phv00154925
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: "case(({phv00154926} == 3 and {phv00154927} == 10, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 10')), (True, None))"
@@ -238,9 +331,15 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00154925}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00154928}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00154928}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00154928}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00154928}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 
 # Block 13: WHI YEAR 11
 # Source: ecg_rel2 (pht002118) -- Electrocardiogram
@@ -249,6 +348,10 @@
 - class_derivations:
     Visit:
       populated_from: pht002118
+      joins:
+        pht000998:
+          source_key: phv00154925
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: "case(({phv00154926} == 3 and {phv00154927} == 11, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 11')), (True, None))"
@@ -257,9 +360,15 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00154925}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00154928}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00154928}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00154928}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00154928}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 
 # Block 14: WHI SEMI-ANNUAL VISIT YEAR 1
 # Source: ecg_rel2 (pht002118) -- Electrocardiogram
@@ -268,6 +377,10 @@
 - class_derivations:
     Visit:
       populated_from: pht002118
+      joins:
+        pht000998:
+          source_key: phv00154925
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: "case(({phv00154926} == 2 and {phv00154927} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI SEMI-ANNUAL VISIT YEAR 1')), (True, None))"
@@ -276,9 +389,15 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00154925}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00154928}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00154928}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00154928}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00154928}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 
 # Block 15: WHI NON-ROUTINE
 # Source: core_rel2 (pht000987) -- Core Lab Results
@@ -287,6 +406,10 @@
 - class_derivations:
     Visit:
       populated_from: pht000987
+      joins:
+        pht000998:
+          source_key: phv00077369
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: "case(({phv00077370} == 4, uuid5('https://w3id.org/bdchm/Visit', str({phv00077369}) + ':WHI NON-ROUTINE')), (True, None))"
@@ -295,9 +418,15 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00077369}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00077372}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00077372}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00077372}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00077372}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 
 # ------------------------------------------
 # EXTENSION 2: f156_rel1 (pht006215)
@@ -311,6 +440,10 @@
 - class_derivations:
     Visit:
       populated_from: pht006215
+      joins:
+        pht000998:
+          source_key: phv00283183
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: "case(({phv00283185} == 15, uuid5('https://w3id.org/bdchm/Visit', str({phv00283183}) + ':WHI EXTENSION 2 YEAR 15')), (True, None))"
@@ -319,14 +452,24 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283183}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # Block 17: WHI EXTENSION 2 YEAR 16
 - class_derivations:
     Visit:
       populated_from: pht006215
+      joins:
+        pht000998:
+          source_key: phv00283183
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: "case(({phv00283185} == 16, uuid5('https://w3id.org/bdchm/Visit', str({phv00283183}) + ':WHI EXTENSION 2 YEAR 16')), (True, None))"
@@ -335,14 +478,24 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283183}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # Block 18: WHI EXTENSION 2 YEAR 17
 - class_derivations:
     Visit:
       populated_from: pht006215
+      joins:
+        pht000998:
+          source_key: phv00283183
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: "case(({phv00283185} == 17, uuid5('https://w3id.org/bdchm/Visit', str({phv00283183}) + ':WHI EXTENSION 2 YEAR 17')), (True, None))"
@@ -351,14 +504,24 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283183}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # Block 19: WHI EXTENSION 2 YEAR 18
 - class_derivations:
     Visit:
       populated_from: pht006215
+      joins:
+        pht000998:
+          source_key: phv00283183
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: "case(({phv00283185} == 18, uuid5('https://w3id.org/bdchm/Visit', str({phv00283183}) + ':WHI EXTENSION 2 YEAR 18')), (True, None))"
@@ -367,14 +530,24 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283183}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # Block 20: WHI EXTENSION 2 YEAR 19
 - class_derivations:
     Visit:
       populated_from: pht006215
+      joins:
+        pht000998:
+          source_key: phv00283183
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: "case(({phv00283185} == 19, uuid5('https://w3id.org/bdchm/Visit', str({phv00283183}) + ':WHI EXTENSION 2 YEAR 19')), (True, None))"
@@ -383,14 +556,24 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283183}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # Block 21: WHI EXTENSION 2 YEAR 20
 - class_derivations:
     Visit:
       populated_from: pht006215
+      joins:
+        pht000998:
+          source_key: phv00283183
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: "case(({phv00283185} == 20, uuid5('https://w3id.org/bdchm/Visit', str({phv00283183}) + ':WHI EXTENSION 2 YEAR 20')), (True, None))"
@@ -399,14 +582,24 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283183}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # Block 22: WHI EXTENSION 2 YEAR 21
 - class_derivations:
     Visit:
       populated_from: pht006215
+      joins:
+        pht000998:
+          source_key: phv00283183
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: "case(({phv00283185} == 21, uuid5('https://w3id.org/bdchm/Visit', str({phv00283183}) + ':WHI EXTENSION 2 YEAR 21')), (True, None))"
@@ -415,9 +608,15 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283183}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00283187}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283187}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # ------------------------------------------
 # LONG LIFE STUDY: f301_whills_rel1 (pht006217)
@@ -430,6 +629,10 @@
 - class_derivations:
     Visit:
       populated_from: pht006217
+      joins:
+        pht000998:
+          source_key: phv00283284
+          lookup_key: phv00078435
       slot_derivations:
         id:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283284}) + ":WHI LONG LIFE STUDY")'
@@ -438,9 +641,15 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283284}) + ":WHI")'
         age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00283286}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283286}'
         age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00283286}'
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283286}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 
 # ------------------------------------------
 # ORPHAN VISIT BLOCKS: Previously referenced but undefined
@@ -448,35 +657,9 @@
 # corresponding Visit entity definition.
 # These are substudy/adjudication/extension tables that
 # do not have scheduled visit-year structure.
-# Age calculation uses screening AGE + days-since-enrollment
+# Age calculation uses the header's screening-AGE formula
 # where a DAYS variable is available; otherwise omitted.
 # ------------------------------------------
-
-# WHI CAD
-# Source: pht003402
-- class_derivations:
-    Visit:
-      populated_from: pht003402
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00192476}) + ":WHI CAD")'
-        name:
-          value: WHI CAD
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
-
-# WHI CAD 121
-# Source: pht003405
-- class_derivations:
-    Visit:
-      populated_from: pht003405
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00192992}) + ":WHI CAD 121")'
-        name:
-          value: WHI CAD 121
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192992}) + ":WHI")'
 
 # WHI CAD MED
 # Source: pht006212
@@ -490,32 +673,12 @@
           value: WHI CAD MED
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00282951}) + ":WHI")'
-
-# WHI DVTPE
-# Source: pht003410
-- class_derivations:
-    Visit:
-      populated_from: pht003410
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
-        name:
-          value: WHI DVTPE
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-
-# WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
-# Source: pht003406
-- class_derivations:
-    Visit:
-      populated_from: pht003406
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193046}) + ":WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP")'
-        name:
-          value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193046}) + ":WHI")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 
 # WHI EXT 156
 # Source: pht006215
@@ -529,32 +692,12 @@
           value: WHI EXT 156
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283183}) + ":WHI")'
-
-# WHI EXTENSION STUDY 2 MRC
-# Source: pht003413
-- class_derivations:
-    Visit:
-      populated_from: pht003413
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193628}) + ":WHI EXTENSION STUDY 2 MRC")'
-        name:
-          value: WHI EXTENSION STUDY 2 MRC
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193628}) + ":WHI")'
-
-# WHI EXTENSION STUDY 2 SRC
-# Source: pht003414
-- class_derivations:
-    Visit:
-      populated_from: pht003414
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
-        name:
-          value: WHI EXTENSION STUDY 2 SRC
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # WHI HRT MED
 # Source: pht006213
@@ -568,6 +711,12 @@
           value: WHI HRT MED
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00282964}) + ":WHI")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 
 # WHI LQ 155
 # Source: pht006214
@@ -581,6 +730,12 @@
           value: WHI LQ 155
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00282977}) + ":WHI")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: UNKNOWN
+          range: string
 
 # WHI MAIN 44
 # Source: pht002754
@@ -594,6 +749,12 @@
           value: WHI MAIN 44
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00169602}) + ":WHI")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 
 # WHI MH 134
 # Source: pht001514
@@ -607,45 +768,12 @@
           value: WHI MH 134
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00111539}) + ":WHI")'
-
-# WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
-# Source: pht003407
-- class_derivations:
-    Visit:
-      populated_from: pht003407
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
-        name:
-          value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
-
-# WHI SCAD
-# Source: pht003415
-- class_derivations:
-    Visit:
-      populated_from: pht003415
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193798}) + ":WHI SCAD")'
-        name:
-          value: WHI SCAD
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193798}) + ":WHI")'
-
-# WHI SCAD 4
-# Source: pht003416
-- class_derivations:
-    Visit:
-      populated_from: pht003416
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193819}) + ":WHI SCAD 4")'
-        name:
-          value: WHI SCAD 4
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193819}) + ":WHI")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 
 # WHI UNC HEART FAILURE DETAILS
 # Source: pht006223
@@ -659,3 +787,9 @@
           value: WHI UNC HEART FAILURE DETAILS
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string

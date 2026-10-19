@@ -7,9 +7,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
         drug_concept:
-          expr: case(({phv00203800} == "Y", "ATC:C08"))
+          value: ATC:C08
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00203800
+          value_mappings:
+            N: ABSENT
+            U: UNKNOWN
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004053
@@ -19,9 +25,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         drug_concept:
-          expr: case(({phv00203967} == "Y", "ATC:C08"))
+          value: ATC:C08
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00203967
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004102
@@ -31,9 +42,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         drug_concept:
-          expr: case(({phv00206979} == "Y", "ATC:C08"))
+          value: ATC:C08
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00206979
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004102
@@ -43,6 +59,11 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         drug_concept:
-          expr: case(({phv00206980} == "Y", "ATC:C08"))
+          value: ATC:C08
         exposure_provenance:
           value: PRESCRIPTION_WRITTEN
+        exposure_status:
+          populated_from: phv00206980
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT

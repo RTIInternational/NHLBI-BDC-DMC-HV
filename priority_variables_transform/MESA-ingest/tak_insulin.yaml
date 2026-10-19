@@ -9,10 +9,15 @@
         age_at_exposure_start:
           expr: case(({phv00083119} == 1, {phv00083008} * 365))
         drug_concept:
-          expr: 'case(({phv00083119} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00083119
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001111
@@ -24,10 +29,16 @@
         age_at_exposure_start:
           expr: case(({phv00083302} == 1, {phv00083008} * 365))
         drug_concept:
-          expr: 'case(({phv00083302} == 1, "VANDF:HS500"))'
+          value: VANDF:HS500
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00083302
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001116
@@ -39,10 +50,16 @@
         age_at_exposure_start:
           expr: case(({phv00084979} == 1, {phv00085244} * 365))
         drug_concept:
-          expr: 'case(({phv00084979} == 1, "VANDF:HS500"))'
+          value: VANDF:HS500
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00084979
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001116
@@ -54,10 +71,15 @@
         age_at_exposure_start:
           expr: case(({phv00085364} == 1, {phv00085244} * 365))
         drug_concept:
-          expr: 'case(({phv00085364} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00085364
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001118
@@ -67,10 +89,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         drug_concept:
-          expr: 'case(({phv00085926} == 1, "VANDF:HS500"))'
+          value: VANDF:HS500
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00085926
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001118
@@ -80,10 +108,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         drug_concept:
-          expr: 'case(({phv00086008} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00086008
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001119
@@ -93,10 +126,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         drug_concept:
-          expr: 'case(({phv00086409} == 1, "VANDF:HS500"))'
+          value: VANDF:HS500
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00086409
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001119
@@ -106,10 +145,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         drug_concept:
-          expr: 'case(({phv00086490} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00086490
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001120
@@ -119,10 +163,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         drug_concept:
-          expr: 'case(({phv00086841} == 1, "VANDF:HS500"))'
+          value: VANDF:HS500
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00086841
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001120
@@ -132,10 +182,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         drug_concept:
-          expr: 'case(({phv00086927} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00086927
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht003086
@@ -145,10 +200,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00175366} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00175366
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht003086
@@ -158,10 +218,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00175455} == 1, "VANDF:HS500"))'
+          value: VANDF:HS500
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00175455
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht003091
@@ -171,10 +237,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00176789} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00176789
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht003091
@@ -184,7 +255,13 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00176889} == 1, "VANDF:HS500"))'
+          value: VANDF:HS500
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00176889
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN

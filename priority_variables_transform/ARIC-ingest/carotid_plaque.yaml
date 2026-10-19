@@ -9,31 +9,13 @@
         condition_concept:
           value: OMOP:4102124
         condition_status:
-          populated_from: phv00204712
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: carotid ultrasound
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht004063
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
-        condition_concept:
-          value: OMOP:4102124
-        condition_status:
           populated_from: phv00204776
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -55,7 +37,7 @@
             '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -75,8 +57,9 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -100,7 +83,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -124,7 +107,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -148,7 +131,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -172,7 +155,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -196,7 +179,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -220,7 +203,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -244,7 +227,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -268,7 +251,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -292,7 +275,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -316,7 +299,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -338,7 +321,7 @@
             '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -360,7 +343,7 @@
             '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -382,7 +365,7 @@
             '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -404,7 +387,7 @@
             '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -426,7 +409,7 @@
             '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -450,7 +433,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -474,7 +457,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -498,7 +481,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -522,7 +505,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -546,7 +529,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -570,7 +553,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -594,7 +577,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -617,7 +600,7 @@
             '3': PRESENT
             '4': ABSENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -640,7 +623,7 @@
             '3': PRESENT
             '4': ABSENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -664,7 +647,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -688,7 +671,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -712,7 +695,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -734,7 +717,7 @@
             '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -756,7 +739,7 @@
             '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -778,7 +761,7 @@
             '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -802,7 +785,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -826,7 +809,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -850,7 +833,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -874,7 +857,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -898,7 +881,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -922,7 +905,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:
@@ -946,7 +929,7 @@
             '4': ABSENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: carotid ultrasound
         relationship_to_participant:

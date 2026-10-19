@@ -13,14 +13,13 @@
         condition_status:
           populated_from: phv00203749
           value_mappings:
-            N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: DEATH_RECORD
           range: string
-        associated_evidence:
-          value: "death investigation record"
-          range: string
+        # associated_evidence:
+        #   value: "death investigation record"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -40,14 +39,14 @@
           populated_from: phv00203786
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
             U: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: DEATH_RECORD
           range: string
-        associated_evidence:
-          value: "death investigation record"
-          range: string
+        # associated_evidence:
+        #   value: "death investigation record"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -66,15 +65,13 @@
         condition_status:
           populated_from: phv00203787
           value_mappings:
-            N: ABSENT
-            Y: HISTORICAL
-            U: UNKNOWN
+            Y: PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: DEATH_RECORD
           range: string
-        associated_evidence:
-          value: "death investigation record"
-          range: string
+        # associated_evidence:
+        #   value: "death investigation record"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -94,14 +91,14 @@
           populated_from: phv00203902
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
             U: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -121,14 +118,14 @@
           populated_from: phv00203975
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
             U: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -148,14 +145,14 @@
           populated_from: phv00204306
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
             U: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "informant interview"
-          range: string
+        # associated_evidence:
+        #   value: "informant interview"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -174,15 +171,13 @@
         condition_status:
           populated_from: phv00204307
           value_mappings:
-            N: ABSENT
-            Y: HISTORICAL
-            U: UNKNOWN
+            Y: PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "informant interview"
-          range: string
+        # associated_evidence:
+        #   value: "informant interview"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -202,14 +197,14 @@
           populated_from: phv00204460
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
             U: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: "stroke abstraction form"
-          range: string
+        # associated_evidence:
+        #   value: "stroke abstraction form"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -228,15 +223,13 @@
         condition_status:
           populated_from: phv00204461
           value_mappings:
-            N: ABSENT
-            Y: HISTORICAL
-            U: UNKNOWN
+            Y: PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: "stroke abstraction form"
-          range: string
+        # associated_evidence:
+        #   value: "stroke abstraction form"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -256,10 +249,10 @@
           populated_from: phv00204748
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -280,10 +273,10 @@
           populated_from: phv00204749
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -304,9 +297,9 @@
           populated_from: phv00204831
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -327,10 +320,10 @@
           populated_from: phv00204832
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -349,16 +342,17 @@
           range: string
         condition_status:
           populated_from: phv00204841
+          # dbGaP labels this variable 0=Yes, 1=No; the label is inverted (#869): ECGMI04/ECGMI51 code 1=Yes with similar small counts, and '0' covers ~97% of participants
           value_mappings:
-            '0': HISTORICAL
-            '1': ABSENT
+            '0': ABSENT
+            '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: "Adjudicated ECG"
-          range: string
+        # associated_evidence:
+        #   value: "Adjudicated ECG"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -378,10 +372,10 @@
           populated_from: phv00204842
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "Machine coded ECG"
@@ -405,13 +399,13 @@
           populated_from: phv00206805
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -431,13 +425,13 @@
           populated_from: phv00206841
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -457,13 +451,13 @@
           populated_from: phv00206999
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -482,14 +476,13 @@
         condition_status:
           populated_from: phv00207018
           value_mappings:
-            N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -509,14 +502,14 @@
           populated_from: phv00207066
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
             U: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -536,14 +529,14 @@
           populated_from: phv00207313
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
             U: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -565,14 +558,14 @@
           populated_from: phv00207776
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
             U: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -592,14 +585,14 @@
           populated_from: phv00208972
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
             U: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -619,14 +612,14 @@
           populated_from: phv00209063
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
             U: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -645,15 +638,13 @@
         condition_status:
           populated_from: phv00294654
           value_mappings:
-            'N': ABSENT
-            'Y': HISTORICAL
-            U: UNKNOWN
+            'Y': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -672,15 +663,13 @@
         condition_status:
           populated_from: phv00294655
           value_mappings:
-            'N': ABSENT
-            'Y': HISTORICAL
-            U: UNKNOWN
+            'Y': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -700,14 +689,14 @@
           populated_from: phv00294675
           value_mappings:
             'N': ABSENT
-            'Y': HISTORICAL
+            'Y': PRESENT
             U: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -726,15 +715,13 @@
         condition_status:
           populated_from: phv00294786
           value_mappings:
-            'N': ABSENT
-            'Y': HISTORICAL
-            U: UNKNOWN
+            'Y': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -756,13 +743,13 @@
           populated_from: phv00295237
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: "ST-Segment Elevation MI"
-          range: string
+        # associated_evidence:
+        #   value: "ST-Segment Elevation MI"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -782,13 +769,13 @@
           populated_from: phv00295238
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: "Non-ST-Segment Elevation MI"
-          range: string
+        # associated_evidence:
+        #   value: "Non-ST-Segment Elevation MI"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -808,10 +795,10 @@
           populated_from: phv00507335
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
-            M: UNKNOWN
+            '1': PRESENT
+            T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -832,9 +819,9 @@
           populated_from: phv00507336
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -855,9 +842,9 @@
           populated_from: phv00511956
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -878,9 +865,9 @@
           populated_from: phv00511957
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -899,16 +886,17 @@
           range: string
         condition_status:
           populated_from: phv00511964
+          # dbGaP labels this variable 0=Yes, 1=No; the label is inverted (#869): ECGMI04/ECGMI51 code 1=Yes with similar small counts, and '0' covers ~97% of participants
           value_mappings:
-            '1': ABSENT
-            '0': HISTORICAL
-            M: UNKNOWN
+            '1': PRESENT
+            '0': ABSENT
+            T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: "Adjudicated ECG"
-          range: string
+        # associated_evidence:
+        #   value: "Adjudicated ECG"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -928,10 +916,10 @@
           populated_from: phv00512072
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
-            M: UNKNOWN
+            '1': PRESENT
+            T: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -952,14 +940,14 @@
           populated_from: phv00512099
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
             M: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: "Adjudicated Electrocardiograms"
-          range: string
+        # associated_evidence:
+        #   value: "Adjudicated Electrocardiograms"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -979,10 +967,10 @@
           populated_from: phv00512122
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
-            M: UNKNOWN
+            '1': PRESENT
+            T: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -1003,9 +991,9 @@
           populated_from: phv00512288
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -1026,9 +1014,9 @@
           populated_from: phv00512289
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -1050,10 +1038,10 @@
         condition_status:
           populated_from: phv00215643
           value_mappings:
-            '1': ABSENT
-            '2': HISTORICAL
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          value: EHR_ENCOUNTER_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: ECG
@@ -1075,10 +1063,10 @@
         condition_status:
           populated_from: phv00216060
           value_mappings:
-            '1': ABSENT
-            '2': HISTORICAL
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          value: EHR_ENCOUNTER_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: ECG
@@ -1100,10 +1088,10 @@
         condition_status:
           populated_from: phv00216477
           value_mappings:
-            '1': ABSENT
-            '2': HISTORICAL
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          value: EHR_ENCOUNTER_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: ECG
@@ -1125,10 +1113,10 @@
         condition_status:
           populated_from: phv00216894
           value_mappings:
-            '1': ABSENT
-            '2': HISTORICAL
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          value: EHR_ENCOUNTER_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: ECG
@@ -1150,10 +1138,10 @@
         condition_status:
           populated_from: phv00295792
           value_mappings:
-            '1': ABSENT
-            '2': HISTORICAL
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          value: EHR_ENCOUNTER_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: ECG
@@ -1177,13 +1165,13 @@
           populated_from: phv00204704
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: EHR_ENCOUNTER_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: ECG
+        # associated_evidence:
+        #   value: ECG
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1203,10 +1191,10 @@
           populated_from: phv00204709
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: EHR_ENCOUNTER_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: ECG
@@ -1229,12 +1217,13 @@
           populated_from: phv00204740
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
+            T: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Rose questionnaire
+        # associated_evidence:
+        #   value: Rose questionnaire
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1254,10 +1243,10 @@
           populated_from: phv00204705
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
             T: UNKNOWN
         condition_provenance:
-          value: EHR_ENCOUNTER_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: ECG or medical history
@@ -1281,15 +1270,13 @@
         condition_status:
           populated_from: phv00204300
           value_mappings:
-            '1': ABSENT
-            '2': HISTORICAL
-            M: UNKNOWN
+            'Y': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "informant interview"
-          range: string
+        # associated_evidence:
+        #   value: "informant interview"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1307,20 +1294,14 @@
           range: string
         condition_status:
           populated_from: phv00294812
-          # phv00294812 (AFUCOMP7_V1) is string-typed and uses N/Y codes
-          # (var_report: N=2,179, Y=434). The previous '1'/'2' keys never
-          # matched -> condition_status was silently null on every pht006416
-          # hist-MI record. Aligned with sibling pht006416 blocks at L645-650
-          # and L672-677 in this file which correctly use 'N'/'Y'.
           value_mappings:
-            'N': ABSENT
-            'Y': HISTORICAL
+            'Y': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string

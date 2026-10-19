@@ -17,6 +17,12 @@
           expr: '{phv00177930} * 365'
         age_at_visit_end:
           expr: '{phv00177930} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
         # visit_category: commented out - cross-table populated_from not supported by pipeline
         #   populated_from: pht004813.phv00565431
         #   value_mappings:
@@ -40,6 +46,12 @@
           expr: '{phv00177932} * 365'
         age_at_visit_end:
           expr: '{phv00177932} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
         # visit_category: commented out - cross-table populated_from not supported by pipeline
         #   populated_from: pht004814.phv00251057
         #   value_mappings:
@@ -64,6 +76,12 @@
           expr: '{phv00177934} * 365'
         age_at_visit_end:
           expr: '{phv00177934} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
         # visit_category: commented out - cross-table populated_from not supported by pipeline
         #   populated_from: pht004815.phv00251531
         #   value_mappings:
@@ -77,15 +95,21 @@
       populated_from: pht003099
       slot_derivations:
         id:
-          expr: 'case(({phv00177928} in [0, 1, 3, 7, 72], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 3, ''FHS GENERATION 3''), ({phv00177928} == 7, ''FHS OMNI 1''), ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 4'')), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 3 or {phv00177928} == 7 or {phv00177928} == 72), uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 3, ''FHS GENERATION 3''), ({phv00177928} == 7, ''FHS OMNI 1''), ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 4'')), (True, None))'
         name:
-          expr: 'case(({phv00177928} in [0, 1, 3, 7, 72], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 3, ''FHS GENERATION 3''), ({phv00177928} == 7, ''FHS OMNI 1''), ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 4''), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 3 or {phv00177928} == 7 or {phv00177928} == 72), case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 3, ''FHS GENERATION 3''), ({phv00177928} == 7, ''FHS OMNI 1''), ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 4''), (True, None))'
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00177926}) + ":FHS")'
         age_at_visit_start:
           expr: '{phv00177936} * 365'
         age_at_visit_end:
           expr: '{phv00177936} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
         # visit_category: commented out - cross-table populated_from not supported by pipeline
         #   populated_from: pht005140.phv00254283
         #   value_mappings:
@@ -99,15 +123,21 @@
       populated_from: pht003099
       slot_derivations:
         id:
-          expr: 'case(({phv00177928} in [0, 1, 7], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 5'')), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 7), uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 5'')), (True, None))'
         name:
-          expr: 'case(({phv00177928} in [0, 1, 7], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 5''), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 7), case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 5''), (True, None))'
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00177926}) + ":FHS")'
         age_at_visit_start:
           expr: '{phv00177938} * 365'
         age_at_visit_end:
           expr: '{phv00177938} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
         # visit_category: commented out - cross-table populated_from not supported by pipeline
         #   populated_from: pht015104.phv00545435
         #   value_mappings:
@@ -122,57 +152,81 @@
       populated_from: pht003099
       slot_derivations:
         id:
-          expr: 'case(({phv00177928} in [0, 1, 7], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 6'')), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 7), uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 6'')), (True, None))'
         name:
-          expr: 'case(({phv00177928} in [0, 1, 7], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 6''), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 7), case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 6''), (True, None))'
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00177926}) + ":FHS")'
         age_at_visit_start:
           expr: '{phv00177940} * 365'
         age_at_visit_end:
           expr: '{phv00177940} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
       slot_derivations:
         id:
-          expr: 'case(({phv00177928} in [0, 1, 7], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 7'')), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 7), uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 7'')), (True, None))'
         name:
-          expr: 'case(({phv00177928} in [0, 1, 7], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 7''), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 7), case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 7''), (True, None))'
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00177926}) + ":FHS")'
         age_at_visit_start:
           expr: '{phv00177942} * 365'
         age_at_visit_end:
           expr: '{phv00177942} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
       slot_derivations:
         id:
-          expr: 'case(({phv00177928} in [0, 1, 7], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 8'')), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 7), uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 8'')), (True, None))'
         name:
-          expr: 'case(({phv00177928} in [0, 1, 7], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 8''), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 7), case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 8''), (True, None))'
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00177926}) + ":FHS")'
         age_at_visit_start:
           expr: '{phv00177944} * 365'
         age_at_visit_end:
           expr: '{phv00177944} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
       slot_derivations:
         id:
-          expr: 'case(({phv00177928} in [0, 1, 7], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 9'')), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 7), uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 9'')), (True, None))'
         name:
-          expr: 'case(({phv00177928} in [0, 1, 7], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 9''), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 7), case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 9''), (True, None))'
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00177926}) + ":FHS")'
         age_at_visit_start:
           expr: '{phv00177946} * 365'
         age_at_visit_end:
           expr: '{phv00177946} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
         # visit_category: commented out - cross-table populated_from not supported by pipeline
         #   populated_from: pht005140.phv00254283
         #   value_mappings:
@@ -186,15 +240,21 @@
       populated_from: pht003099
       slot_derivations:
         id:
-          expr: 'case(({phv00177928} in [0, 1, 7], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 10'')), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 7), uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 10'')), (True, None))'
         name:
-          expr: 'case(({phv00177928} in [0, 1, 7], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 10''), (True, None))'
+          expr: 'case((({phv00177928} == 0 or {phv00177928} == 1 or {phv00177928} == 7), case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 10''), (True, None))'
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00177926}) + ":FHS")'
         age_at_visit_start:
           expr: '{phv00177948} * 365'
         age_at_visit_end:
           expr: '{phv00177948} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
         # visit_category: commented out - cross-table populated_from not supported by pipeline
         #   populated_from: pht015104.phv00545435
         #   value_mappings:
@@ -218,6 +278,12 @@
           expr: '{phv00177950} * 365'
         age_at_visit_end:
           expr: '{phv00177950} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -232,6 +298,12 @@
           expr: '{phv00177952} * 365'
         age_at_visit_end:
           expr: '{phv00177952} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -246,6 +318,12 @@
           expr: '{phv00177954} * 365'
         age_at_visit_end:
           expr: '{phv00177954} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -260,6 +338,12 @@
           expr: '{phv00177956} * 365'
         age_at_visit_end:
           expr: '{phv00177956} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -274,6 +358,12 @@
           expr: '{phv00177958} * 365'
         age_at_visit_end:
           expr: '{phv00177958} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -288,6 +378,12 @@
           expr: '{phv00177960} * 365'
         age_at_visit_end:
           expr: '{phv00177960} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -302,6 +398,12 @@
           expr: '{phv00177962} * 365'
         age_at_visit_end:
           expr: '{phv00177962} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -316,6 +418,12 @@
           expr: '{phv00177964} * 365'
         age_at_visit_end:
           expr: '{phv00177964} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -330,6 +438,12 @@
           expr: '{phv00177966} * 365'
         age_at_visit_end:
           expr: '{phv00177966} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -344,6 +458,12 @@
           expr: '{phv00177968} * 365'
         age_at_visit_end:
           expr: '{phv00177968} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -358,6 +478,12 @@
           expr: '{phv00177970} * 365'
         age_at_visit_end:
           expr: '{phv00177970} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -372,6 +498,12 @@
           expr: '{phv00177972} * 365'
         age_at_visit_end:
           expr: '{phv00177972} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -386,6 +518,12 @@
           expr: '{phv00177974} * 365'
         age_at_visit_end:
           expr: '{phv00177974} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -400,6 +538,12 @@
           expr: '{phv00177976} * 365'
         age_at_visit_end:
           expr: '{phv00177976} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -414,6 +558,12 @@
           expr: '{phv00177978} * 365'
         age_at_visit_end:
           expr: '{phv00177978} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -428,6 +578,12 @@
           expr: '{phv00177980} * 365'
         age_at_visit_end:
           expr: '{phv00177980} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -442,6 +598,12 @@
           expr: '{phv00177982} * 365'
         age_at_visit_end:
           expr: '{phv00177982} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -456,6 +618,12 @@
           expr: '{phv00177984} * 365'
         age_at_visit_end:
           expr: '{phv00177984} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht003099
@@ -470,6 +638,12 @@
           expr: '{phv00226999} * 365'
         age_at_visit_end:
           expr: '{phv00226999} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
         # visit_category: commented out - cross-table populated_from not supported by pipeline
         #   populated_from: pht005141.phv00254761
         #   value_mappings:
@@ -492,6 +666,12 @@
           expr: '{phv00227002} * 365'
         age_at_visit_end:
           expr: '{phv00227002} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
         # visit_category: commented out - cross-table populated_from not supported by pipeline
         #   populated_from: pht005142.phv00255154
         #   value_mappings:
@@ -514,6 +694,12 @@
           expr: '{phv00227005} * 365'
         age_at_visit_end:
           expr: '{phv00227005} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
         # visit_category: commented out - cross-table populated_from not supported by pipeline
         #   populated_from: pht006007.phv00274879
         #   value_mappings:
@@ -536,6 +722,12 @@
           expr: '{phv00227008} * 365'
         age_at_visit_end:
           expr: '{phv00227008} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
         # visit_category: commented out - cross-table populated_from not supported by pipeline
         #   populated_from: pht006008.phv00275237
         #   value_mappings:
@@ -558,9 +750,19 @@
           expr: '{phv00056587} * 365'
         age_at_visit_end:
           expr: '{phv00056587} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht000396
+      joins:
+        pht003099:
+          source_key: phv00056722
+          lookup_key: phv00177926
       slot_derivations:
         id:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056722}) + ":" + case(({phv00056716} == 1, ''FHS OFFSPRING SHHS''), ({phv00056716} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' INTERIM FOLLOW UP'')'
@@ -569,9 +771,15 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00056722}) + ":FHS")'
         age_at_visit_start:
-          expr: '({phv00056587} * 365) + {phv00056720}'
+          expr: '({pht003099.phv00177930} * 365) + {phv00056720}'
         age_at_visit_end:
-          expr: '({phv00056587} * 365) + {phv00056720}'
+          expr: '({pht003099.phv00177930} * 365) + {phv00056720}'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht000397
@@ -586,6 +794,12 @@
           expr: '{phv00056723} * 365'
         age_at_visit_end:
           expr: '{phv00056723} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht006018
@@ -596,23 +810,41 @@
           expr: 'case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT''))'
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00276803}) + ":FHS")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht000160
       slot_derivations:
         id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023794}) + ":FHS PSIP ORIGINAL, OFFSPRING")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023794}) + ":FHS PSIP INITIAL, ORIGINAL/OFFSPRING")'
         name:
-          value: FHS PSIP ORIGINAL, OFFSPRING
+          value: FHS PSIP INITIAL, ORIGINAL/OFFSPRING
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023794}) + ":FHS")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht000172
       slot_derivations:
         id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023901}) + ":FHS PSIP ORIGINAL, OFFSPRING")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023901}) + ":FHS PSIP RECURRENT, ORIGINAL/OFFSPRING")'
         name:
-          value: FHS PSIP ORIGINAL, OFFSPRING
+          value: FHS PSIP RECURRENT, ORIGINAL/OFFSPRING
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023901}) + ":FHS")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
+        visit_category:
+          value: STUDY_SITE_VISIT
+          range: string
