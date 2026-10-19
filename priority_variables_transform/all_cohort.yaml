@@ -264,3 +264,80 @@
                   value: "During the past week, how often have you felt or behaved this way? I could not “get going.”"
                 ordinality:
                   value: "10"
+- class_derivations:
+    Questionnaire:
+      slot_derivations:
+        id: 
+          expr: 'uuid5("https://w3id.org/bdchm/Questionnaire" + "CESDDISB")'
+        name:
+          value: "CES-D/DIS Burnam short screener"
+        title:
+          value: "Center for Epidemiologic Studies Depression Scale - Diagnostic Interview Schedule Burnam Screen"
+        version:
+          value: "0100"
+        items:
+          class_derivations:
+          - QuestionnaireItem:
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ1")'              
+                text: 
+                  value: "During the past week, how often have you felt or behaved this way? You felt depressed (blue or down)."
+                ordinality:
+                  value: "1"
+          - QuestionnaireItem:
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ2")'              
+                text: 
+                  value: "During the past week, how often have you felt or behaved this way? Your sleep was restless."
+                ordinality:
+                  value: "2"
+          - QuestionnaireItem:
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ3")'              
+                text: 
+                  value: "During the past week, how often have you felt or behaved this way? You enjoyed life."
+                ordinality:
+                  value: "3"
+          - QuestionnaireItem:
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ4")'              
+                text: 
+                  value: "During the past week, how often have you felt or behaved this way? You had crying spells."
+                ordinality:
+                  value: "4"
+          - QuestionnaireItem:
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ5")'              
+                text: 
+                  value: "During the past week, how often have you felt or behaved this way? You felt sad."
+                ordinality:
+                  value: "5"
+          - QuestionnaireItem:
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ6")'              
+                text: 
+                  value: "During the past week, how often have you felt or behaved this way? You felt that people disliked you."
+                ordinality:
+                  value: "6"
+          - QuestionnaireItem:
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ7")'              
+                text: 
+                  value: "In the past year, have you had two weeks or more during which you felt sad, blue or depressed, or lost pleasure in things that you usually cared about or enjoyed?"
+                ordinality:
+                  value: "7"
+          - QuestionnaireItem:
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ8")'              
+                text: 
+                  value: "Have you had two or more years in your life when you felt depressed or sad most days, even if you felt okay sometimes? If yes, have you felt depressed or sad much of the time in the past year?"
+                ordinality:
+                  value: "8"
