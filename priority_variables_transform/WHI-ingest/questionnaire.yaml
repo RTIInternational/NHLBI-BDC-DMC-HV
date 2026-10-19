@@ -3,7 +3,7 @@
       populated_from: pht001005
       slot_derivations:
         id: 
-          expr: 'uuid5("https://w3id.org/bdchm/Questionnaire" + str({phv00078867}) + "CESDDISB" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'
+          expr: 'uuid5("https://w3id.org/bdchm/Questionnaire" + str({phv00078867}) + "CESDDISB" + case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))))'
         associated_visit:
           expr: 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'
         age_at_response:
