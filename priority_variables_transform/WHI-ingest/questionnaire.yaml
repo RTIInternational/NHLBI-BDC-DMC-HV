@@ -1,0 +1,195 @@
+- class_derivations:
+    QuestionnaireResponse:
+      populated_from: pht001005
+      slot_derivations:
+        id: 
+          expr: 'uuid5("https://w3id.org/bdchm/Questionnaire" + str({phv00078867}) + "CESDDISB" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'
+        associated_visit:
+          expr: 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'
+        age_at_response:
+          expr: '({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00078870}'
+        items:
+          class_derivations:
+          - QuestionnaireResponseItem:
+              populated_from: pht001005
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00078867}) + "CESDDISBQ1" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))')'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ1")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001005
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00078867}) + "CESDDISBQ1" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'))'
+                        value:
+                          populated_from: phv00079023
+                          value_mappings:
+                            "0": "Rarely or none of the time"
+                            "1": "Some or a little of the time"
+                            "2": "Occasionally or a moderate amount"
+                            "3": "Most or all of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001005
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00078867}) + "CESDDISBQ2" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))')'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ2")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001005
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00078867}) + "CESDDISBQ2" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'))'
+                        value:
+                          populated_from: phv00079024
+                          value_mappings:
+                            "0": "Rarely or none of the time"
+                            "1": "Some or a little of the time"
+                            "2": "Occasionally or a moderate amount"
+                            "3": "Most or all of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001005
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00078867}) + "CESDDISBQ3" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))')'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ3")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001005
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00078867}) + "CESDDISBQ3" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'))'
+                        value:
+                          populated_from: phv00079025
+                          value_mappings:
+                            "0": "Rarely or none of the time"
+                            "1": "Some or a little of the time"
+                            "2": "Occasionally or a moderate amount"
+                            "3": "Most or all of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001005
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00078867}) + "CESDDISBQ4" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))')'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ4")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001005
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00078867}) + "CESDDISBQ4" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'))'
+                        value:
+                          populated_from: phv00079026
+                          value_mappings:
+                            "0": "Rarely or none of the time"
+                            "1": "Some or a little of the time"
+                            "2": "Occasionally or a moderate amount"
+                            "3": "Most or all of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001005
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00078867}) + "CESDDISBQ5" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))')'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ5")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001005
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00078867}) + "CESDDISBQ5" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'))'
+                        value:
+                          populated_from: phv00079027
+                          value_mappings:
+                            "0": "Rarely or none of the time"
+                            "1": "Some or a little of the time"
+                            "2": "Occasionally or a moderate amount"
+                            "3": "Most or all of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001005
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00078867}) + "CESDDISBQ6" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))')'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ6")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001005
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00078867}) + "CESDDISBQ6" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'))'
+                        value:
+                          populated_from: phv00079028
+                          value_mappings:
+                            "0": "Rarely or none of the time"
+                            "1": "Some or a little of the time"
+                            "2": "Occasionally or a moderate amount"
+                            "3": "Most or all of the time"
+          - QuestionnaireResponseItem:
+              populated_from: pht001005
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00078867}) + "CESDDISBQ7" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))')'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ7")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001005
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00078867}) + "CESDDISBQ7" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'))'
+                        value:
+                          populated_from: phv00079029
+                          value_mappings:
+                            "0": "No"
+                            "1": "Yes"
+          - QuestionnaireResponseItem:
+              populated_from: pht001005
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00078867}) + "CESDDISBQ8" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))')'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ8")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001005
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00078867}) + "CESDDISBQ8" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'))'
+                        value:
+                          populated_from: phv00079030
+                          value_mappings:
+                            "0": "No"
+                            "1": "Yes"
+          - QuestionnaireResponseItem:
+              populated_from: pht001005
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00078867}) + "CESDDISBQ9" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))')'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESDDISBQ9")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht001005
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00078867}) + "CESDDISBQ9" + 'case(({phv00078869} == 0, ("WHI SCREENING")), ({phv00078869} == 6, ("WHI YEAR 6")), ({phv00078869} == 7, ("WHI YEAR 7")), ({phv00078869} == 8, ("WHI YEAR 8")), ({phv00078869} == 9, ("WHI YEAR 9")), ({phv00078869} == 10, ("WHI YEAR 10")), ({phv00078869} == 11, ("WHI YEAR 11"))'))'
+                        value:
+                          populated_from: phv00079031
+                          value_mappings:
+                            "0": "No"
+                            "1": "Yes"
