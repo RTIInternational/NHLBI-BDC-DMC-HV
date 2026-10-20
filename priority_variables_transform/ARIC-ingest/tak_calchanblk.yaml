@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
         drug_concept:
-          expr: case(({phv00203800} == "Y", "ATC:C08"))
+          value: ATC:C08
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
@@ -25,7 +25,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         drug_concept:
-          expr: case(({phv00203967} == "Y", "ATC:C08"))
+          value: ATC:C08
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
@@ -42,7 +42,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         drug_concept:
-          expr: case(({phv00206979} == "Y", "ATC:C08"))
+          value: ATC:C08
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
@@ -59,7 +59,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         drug_concept:
-          expr: case(({phv00206980} == "Y", "ATC:C08"))
+          value: ATC:C08
         exposure_provenance:
           value: PRESCRIPTION_WRITTEN
         exposure_status:

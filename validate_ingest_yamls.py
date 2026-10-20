@@ -10,9 +10,7 @@ from linkml_map.validator import validate_spec
 # Known issues to be fixed by curation team. These files are excluded from
 # validation failures so CI stays green while issues are tracked separately.
 # Remove entries as they are fixed.
-KNOWN_ISSUES = {
-    "priority_variables_transform/FHS-ingest/_manifest-fhs.yaml": "version tracking manifest, not a transformation spec",
-}
+KNOWN_ISSUES: dict[str, str] = {}
 
 
 def validate_block(block: dict, block_index: int) -> list[str]:

@@ -17,6 +17,8 @@
               slot_derivations:
                 value_decimal:
                   expr: "{phv00207683} * 6"
+                unit:
+                  value: "pmol/L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004051
@@ -36,6 +38,8 @@
               slot_derivations:
                 value_decimal:
                   expr: "{phv00203874} * 6"
+                unit:
+                  value: "pmol/L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004063
@@ -71,17 +75,12 @@
           value: OBA:2060174
         method_type:
           value: "blood assay"
-#        value_quantity:
-#          object_derivations:
-#          - class_derivations:
-#              Quantity:
-#                populated_from: pht006444
-#                slot_derivations:
-#                  value_decimal:
-#                    populated_from: phv00296699
-#                    unit_conversion:
-#                      source_unit: "u[IU]/mL"
-#                      target_unit: "pmol/L"
-#                  unit:
-#                    value: "pmol/L"
-#                    range: string
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht006444
+              slot_derivations:
+                value_decimal:
+                  expr: "{phv00296699} * 6"
+                unit:
+                  value: "pmol/L"

@@ -115,28 +115,23 @@
     Condition:
       populated_from: pht001117
       slot_derivations:
+        # pht001117 has one row per relative and every row is emitted. Spouse (fhxRel2 1), missing (-9) and
+        # rows not confirmed as a blood relative (fhxbrel2 phv00085753 not 1) get UNKNOWN status and no relationship.
+        # No age: age_at_condition_start/end are the participant's age, and these ages are the relative's (#847).
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085751}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085751}) + ":MESA CLASSIC EXAM 2")'
-        age_at_condition_start:
-          expr: case(({phv00085764} == 1, {phv00085765} * 365))
         condition_concept:
           value: MONDO:0005015
           range: string
         condition_status:
-          populated_from: phv00085764
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '9': UNKNOWN
-            '-9': UNKNOWN
+          expr: case(({phv00085752} == 1, 'UNKNOWN'), ({phv00085752} == -9, 'UNKNOWN'), ({phv00085753} != 1, 'UNKNOWN'), ({phv00085764} == 0, 'ABSENT'), ({phv00085764} == 1, 'PRESENT'), (True, 'UNKNOWN'))
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
-          value: ONESELF
-          range: string
+          expr: case(({phv00085753} != 1, None), ({phv00085752} == 2, 'NATURAL_MOTHER'), ({phv00085752} == 3, 'NATURAL_FATHER'), ({phv00085752} == 4, 'NATURAL_SIBLING'), ({phv00085752} == 5, 'NATURAL_CHILD'))
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
@@ -345,6 +340,37 @@
         #   range: string
 - class_derivations:
     Condition:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
+        condition_concept:
+          populated_from: phv00174594
+          value_mappings:
+            '0': MONDO:0005015
+            '1': HP:0025691
+            '2': MONDO:0005015
+            '3': MONDO:0005015
+        condition_status:
+          populated_from: phv00174594
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
+            '3': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+- class_derivations:
+    Condition:
       populated_from: pht003087
       slot_derivations:
         associated_participant:
@@ -384,6 +410,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -430,8 +457,6 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00197114}) + ":MESA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197114}) + ":MESA TTD")'
         age_at_condition_start:
           expr: case(({phv00197119} == 1, {phv00197115} * 365))
         condition_concept:
@@ -443,7 +468,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF_REPORT
+          value: PHYSICIAN_ADJUDICATION
           range: string
         relationship_to_participant:
           value: ONESELF

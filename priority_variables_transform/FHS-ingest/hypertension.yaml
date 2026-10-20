@@ -64,7 +64,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            '2': UNKNOWN
+            '2': PRESENT
         condition_provenance:
           value: WORKING_DIAGNOSIS
           range: string
@@ -89,10 +89,8 @@
           populated_from: phv00003634
           value_mappings:
             '0': ABSENT
-            '8': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
             '2': PRESENT
-            '3': UNKNOWN
         condition_provenance:
           value: WORKING_DIAGNOSIS
           range: string
@@ -133,9 +131,9 @@
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001035}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001036}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 1")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 1")'
         condition_concept:
           value: MONDO:0005044
           range: string
@@ -143,7 +141,7 @@
           populated_from: phv00000487
           value_mappings:
             '0': ABSENT
-            '8': ABSENT
+            '8': UNKNOWN
             '1': PRESENT
             '2': PRESENT
             '3': UNKNOWN
@@ -186,9 +184,9 @@
       populated_from: pht000031
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008378}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008379}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008379}) + ":FHS OFFSPRING EXAM 2")'
         condition_concept:
           value: MONDO:0005044
           range: string
@@ -212,9 +210,9 @@
       populated_from: pht000031
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008378}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008379}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008379}) + ":FHS OFFSPRING EXAM 2")'
         condition_concept:
           value: MONDO:0005044
           range: string
@@ -234,9 +232,9 @@
       populated_from: pht000032
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008742}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008743}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008743}) + ":FHS OFFSPRING EXAM 3")'
         condition_concept:
           value: MONDO:0005044
           range: string

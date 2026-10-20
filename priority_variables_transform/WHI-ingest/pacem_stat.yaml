@@ -8,9 +8,10 @@
           expr: "case(({phv00154926} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI SCREENING')), ({phv00154926} == 2 and {phv00154927} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI SEMI-ANNUAL VISIT YEAR 1')), ({phv00154926} == 3 and {phv00154927} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 1')), ({phv00154926} == 3 and {phv00154927} == 2, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 2')), ({phv00154926} == 3 and {phv00154927} == 3, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 3')), ({phv00154926} == 3 and {phv00154927} == 4, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 4')), ({phv00154926} == 3 and {phv00154927} == 5, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 5')), ({phv00154926} == 3 and {phv00154927} == 6, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 6')), ({phv00154926} == 3 and {phv00154927} == 7, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 7')), ({phv00154926} == 3 and {phv00154927} == 8, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 8')), ({phv00154926} == 3 and {phv00154927} == 9, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 9')), ({phv00154926} == 3 and {phv00154927} == 10, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 10')), ({phv00154926} == 3 and {phv00154927} == 11, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 11')), (True, None))"
           range: string
         procedure_concept:
-          expr: case(({phv00155223} == 1, "OMOP:45772840"))
+          value: OMOP:45772840
         procedure_provenance:
-          expr: case(({phv00155223} == 1, "OMOP:4822157"))
+          value: STUDY_RECORD
+          range: string
         procedure_status:
           populated_from: phv00155223
           value_mappings:
@@ -19,18 +20,23 @@
 - class_derivations:
     Procedure:
       populated_from: pht006223
+      joins:
+        pht000998:
+          source_key: phv00283451
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
         age_at_procedure:
-          expr: 'case(({phv00283522} == 1, ({phv00078437} * 365) + {phv00283452}))'
+          expr: 'case(({phv00283522} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: string
         procedure_concept:
-          expr: case(({phv00283522} == 1, "OMOP:45772840"))
+          value: OMOP:45772840
         procedure_provenance:
-          expr: case(({phv00283522} == 1, "OMOP:4822157"))
+          value: HEALTH_RECORD
+          range: string
         procedure_status:
           populated_from: phv00283522
           value_mappings:

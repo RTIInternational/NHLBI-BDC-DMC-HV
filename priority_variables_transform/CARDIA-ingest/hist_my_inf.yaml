@@ -5,7 +5,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113019}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00113025 == 2, {phv00113026} * 365))
+          expr: case(({phv00113025} == 2, {phv00113026} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113019}) + ":CARDIA YEAR 0")'
         condition_concept:
@@ -14,7 +14,7 @@
           populated_from: phv00113025
           value_mappings:
             '1': ABSENT
-            '2': HISTORICAL
+            '2': PRESENT
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
@@ -31,7 +31,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00114388}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00114389 == 2, {phv00114390} * 365))
+          expr: case(({phv00114389} == 2, {phv00114390} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00114388}) + ":CARDIA YEAR 2")'
         condition_concept:
@@ -40,7 +40,7 @@
           populated_from: phv00114389
           value_mappings:
             '1': ABSENT
-            '2': HISTORICAL
+            '2': PRESENT
             '8': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
@@ -56,7 +56,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00115423}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00115429 == 2, {phv00115430} * 365))
+          expr: case(({phv00115429} == 2, {phv00115430} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115423}) + ":CARDIA YEAR 5")'
         condition_concept:
@@ -65,7 +65,7 @@
           populated_from: phv00115429
           value_mappings:
             '1': ABSENT
-            '2': HISTORICAL
+            '2': PRESENT
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
@@ -82,7 +82,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116953}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00116960 == 2, {phv00116961} * 365))
+          expr: case(({phv00116960} == 2, {phv00116961} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116953}) + ":CARDIA YEAR 7")'
         condition_concept:
@@ -91,7 +91,7 @@
           populated_from: phv00116960
           value_mappings:
             '1': ABSENT
-            '2': HISTORICAL
+            '2': PRESENT
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
@@ -115,7 +115,7 @@
           populated_from: phv00117946
           value_mappings:
             '1': ABSENT
-            '2': HISTORICAL
+            '2': PRESENT
             M: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
@@ -153,7 +153,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118426}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00118434 == 2, {phv00118435} * 365))
+          expr: case(({phv00118434} == 2, {phv00118435} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118426}) + ":CARDIA YEAR 10")'
         condition_concept:
@@ -162,7 +162,7 @@
           populated_from: phv00118434
           value_mappings:
             '1': ABSENT
-            '2': HISTORICAL
+            '2': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
         # associated_evidence:
@@ -177,7 +177,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00119801}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00119809 == 2, {phv00119814} * 365))
+          expr: case(({phv00119809} == 2, {phv00119814} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
         condition_concept:
@@ -185,7 +185,7 @@
         condition_status:
           populated_from: phv00119809
           value_mappings:
-            '2': HISTORICAL
+            '2': PRESENT
             '1': ABSENT
             '8': UNKNOWN
         condition_provenance:
@@ -209,7 +209,7 @@
           populated_from: phv00121288
           value_mappings:
             '1': ABSENT
-            '2': HISTORICAL
+            '2': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
         # associated_evidence:
@@ -231,7 +231,7 @@
           populated_from: phv00121461
           value_mappings:
             '1': ABSENT
-            '2': HISTORICAL
+            '2': PRESENT
         condition_provenance:
           value: STUDY_RECORD
         associated_evidence:
@@ -253,7 +253,7 @@
           populated_from: phv00121505
           value_mappings:
             '1': ABSENT
-            '2': HISTORICAL
+            '2': PRESENT
             '8': UNKNOWN
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION

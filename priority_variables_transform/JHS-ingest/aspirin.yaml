@@ -8,7 +8,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00127753}) + ":JHS Exam 1")'
           range: string
         drug_concept:
-          expr: case(({phv00127944} == "Y", "RxCUI:1191"))
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -28,7 +28,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
           range: string
         drug_concept:
-          expr: case(({phv00400887} == "Y", "RxCUI:1191"))
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -52,7 +52,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403315}) + ":JHS Exam 2")'
           range: string
         drug_concept:
-          expr: case(({phv00403340} == 1, "RxCUI:1191"))
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -74,7 +74,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403369}) + ":JHS Exam 3")'
           range: string
         drug_concept:
-          expr: case(({phv00403394} == 1, "RxCUI:1191"))
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
