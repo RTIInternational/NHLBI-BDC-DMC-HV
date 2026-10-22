@@ -5,7 +5,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023794}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023794}) + ":FHS PSIP INITIAL, ORIGINAL/OFFSPRING")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023794}) + ":" + case(({phv00023789} == 4, ''FHS PSIP INITIAL 6 MONTHS POST STROKE, ORIGINAL/OFFSPRING''), (True, ''FHS PSIP INITIAL, ORIGINAL/OFFSPRING'')))'
         observation_type:
           value: OMOP:36303297
           range: string
@@ -26,7 +26,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023901}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023901}) + ":FHS PSIP RECURRENT, ORIGINAL/OFFSPRING")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023901}) + ":" + case(({phv00023896} == 4, ''FHS PSIP RECURRENT 6 MONTHS POST STROKE, ORIGINAL/OFFSPRING''), (True, ''FHS PSIP RECURRENT, ORIGINAL/OFFSPRING'')))'
         observation_type:
           value: OMOP:36303297
           range: string
