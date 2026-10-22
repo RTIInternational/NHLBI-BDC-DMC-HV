@@ -10,7 +10,6 @@
           expr: '{phv00100694} * 365'    
         observation_type:
           value: OBA:2040171
-          range: string
         method_type:
           value: "questionnaire"
         value_quantity:
@@ -22,7 +21,6 @@
                   populated_from: phv00100712
                 unit:
                   value: h
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001460
@@ -35,7 +33,6 @@
           expr: '{phv00100694} * 365'
         observation_type:
           value: OBA:2040171
-          range: string
         method_type:
           value: "questionnaire"
         value_quantity:
@@ -47,7 +44,6 @@
                   populated_from: phv00100713
                 unit:
                   value: h
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
@@ -58,7 +54,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OBA:2040171
-          range: string
         method_type:
           value: "questionnaire"
         value_quantity:
@@ -70,7 +65,6 @@
                   populated_from: phv00197566
                 unit:
                   value: h
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
@@ -81,7 +75,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OBA:2040171
-          range: string
         method_type:
           value: "questionnaire"
         value_quantity:
@@ -93,7 +86,6 @@
                   expr: "case(({phv00197658} == 9999, None), (True, {phv00197658}))"
                 unit:
                   value: h
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
@@ -104,7 +96,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OBA:2040171
-          range: string
         method_type:
           value: "questionnaire"
         value_quantity:
@@ -116,7 +107,6 @@
                   expr: "case(({phv00197659} == 9000, None), ({phv00197659} == 9999, None), (True, {phv00197659}))"
                 unit:
                   value: h
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
@@ -127,7 +117,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OBA:2040171
-          range: string
         method_type:
           value: "questionnaire"
         value_quantity:
@@ -139,7 +128,6 @@
                   expr: '{phv00197707} / 60'
                 unit:
                   value: h
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003700
@@ -150,7 +138,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:2040171
-          range: string
         method_type:
           value: "questionnaire"
         value_quantity:
@@ -162,7 +149,6 @@
                   expr: '{phv00199793} / 60'
                 unit:
                   value: h
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003700
@@ -173,7 +159,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:2040171
-          range: string
         method_type:
           value: "questionnaire"
         value_quantity:
@@ -185,4 +170,3 @@
                   expr: '{phv00200010} / 60'
                 unit:
                   value: h
-                  range: string

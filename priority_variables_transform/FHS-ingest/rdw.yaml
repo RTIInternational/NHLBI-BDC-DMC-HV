@@ -10,7 +10,6 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OMOP:37397924
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -22,7 +21,6 @@
                   populated_from: phv00172185
                 unit:
                   value: '%'
-                  range: string
 
 - class_derivations:
     MeasurementObservation:
@@ -36,7 +34,6 @@
           expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OMOP:37397924
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -46,4 +43,3 @@
                   populated_from: phv00227032
                 unit:
                   value: '%'
-                  range: string

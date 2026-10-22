@@ -8,7 +8,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         condition_concept:
           value: MONDO:0005068
-          range: string
         condition_status:
           populated_from: phv00226366
           value_mappings:
@@ -16,13 +15,11 @@
             '1': PRESENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         associated_evidence:
           value: "12-lead ECG"
           range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht004715
@@ -35,7 +32,6 @@
           expr: case(({phv00258068} == 1, {phv00526602} * 365))
         condition_concept:
           value: MONDO:0005068
-          range: string
         condition_status:
           populated_from: phv00258068
           value_mappings:
@@ -44,10 +40,8 @@
             'Q': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string

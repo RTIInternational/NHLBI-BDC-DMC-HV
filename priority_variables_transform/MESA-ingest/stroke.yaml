@@ -11,12 +11,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085751}) + ":MESA CLASSIC EXAM 2")'
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           expr: case(({phv00085752} == 1, 'UNKNOWN'), ({phv00085752} == -9, 'UNKNOWN'), ({phv00085753} != 1, 'UNKNOWN'), ({phv00085760} == 0, 'ABSENT'), ({phv00085760} == 1, 'PRESENT'), (True, 'UNKNOWN'))
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           expr: case(({phv00085753} != 1, None), ({phv00085752} == 2, 'NATURAL_MOTHER'), ({phv00085752} == 3, 'NATURAL_FATHER'), ({phv00085752} == 4, 'NATURAL_SIBLING'), ({phv00085752} == 5, 'NATURAL_CHILD'))
         # associated_evidence:
@@ -32,7 +30,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00087144
           value_mappings:
@@ -41,10 +38,8 @@
             '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
@@ -58,7 +53,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00087145
           value_mappings:
@@ -67,10 +61,8 @@
             '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
@@ -88,7 +80,6 @@
           expr: 'case(({phv00087876} == 1, ({pht001116.phv00084442} * 365) + {phv00087878}))'
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00087876
           value_mappings:
@@ -96,10 +87,8 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
@@ -131,10 +120,8 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
@@ -152,7 +139,6 @@
           expr: 'case(({phv00087879} == 1, ({pht001116.phv00084442} * 365) + {phv00087881}))'
         condition_concept:
           value: MONDO:0005264
-          range: string
         condition_status:
           populated_from: phv00087879
           value_mappings:
@@ -160,10 +146,8 @@
             '1': HISTORICAL
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string

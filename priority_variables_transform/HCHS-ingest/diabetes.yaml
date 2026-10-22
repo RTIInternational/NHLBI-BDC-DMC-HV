@@ -20,13 +20,11 @@
             '3': PRESENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         associated_evidence:
           value: "algorithmic criteria"
           range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht004715
@@ -37,7 +35,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         condition_concept:
           value: MONDO:0005015
-          range: string
         condition_status:
           populated_from: phv00226262
           value_mappings:
@@ -45,13 +42,11 @@
             '1': PRESENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         associated_evidence:
           value: "algorithmic criteria"
           range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht004715
@@ -62,7 +57,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         condition_concept:
           value: MONDO:0005015
-          range: string
         age_at_condition_start:
           expr: case(({phv00226357} == 1, {phv00226358} * 365))
         condition_status:
@@ -73,13 +67,11 @@
             'Q': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht004715
@@ -102,13 +94,11 @@
             '3': PRESENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         associated_evidence:
           value: "laboratory test"
           range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht004715
@@ -119,7 +109,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         condition_concept:
           value: MONDO:0005015
-          range: string
         condition_status:
           populated_from: phv00258041
           value_mappings:
@@ -127,10 +116,8 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string

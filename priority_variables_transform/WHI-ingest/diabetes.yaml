@@ -9,17 +9,14 @@
           range: string
         condition_concept:
           value: MONDO:0005015
-          range: string
         condition_status:
           expr: 'case(({phv00078464} == 0, "ABSENT"), ({phv00078471} == 0, "HISTORICAL"), (True, "PRESENT"))'
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001514
@@ -31,7 +28,6 @@
           range: string
         condition_concept:
           value: MONDO:0005015
-          range: string
         condition_status:
           populated_from: phv00111545
           value_mappings:
@@ -39,12 +35,10 @@
             '1': PRESENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         associated_evidence:
           value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -62,7 +56,6 @@
           range: string
         condition_concept:
           value: MONDO:0005015
-          range: string
         condition_status:
           populated_from: phv00283531
           value_mappings:
@@ -70,9 +63,7 @@
             '1': PRESENT
         condition_provenance:
           value: HEALTH_RECORD
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string

@@ -9,7 +9,6 @@
           range: string
         condition_concept:
           value: MONDO:0005386
-          range: string
         condition_status:
           populated_from: phv00078562
           value_mappings:
@@ -17,12 +16,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003402
@@ -37,7 +34,6 @@
           expr: 'case(({phv00192510} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00192511}))'
         condition_concept:
           value: MONDO:0005386
-          range: string
         condition_status:
           populated_from: phv00192510
           value_mappings:
@@ -45,12 +41,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003405
@@ -60,7 +54,6 @@
         # excluded: age_at_condition_start -- pht003405 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: MONDO:0005386
-          range: string
         condition_status:
           populated_from: phv00192999
           value_mappings:
@@ -68,10 +61,8 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003405
@@ -95,10 +86,8 @@
             '4': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003406
@@ -108,7 +97,6 @@
         # excluded: age_at_condition_start -- pht003406 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: MONDO:0005386
-          range: string
         condition_status:
           populated_from: phv00193057
           value_mappings:
@@ -116,12 +104,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003406
@@ -145,12 +131,10 @@
             '4': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003407
@@ -165,7 +149,6 @@
           expr: 'case(({phv00193190} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193191}))'
         condition_concept:
           value: MONDO:0005386
-          range: string
         condition_status:
           populated_from: phv00193190
           value_mappings:
@@ -173,12 +156,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "adjudicated event"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003414
@@ -193,7 +174,6 @@
           expr: 'case(({phv00193719} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193720}))'
         condition_concept:
           value: MONDO:0005386
-          range: string
         condition_status:
           populated_from: phv00193719
           value_mappings:
@@ -201,12 +181,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003414
@@ -221,7 +199,6 @@
           expr: 'case(({phv00193721} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193722}))'
         condition_concept:
           value: MONDO:0005386
-          range: string
         condition_status:
           populated_from: phv00193721
           value_mappings:
@@ -229,12 +206,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -252,7 +227,6 @@
           range: string
         condition_concept:
           value: MONDO:0005386
-          range: string
         condition_status:
           populated_from: phv00283704
           value_mappings:
@@ -260,9 +234,7 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string

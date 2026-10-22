@@ -4,7 +4,6 @@
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -23,14 +22,12 @@
                   populated_from: phv00010135
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -48,14 +45,12 @@
                   populated_from: phv00423929
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000013
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001803}) + ":FHS ORIGINAL EXAM 11")'
         age_at_observation:
@@ -73,14 +68,12 @@
                   populated_from: phv00001581
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000036
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -99,14 +92,12 @@
                   populated_from: phv00010142
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000074
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -125,14 +116,12 @@
                   populated_from: phv00021391
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000742
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -151,14 +140,12 @@
                   populated_from: phv00071890
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004801
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -177,14 +164,12 @@
                   populated_from: phv00227014
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006010
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -203,14 +188,12 @@
                   populated_from: phv00275402
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006011
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -229,14 +212,12 @@
                   populated_from: phv00275413
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -255,14 +236,12 @@
                   populated_from: phv00277047
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -281,14 +260,12 @@
                   populated_from: phv00277048
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -307,14 +284,12 @@
                   populated_from: phv00544854
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -333,14 +308,12 @@
                   populated_from: phv00544850
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -359,7 +332,6 @@
                   populated_from: phv00370081
                 unit:
                   value: mg/dl
-                  range: string
 # REMOVED: Original Exam 4 (1954-56) total cholesterol — Abell-Kendall assay
 # reads systematically +10-15 mg/dL higher than enzymatic methods used by all
 # other cohorts. Not comparable cross-cohort without calibration adjustment.
@@ -401,7 +373,6 @@
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -420,14 +391,12 @@
                   populated_from: phv00370078
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
           range: string
@@ -446,14 +415,12 @@
                   populated_from: phv00370065
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
           range: string
@@ -472,14 +439,12 @@
                   populated_from: phv00370069
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 14")'
         age_at_observation:
@@ -497,14 +462,12 @@
                   populated_from: phv00370072
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
           range: string
@@ -523,14 +486,12 @@
                   populated_from: phv00370070
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
           range: string
@@ -549,14 +510,12 @@
                   populated_from: phv00370068
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -575,14 +534,12 @@
                   populated_from: phv00370074
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -601,14 +558,12 @@
                   populated_from: phv00370077
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -627,14 +582,12 @@
                   populated_from: phv00370073
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
           range: string
@@ -653,14 +606,12 @@
                   populated_from: phv00370064
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 13")'
         age_at_observation:
@@ -678,14 +629,12 @@
                   populated_from: phv00370071
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -704,14 +653,12 @@
                   populated_from: phv00370076
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -730,14 +677,12 @@
                   populated_from: phv00370075
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
           range: string
@@ -756,14 +701,12 @@
                   populated_from: phv00370063
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
           range: string
@@ -782,14 +725,12 @@
                   populated_from: phv00370067
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -808,14 +749,12 @@
                   populated_from: phv00370079
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -834,14 +773,12 @@
                   populated_from: phv00370080
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009755
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423778}) + ":" + case(({phv00423780} == ''10'', ''FHS ORIGINAL EXAM 10''), ({phv00423780} == ''11'', ''FHS ORIGINAL EXAM 11''), ({phv00423780} == ''12'', ''FHS ORIGINAL EXAM 12''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -859,14 +796,12 @@
                   populated_from: phv00423784
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -885,14 +820,12 @@
                   populated_from: phv00423932
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -911,14 +844,12 @@
                   populated_from: phv00423931
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
           range: string
@@ -937,4 +868,3 @@
                   populated_from: phv00423930
                 unit:
                   value: mg/dl
-                  range: string

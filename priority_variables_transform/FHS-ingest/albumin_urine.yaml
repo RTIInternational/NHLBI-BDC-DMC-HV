@@ -10,7 +10,6 @@
           expr: '{pht003099.phv00177944} * 365'
         observation_type:
           value: OBA:VT0002871
-          range: string
         method_type:
           value: 'immunoturbidometric assay'
         value_quantity:
@@ -25,7 +24,6 @@
                         )'
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -33,10 +31,8 @@
               slot_derivations:
                 value_decimal:
                   value: '3.0'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000016
@@ -49,7 +45,6 @@
           expr: '{pht003099.phv00177956} * 365'
         observation_type:
           value: OBA:VT0002871
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -69,7 +64,6 @@
                     '40': 400
                 unit:
                   value: mg/L
-                  range: string
         method_type: 
           value: dipstick
 - class_derivations:
@@ -84,7 +78,6 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OBA:VT0002871
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -103,7 +96,6 @@
                     # excluded: 1003, 3003, 9000 are not dipstick levels in dbGaP (B350 has no code list); left unmapped
                 unit:
                   value: mg/L
-                  range: string
         method_type: 
           value: dipstick
 - class_derivations:
@@ -118,7 +110,6 @@
           expr: '{pht003099.phv00177934} * 365'
         observation_type:
           value: OBA:VT0002871
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -134,7 +125,6 @@
                     '300': 3000
                 unit:
                   value: mg/L
-                  range: string
         method_type: 
           value: dipstick
 - class_derivations:
@@ -149,7 +139,6 @@
           expr: '{pht003099.phv00177958} * 365'
         observation_type:
           value: OBA:VT0002871
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -169,7 +158,6 @@
                     '40': 400
                 unit:
                   value: mg/L
-                  range: string
         method_type: 
           value: dipstick
 - class_derivations:
@@ -184,7 +172,6 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OBA:VT0002871
-          range: string
         method_type:
           value: 'urine assay'
         value_quantity:
@@ -198,7 +185,6 @@
                   expr: 'case(({phv00172204} == 1, "LESS_THAN"))'
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -206,10 +192,8 @@
               slot_derivations:
                 value_decimal:
                   value: '3.0'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006011
@@ -222,7 +206,6 @@
           expr: '{pht003099.phv00177934} * 365'
         observation_type:
           value: OBA:VT0002871
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -235,7 +218,6 @@
                         )'
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -243,10 +225,8 @@
               slot_derivations:
                 value_decimal:
                   value: '3.0'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string                       
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -259,7 +239,6 @@
           expr: case(({phv00227024} == 1, {pht003099.phv00177944} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OBA:VT0002871
-          range: string
         method_type:
           value: 'urine assay'
         value_quantity:
@@ -275,7 +254,6 @@
                         )'                  
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004363
@@ -288,7 +266,6 @@
           expr: case(({phv00219545} == 1, {pht003099.phv00177942} * 365), ({phv00219545} == 7, {pht003099.phv00177932} * 365))            
         observation_type:
           value: OBA:VT0002871
-          range: string
         method_type:
           value: 'turbidometric assay'
         value_quantity:
@@ -302,7 +279,6 @@
                   expr: 'case(({phv00219549} == 1, "LESS_THAN"))'
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -310,10 +286,8 @@
               slot_derivations:
                 value_decimal:
                   value: '3.0'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000313
@@ -326,7 +300,6 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OBA:VT0002871
-          range: string
         method_type:
           value: immunoturbidometric
         value_quantity:
@@ -338,7 +311,6 @@
                   populated_from: phv00036493
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -346,7 +318,5 @@
               slot_derivations:
                 value_decimal:
                   value: '3.0'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string

@@ -15,6 +15,5 @@
           expr: 'case(({phv00113154} == "HBP", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
         exposure_status:
           expr: "case(({phv00113154} == 'HBP' and {phv00113155} == 1, 'ABSENT'), ({phv00113154} == 'HBP' and {phv00113155} == 2, 'PRESENT'), ({phv00113154} == 'HBP' and {phv00113155} == 'M', 'UNKNOWN'))"

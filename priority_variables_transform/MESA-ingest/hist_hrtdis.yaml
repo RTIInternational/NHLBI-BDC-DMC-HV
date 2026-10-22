@@ -8,7 +8,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         condition_concept:
           value: MONDO:0006955
-          range: string
         condition_status:
           populated_from: phv00082985
           value_mappings:
@@ -17,10 +16,8 @@
             '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
@@ -34,7 +31,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         condition_concept:
           value: MONDO:0006955
-          range: string
         condition_status:
           populated_from: phv00085221
           value_mappings:
@@ -43,10 +39,8 @@
             '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
@@ -63,12 +57,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085751}) + ":MESA CLASSIC EXAM 2")'
         condition_concept:
           value: MONDO:0005267
-          range: string
         condition_status:
           expr: case(({phv00085752} == 1, 'UNKNOWN'), ({phv00085752} == -9, 'UNKNOWN'), ({phv00085753} != 1, 'UNKNOWN'), ({phv00085768} == 0, 'ABSENT'), ({phv00085768} == 1, 'PRESENT'), (True, 'UNKNOWN'))
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           expr: case(({phv00085753} != 1, None), ({phv00085752} == 2, 'NATURAL_MOTHER'), ({phv00085752} == 3, 'NATURAL_FATHER'), ({phv00085752} == 4, 'NATURAL_SIBLING'), ({phv00085752} == 5, 'NATURAL_CHILD'))
         # associated_evidence:
@@ -84,7 +76,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         condition_concept:
           value: MONDO:0006955
-          range: string
         condition_status:
           populated_from: phv00085938
           value_mappings:
@@ -93,10 +84,8 @@
             '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
@@ -110,7 +99,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         condition_concept:
           value: MONDO:0006955
-          range: string
         condition_status:
           populated_from: phv00086420
           value_mappings:
@@ -119,10 +107,8 @@
             '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
@@ -136,7 +122,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         condition_concept:
           value: MONDO:0006955
-          range: string
         condition_status:
           populated_from: phv00087129
           value_mappings:
@@ -145,10 +130,8 @@
             '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string

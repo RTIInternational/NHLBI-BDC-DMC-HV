@@ -11,7 +11,6 @@
           range: string
         condition_concept:
           value: MONDO:0004979
-          range: string
         condition_status:
           populated_from: phv00128103
           value_mappings:
@@ -24,7 +23,6 @@
         #   value: "Personal and Family History Questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001973
@@ -40,7 +38,6 @@
           range: string
         condition_concept:
           value: MONDO:0004979
-          range: string
         condition_status:
           expr: case(({phv00128344} == "No", "ABSENT"), ({phv00128346} == "Yes", "PRESENT"),
             (True, "HISTORICAL"))
@@ -53,7 +50,6 @@
         #   value: "Respiratory Disease Questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008725
@@ -65,7 +61,6 @@
           range: string
         condition_concept:
           value: MONDO:0004979
-          range: string
         condition_status:
           expr: case(({phv00400910} == "N", "ABSENT"),({phv00400910} == "U", "UNKNOWN"),({phv00400911}
             == "Y", "PRESENT"), ({phv00400911} == "U", "UNKNOWN"),(True, "HISTORICAL"))
@@ -75,7 +70,6 @@
         #   value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008729
@@ -87,7 +81,6 @@
           range: string
         condition_concept:
           value: MONDO:0004979
-          range: string
         condition_status:
           populated_from: phv00401161
           value_mappings:
@@ -100,7 +93,6 @@
           value: "Analysis derived"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008753
@@ -114,7 +106,6 @@
           expr: case(({phv00402795} == '1', {phv00402796} * 365))
         condition_concept:
           value: MONDO:0004979
-          range: string
         condition_status:
           populated_from: phv00402795
           value_mappings:
@@ -128,7 +119,6 @@
           value: "Health History Questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008778
@@ -142,7 +132,6 @@
           expr: case(({phv00403643} == 'Yes', {phv00403644} * 365))
         condition_concept:
           value: MONDO:0004979
-          range: string
         condition_status:
           populated_from: phv00403643
           value_mappings:
@@ -156,4 +145,3 @@
           value: "Personal and Family History Questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string

@@ -9,7 +9,6 @@
           range: string
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00077637
           value_mappings:
@@ -19,12 +18,10 @@
             '3': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000991
@@ -36,7 +33,6 @@
           range: string
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00077762
           value_mappings:
@@ -44,12 +40,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000992
@@ -61,7 +55,6 @@
           range: string
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00077872
           value_mappings:
@@ -69,12 +62,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000993
@@ -86,7 +77,6 @@
           range: string
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00078036
           value_mappings:
@@ -94,12 +84,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000994
@@ -111,7 +99,6 @@
           range: string
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00078176
           value_mappings:
@@ -119,12 +106,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000995
@@ -136,7 +121,6 @@
           range: string
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00078317
           value_mappings:
@@ -144,12 +128,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000999
@@ -161,7 +143,6 @@
           range: string
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00078560
           value_mappings:
@@ -169,12 +150,10 @@
             '1': PRESENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         associated_evidence:
           value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003402
@@ -189,7 +168,6 @@
           expr: 'case(({phv00192477} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00192478}))'
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00192477
           value_mappings:
@@ -197,12 +175,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003405
@@ -212,7 +188,6 @@
         # excluded: age_at_condition_start -- pht003405 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00192994
           value_mappings:
@@ -220,12 +195,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003405
@@ -235,7 +208,6 @@
         # excluded: age_at_condition_start -- pht003405 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00193024
           value_mappings:
@@ -243,10 +215,8 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003405
@@ -256,7 +226,6 @@
         # excluded: age_at_condition_start -- pht003405 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00193025
           value_mappings:
@@ -264,10 +233,8 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003405
@@ -277,7 +244,6 @@
         # excluded: age_at_condition_start -- pht003405 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00193027
           value_mappings:
@@ -285,10 +251,8 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003405
@@ -298,7 +262,6 @@
         # excluded: age_at_condition_start -- pht003405 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00193028
           value_mappings:
@@ -306,10 +269,8 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003405
@@ -319,7 +280,6 @@
         # excluded: age_at_condition_start -- pht003405 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00193030
           value_mappings:
@@ -327,10 +287,8 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003406
@@ -340,7 +298,6 @@
         # excluded: age_at_condition_start -- pht003406 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00193049
           value_mappings:
@@ -348,12 +305,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003406
@@ -363,7 +318,6 @@
         # excluded: age_at_condition_start -- pht003406 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00193086
           value_mappings:
@@ -371,12 +325,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003406
@@ -386,7 +338,6 @@
         # excluded: age_at_condition_start -- pht003406 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00193087
           value_mappings:
@@ -394,12 +345,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003406
@@ -409,7 +358,6 @@
         # excluded: age_at_condition_start -- pht003406 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00193089
           value_mappings:
@@ -417,12 +365,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003406
@@ -432,7 +378,6 @@
         # excluded: age_at_condition_start -- pht003406 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00193090
           value_mappings:
@@ -440,12 +385,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003406
@@ -455,7 +398,6 @@
         # excluded: age_at_condition_start -- pht003406 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00193092
           value_mappings:
@@ -463,12 +405,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003407
@@ -483,7 +423,6 @@
           expr: 'case(({phv00193145} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193146}))'
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00193145
           value_mappings:
@@ -491,12 +430,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "adjudicated event"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -514,7 +451,6 @@
           range: string
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00283515
           value_mappings:
@@ -522,9 +458,7 @@
             '1': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string
