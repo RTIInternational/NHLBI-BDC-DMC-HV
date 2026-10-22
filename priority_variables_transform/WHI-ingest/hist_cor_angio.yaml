@@ -7,9 +7,10 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
         procedure_concept:
-          expr: case(({phv00078536} == 1, "OMOP:4184832"))
+          value: OMOP:4184832
         procedure_provenance:
           value: PATIENT_SELF_REPORT
+          range: string
         procedure_status:
           populated_from: phv00078536
           value_mappings:
@@ -28,9 +29,10 @@
         age_at_procedure:
           expr: 'case(({phv00193199} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193200}))'
         procedure_concept:
-          expr: case(({phv00193199} == 1, "OMOP:4184832"))
+          value: OMOP:4184832
         procedure_provenance:
           value: PHYSICIAN_ADJUDICATION
+          range: string
         procedure_status:
           populated_from: phv00193199
           value_mappings:

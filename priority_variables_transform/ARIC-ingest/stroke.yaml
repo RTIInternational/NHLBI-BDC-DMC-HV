@@ -11,7 +11,6 @@
         condition_status:
           populated_from: phv00203754
           value_mappings:
-            N: ABSENT
             Y: PRESENT
         condition_provenance:
           value: DEATH_RECORD
@@ -35,7 +34,6 @@
         condition_status:
           populated_from: phv00203755
           value_mappings:
-            N: ABSENT
             Y: PRESENT
         condition_provenance:
           value: DEATH_RECORD
@@ -59,7 +57,6 @@
         condition_status:
           populated_from: phv00203756
           value_mappings:
-            N: ABSENT
             Y: PRESENT
         condition_provenance:
           value: DEATH_RECORD
@@ -83,7 +80,6 @@
         condition_status:
           populated_from: phv00203757
           value_mappings:
-            N: ABSENT
             Y: PRESENT
         condition_provenance:
           value: DEATH_RECORD
@@ -107,7 +103,6 @@
         condition_status:
           populated_from: phv00203758
           value_mappings:
-            N: ABSENT
             Y: PRESENT
         condition_provenance:
           value: DEATH_RECORD
@@ -488,7 +483,6 @@
         condition_status:
           populated_from: phv00207025
           value_mappings:
-            'N': ABSENT
             'Y': PRESENT
         condition_provenance:
           value: HEALTH_RECORD
@@ -1771,7 +1765,6 @@
         condition_status:
           populated_from: phv00210597
           value_mappings:
-            N: ABSENT
             Y: PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
@@ -1795,7 +1788,6 @@
         condition_status:
           populated_from: phv00210786
           value_mappings:
-            N: ABSENT
             Y: PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
@@ -1819,7 +1811,6 @@
         condition_status:
           populated_from: phv00210840
           value_mappings:
-            N: ABSENT
             Y: PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
@@ -1843,9 +1834,7 @@
         condition_status:
           populated_from: phv00294651
           value_mappings:
-            N: ABSENT
             Y: PRESENT
-            U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
@@ -2064,27 +2053,6 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-        condition_provenance:
-          value: STUDY_RECORD
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht012504
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
-        condition_concept:
-          value: MONDO:0005098
-        condition_status:
-          populated_from: phv00507338
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
             T: UNKNOWN
         condition_provenance:
           value: STUDY_RECORD
@@ -2235,6 +2203,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            T: UNKNOWN
         condition_provenance:
           value: STUDY_RECORD
           range: string
@@ -2280,6 +2249,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            T: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -2301,6 +2271,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            T: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string

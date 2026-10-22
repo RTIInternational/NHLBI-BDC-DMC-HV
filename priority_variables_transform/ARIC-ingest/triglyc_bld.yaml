@@ -47,7 +47,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507546}) + ":ARIC")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507546}) + ":ARIC EXAM 1")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507546}) + ":ARIC EXAM 7")'
         observation_type:
           value: OBA:VT0002644
         method_type:
@@ -191,29 +191,6 @@
               slot_derivations:
                 value_decimal:
                   expr: "{phv00204738} * 88.57"
-                unit:
-                  value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht012504
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
-        age_at_observation:
-          expr: "{phv00507307} * 365"
-        observation_type:
-          value: OBA:VT0002644
-        method_type:
-          value: "blood assay"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht012504
-              slot_derivations:
-                value_decimal:
-                  expr: "{phv00507331} * 88.57"
                 unit:
                   value: "mg/dL"
 - class_derivations:
