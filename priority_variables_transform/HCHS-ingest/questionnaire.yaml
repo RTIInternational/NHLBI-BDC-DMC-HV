@@ -1,0 +1,232 @@
+- class_derivations:
+    QuestionnaireResponse:
+      populated_from: pht004715
+      slot_derivations:
+        id: 
+          expr: 'uuid5("https://w3id.org/bdchm/Questionnaire" + str({phv00226250}) + "CESD10" + ":HCHS EXAM")'
+        associated_visit:
+          value: "HCHS EXAM"
+        age_at_response:
+          expr: '{phv00226251} * 365'
+        items:
+          class_derivations:
+          - QuestionnaireResponseItem:
+              populated_from: pht004715
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00226250}) + "CESD10Q1" + ":HCHS EXAM")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD10Q1")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht004715
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00226250}) + "CESD10Q1" + ":HCHS EXAM")'
+                        value:
+                          populated_from: phv00527418
+                          value_mappings:
+                            "1": "Rarely or none of the time (< 1 day)"
+                            "2": "Some or a little of the time (1-2 days)"
+                            "3": "Occasionally or a moderate amount of time (3-4 days)"
+                            "4": "All of the time (5-7 days)"
+                            "Q": "UNKNOWN" 
+          - QuestionnaireResponseItem:
+              populated_from: pht004715
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00226250}) + "CESD10Q2" + ":HCHS EXAM")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD10Q2")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht004715
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00226250}) + "CESD10Q2" + ":HCHS EXAM")'
+                        value:
+                          populated_from: phv00527419
+                          value_mappings:
+                            "1": "Rarely or none of the time (< 1 day)"
+                            "2": "Some or a little of the time (1-2 days)"
+                            "3": "Occasionally or a moderate amount of time (3-4 days)"
+                            "4": "All of the time (5-7 days)"
+                            "Q": "UNKNOWN" 
+          - QuestionnaireResponseItem:
+              populated_from: pht004715
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00226250}) + "CESD10Q3" + ":HCHS EXAM")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD10Q3")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht004715
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00226250}) + "CESD10Q3" + ":HCHS EXAM")'
+                        value:
+                          populated_from: phv00527420
+                          value_mappings:
+                            "1": "Rarely or none of the time (< 1 day)"
+                            "2": "Some or a little of the time (1-2 days)"
+                            "3": "Occasionally or a moderate amount of time (3-4 days)"
+                            "4": "All of the time (5-7 days)"
+                            "Q": "UNKNOWN" 
+          - QuestionnaireResponseItem:
+              populated_from: pht004715
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00226250}) + "CESD10Q4" + ":HCHS EXAM")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD10Q4")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht004715
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00226250}) + "CESD10Q4" + ":HCHS EXAM")'
+                        value:
+                          populated_from: phv00527421
+                          value_mappings:
+                            "1": "Rarely or none of the time (< 1 day)"
+                            "2": "Some or a little of the time (1-2 days)"
+                            "3": "Occasionally or a moderate amount of time (3-4 days)"
+                            "4": "All of the time (5-7 days)"
+                            "Q": "UNKNOWN" 
+          - QuestionnaireResponseItem:
+              populated_from: pht004715
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00226250}) + "CESD10Q5" + ":HCHS EXAM")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD10Q5")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht004715
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00226250}) + "CESD10Q5" + ":HCHS EXAM")'
+                        value:
+                          populated_from: phv00527422
+                          value_mappings:
+                            "1": "Rarely or none of the time (< 1 day)"
+                            "2": "Some or a little of the time (1-2 days)"
+                            "3": "Occasionally or a moderate amount of time (3-4 days)"
+                            "4": "All of the time (5-7 days)"
+                            "Q": "UNKNOWN" 
+          - QuestionnaireResponseItem:
+              populated_from: pht004715
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00226250}) + "CESD10Q6" + ":HCHS EXAM")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD10Q6")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht004715
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00226250}) + "CESD10Q6" + ":HCHS EXAM")'
+                        value:
+                          populated_from: phv00527423
+                          value_mappings:
+                            "1": "Rarely or none of the time (< 1 day)"
+                            "2": "Some or a little of the time (1-2 days)"
+                            "3": "Occasionally or a moderate amount of time (3-4 days)"
+                            "4": "All of the time (5-7 days)"
+                            "Q": "UNKNOWN" 
+          - QuestionnaireResponseItem:
+              populated_from: pht004715
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00226250}) + "CESD10Q7" + ":HCHS EXAM")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD10Q7")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht004715
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00226250}) + "CESD10Q7" + ":HCHS EXAM")'
+                        value:
+                          populated_from: phv00527424
+                          value_mappings:
+                            "1": "Rarely or none of the time (< 1 day)"
+                            "2": "Some or a little of the time (1-2 days)"
+                            "3": "Occasionally or a moderate amount of time (3-4 days)"
+                            "4": "All of the time (5-7 days)"
+                            "Q": "UNKNOWN" 
+          - QuestionnaireResponseItem:
+              populated_from: pht004715
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00226250}) + "CESD10Q8" + ":HCHS EXAM")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD10Q8")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht004715
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00226250}) + "CESD10Q8" + ":HCHS EXAM")'
+                        value:
+                          populated_from: phv00527425
+                          value_mappings:
+                            "1": "Rarely or none of the time (< 1 day)"
+                            "2": "Some or a little of the time (1-2 days)"
+                            "3": "Occasionally or a moderate amount of time (3-4 days)"
+                            "4": "All of the time (5-7 days)"
+                            "Q": "UNKNOWN" 
+          - QuestionnaireResponseItem:
+              populated_from: pht004715
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00226250}) + "CESD10Q9" + ":HCHS EXAM")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD10Q9")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht004715
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00226250}) + "CESD10Q9" + ":HCHS EXAM")'
+                        value:
+                          populated_from: phv00527426
+                          value_mappings:
+                            "1": "Rarely or none of the time (< 1 day)"
+                            "2": "Some or a little of the time (1-2 days)"
+                            "3": "Occasionally or a moderate amount of time (3-4 days)"
+                            "4": "All of the time (5-7 days)"
+                            "Q": "UNKNOWN" 
+          - QuestionnaireResponseItem:
+              populated_from: pht004715
+              slot_derivations:
+                id: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseItem" + str({phv00226250}) + "CESD10Q10" + ":HCHS EXAM")'               
+                has_questionnaire_item: 
+                  expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD10Q10")'
+                response_value:
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht004715
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + str({phv00226250}) + "CESD10Q10" + ":HCHS EXAM")'
+                        value:
+                          populated_from: phv00527427
+                          value_mappings:
+                            "1": "Rarely or none of the time (< 1 day)"
+                            "2": "Some or a little of the time (1-2 days)"
+                            "3": "Occasionally or a moderate amount of time (3-4 days)"
+                            "4": "All of the time (5-7 days)"
+                            "Q": "UNKNOWN" 

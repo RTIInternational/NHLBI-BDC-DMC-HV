@@ -14,6 +14,8 @@
         method_type:
           value: "questionnaire"
           range: string
+        associated_artifact:
+          expr: 'uuid5("https://w3id.org/bdchm/Questionnaire" + str({phv00226250}) + "CESD10" + ":HCHS EXAM")'
         value_quantity:
           class_derivations:
           - Quantity:
