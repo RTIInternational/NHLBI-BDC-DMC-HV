@@ -262,6 +262,22 @@ class LabelMapMainWiringTests(unittest.TestCase):
         )
 
 
+class MissingLabelMapTests(unittest.TestCase):
+    """A missing label map must stop the run, not blank every bdc_label.
+
+    run_s5_report.sh caches the extract it produces, so a warning-only path
+    would keep the blank labels across later runs.
+    """
+
+    def test_missing_label_map_file_exits(self) -> None:
+        from hv_dataqc.extract_harmonized.extract_harmonized_summaries import main
+        with tempfile.TemporaryDirectory() as tmp:
+            missing = Path(tmp) / "no_such_TableS1.tsv"
+            with self.assertRaises(SystemExit) as ctx:
+                main(["--cohort", "X", "--label-map", str(missing)])
+        self.assertIn("label map not found", str(ctx.exception))
+
+
 class ParticipantsCountedOverValidRowsTests(unittest.TestCase):
     """Regression tests for the participants-vs-n_valid mask alignment.
 

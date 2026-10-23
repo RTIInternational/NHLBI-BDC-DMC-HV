@@ -147,7 +147,14 @@ for COHORT in "${ALL_COHORTS[@]}"; do
     SRC_JSON="$(find_src_json "$OUT_DIR")"
     SOURCE_ROOT="$(find_source_root "$COHORT")"
 
-    have_cache="no"; [ -d "$CACHE_DIR" ] && have_cache="yes"
+    # A cache dir alone is not enough: PHV -> column resolution reads
+    # pheno_variable_summaries/*.data_dict.xml, and an extract made without
+    # them is near-empty yet looks current to the staleness check.
+    have_cache="no"
+    if [ -d "$CACHE_DIR/pheno_variable_summaries" ] \
+        && [ -n "$(find "$CACHE_DIR/pheno_variable_summaries" -maxdepth 1 -name '*.data_dict.xml' -print -quit 2>/dev/null)" ]; then
+        have_cache="yes"
+    fi
     have_extract="no"; [ -n "$SRC_JSON" ] && have_extract="yes"
     have_source="no"; [ -n "$SOURCE_ROOT" ] && have_source="yes"
     stale=""; [ "$have_extract" = "yes" ] && stale="$(stale_reason "$COHORT" "$SRC_JSON")"
@@ -159,7 +166,7 @@ for COHORT in "${ALL_COHORTS[@]}"; do
     # actionable first step regardless of --extract.
     status="" ; note=""
     if [ "$have_cache" = "no" ]; then
-        status="BLOCKED"; note="no cache (fetch_cache.sh $(cache_subdir "$COHORT"))"
+        status="BLOCKED"; note="no cache or empty pheno_variable_summaries/ (fetch_cache.sh $(cache_subdir "$COHORT"))"
     elif $needs_extract && $DO_EXTRACT && [ "$have_source" = "yes" ]; then
         status="WILL-EXTRACT"
         if [ "$have_extract" = "no" ]; then note="extract then build"
