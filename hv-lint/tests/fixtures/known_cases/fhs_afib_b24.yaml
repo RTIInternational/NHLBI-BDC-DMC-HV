@@ -1,0 +1,26 @@
+# fhs_afib_b24: copied verbatim from HV main 731984f5 as a fixed test case for #885.
+class_derivations:
+  Condition:
+    populated_from: pht000012
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00001558}) + ":FHS")
+      associated_visit:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00001558}) + ":FHS ORIGINAL EXAM 10")
+      condition_concept:
+        value: MONDO:0004981
+        range: string
+      condition_status:
+        populated_from: phv00001534
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+      condition_provenance:
+        value: STUDY_RECORD
+        range: string
+      associated_evidence:
+        value: Electrocardiogram
+        range: string
+      relationship_to_participant:
+        value: ONESELF
+        range: string

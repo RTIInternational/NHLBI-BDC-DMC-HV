@@ -1,8 +1,9 @@
 """Regression tests for the visit-label extractor used by checks 1.8 and 5.1.
 
 Both checks compare the visit labels attached to one PHT across files, and both get those labels
-from a regex extractor -- phase 1 keeps its own copy, replicated from phase 5's, because the phases
-are independent modules.
+from the one shared parser, ``hv-lint/_visit_ids.py`` (an ``ast`` enumerator that replaced the two
+regex copies phase 1 and phase 5 each kept). The defect below was in those regex copies; the
+tests pin that the shared parser does not repeat it.
 
 **The defect.** The extractor looked for a case() branch whose result is a bare quoted string::
 
@@ -33,9 +34,11 @@ import sys
 from pathlib import Path
 
 _HV_LINT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_HV_LINT))
 sys.path.insert(0, str(_HV_LINT / "phase-1"))
 sys.path.insert(0, str(_HV_LINT / "phase-5"))
 
+import _visit_ids  # noqa: E402
 import check_cross_file_pht_consistency as c18  # noqa: E402
 import validate_visit_structure as vvs  # noqa: E402
 
@@ -202,10 +205,15 @@ FHS_EXAM4_NAME = (
     "({phv00177928} == 7, 'FHS OMNI 1'), ({phv00177928} == 72, 'FHS OMNI 2'), "
     "(True, 'FHS UNKNOWN VISIT')) + ' EXAM 4'), (True, None))"
 )
+# The inner case()'s `(True, 'FHS UNKNOWN VISIT')` arm is a fallback (a True arm beside other
+# non-None arms). 1.8 and 5.1 do not compare fallback labels -- a catch-all is not an exam the
+# table holds -- and 5.2 checks a fallback against the observed codes instead, so the label set
+# here holds the five cohort labels and not 'FHS UNKNOWN VISIT EXAM 4'.
 _FHS_EXAM4_LABELS = {
     "FHS ORIGINAL EXAM 4", "FHS OFFSPRING EXAM 4", "FHS GENERATION 3 EXAM 4",
-    "FHS OMNI 1 EXAM 4", "FHS OMNI 2 EXAM 4", "FHS UNKNOWN VISIT EXAM 4",
+    "FHS OMNI 1 EXAM 4", "FHS OMNI 2 EXAM 4",
 }
+_FHS_EXAM4_FALLBACK = "FHS UNKNOWN VISIT EXAM 4"
 
 
 def test_check_5_1_reads_fhs_conditional_id_as_suffixed_labels():
@@ -213,6 +221,10 @@ def test_check_5_1_reads_fhs_conditional_id_as_suffixed_labels():
     labels, is_dynamic = vvs.extract_visit_labels_from_expr(FHS_EXAM4_ID)
     assert labels == _FHS_EXAM4_LABELS
     assert is_dynamic is True
+    # The fallback is still enumerated, suffixed like the other arms, and marked as a fallback.
+    values = _visit_ids.enumerate_ids(FHS_EXAM4_ID)
+    assert _visit_ids.labels(values, include_fallback=True) == (
+        _FHS_EXAM4_LABELS | {_FHS_EXAM4_FALLBACK})
 
 
 def test_check_1_8_reads_fhs_conditional_id_as_suffixed_labels():
@@ -226,6 +238,8 @@ def test_fhs_conditional_id_with_a_space_before_the_inner_case_paren():
     spaced = FHS_EXAM4_ID[:inner] + "case (" + FHS_EXAM4_ID[inner + len("case("):]
     assert vvs.extract_visit_labels_from_expr(spaced)[0] == _FHS_EXAM4_LABELS
     assert c18._extract_labels_from_expr(spaced) == _FHS_EXAM4_LABELS
+    assert _FHS_EXAM4_FALLBACK in _visit_ids.labels(
+        _visit_ids.enumerate_ids(spaced), include_fallback=True)
 
 
 def test_fhs_conditional_id_and_name_yield_the_same_labels():
@@ -236,7 +250,8 @@ def test_fhs_conditional_id_and_name_yield_the_same_labels():
 
 
 def test_fhs_associated_visit_label_in_case_form_is_unchanged():
-    """FHS entity files' multi-cohort shape: full labels inside the case, no suffix."""
+    """FHS entity files' multi-cohort shape: full labels inside the case, no suffix. The
+    `(True, 'FHS UNKNOWN VISIT')` arm is a fallback, so neither 1.8 nor 5.1 compares it."""
     expr = (
         "uuid5(\"https://w3id.org/bdchm/Visit\", str({phv00177926}) + \":\" + "
         "case(({phv00177928} == '2', 'FHS NEW OFFSPRING SPOUSE EXAM 2'), "
@@ -245,10 +260,11 @@ def test_fhs_associated_visit_label_in_case_form_is_unchanged():
     )
     labels, _ = vvs.extract_visit_labels_from_expr(expr)
     assert labels == {
-        "FHS NEW OFFSPRING SPOUSE EXAM 2", "FHS GENERATION 3 EXAM 2",
-        "FHS OMNI 2 EXAM 2", "FHS UNKNOWN VISIT",
+        "FHS NEW OFFSPRING SPOUSE EXAM 2", "FHS GENERATION 3 EXAM 2", "FHS OMNI 2 EXAM 2",
     }
     assert c18._extract_labels_from_expr(expr) == labels
+    assert _visit_ids.labels(_visit_ids.enumerate_ids(expr), include_fallback=True) == (
+        labels | {"FHS UNKNOWN VISIT"})
 
 
 def test_every_fhs_visit_block_id_parses_to_its_name_labels():

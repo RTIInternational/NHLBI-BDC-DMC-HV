@@ -1,0 +1,23 @@
+# chs_diabetes_b5: copied from HV main 731984f5 as a fixed test case for #885 (CHS diabetes b5/b6: a same-file 1.2 duplicate pair that differs only in condition_provenance).
+class_derivations:
+  Condition:
+    populated_from: pht001474
+    slot_derivations:
+      associated_participant:
+        expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00101324}) + ":CHS")'
+      associated_visit:
+        expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
+      condition_concept:
+        value: MONDO:0005015
+        range: string
+      condition_status:
+        populated_from: phv00101785
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+      condition_provenance:
+        value: PATIENT_SELF_REPORT
+        range: string
+      relationship_to_participant:
+        value: ONESELF
+        range: string

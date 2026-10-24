@@ -1,0 +1,25 @@
+# jhs_fam_stroke_b4: copied verbatim from HV main 731984f5 as a fixed test case for #885.
+class_derivations:
+  Condition:
+    populated_from: pht008778
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00403624}) + ":JHS")
+      associated_visit:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00403624}) + ":JHS Exam 3")
+        range: string
+      condition_concept:
+        value: MONDO:0005098
+        range: string
+      condition_status:
+        populated_from: phv00403667
+        value_mappings:
+          'No': ABSENT
+          'Yes': PRESENT
+          Don't know: UNKNOWN
+      condition_provenance:
+        value: PATIENT_SELF_REPORT
+        range: string
+      relationship_to_participant:
+        value: OMOP:4277283
+        range: string

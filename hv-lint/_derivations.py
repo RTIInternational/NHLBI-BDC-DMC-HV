@@ -49,3 +49,61 @@ def iter_nested_class_derivs(slot_def):
     for od in slot_def.get("object_derivations") or []:
         for name, spec in ((od or {}).get("class_derivations") or {}).items():
             yield name, spec
+
+
+class SlotSite:
+    """One slot derivation at any nesting depth, with the tables that enclose it.
+
+    ``tables`` lists the ``populated_from`` of the block's class and of every nested class
+    derivation down to this slot, outermost first. linkml-map synthesizes a join for a nested
+    derivation whose ``populated_from`` names a table, so a bare ``{phv}`` resolves when its table
+    is any of these.
+    """
+
+    __slots__ = ("class_name", "slot_name", "slot_def", "tables", "depth", "path")
+
+    def __init__(self, class_name, slot_name, slot_def, tables, depth, path):
+        self.class_name = class_name
+        self.slot_name = slot_name
+        self.slot_def = slot_def
+        self.tables = tables
+        self.depth = depth
+        self.path = path
+
+    @property
+    def pht(self):
+        """The nearest enclosing ``populated_from`` (the table a bare reference reads)."""
+        return self.tables[-1] if self.tables else None
+
+
+def _walk_class(cls_name, cls_def, tables, depth, prefix):
+    pf = cls_def.get("populated_from")
+    if isinstance(pf, str) and pf:
+        tables = tables + (pf,)
+    slot_derivs = cls_def.get("slot_derivations")
+    if not isinstance(slot_derivs, dict):
+        return
+    for slot_name, slot_def in slot_derivs.items():
+        if not isinstance(slot_def, dict):
+            continue
+        path = f"{prefix}{cls_name}.{slot_name}"
+        yield SlotSite(cls_name, slot_name, slot_def, tables, depth, path)
+        for ncls, ncls_def in iter_nested_class_derivs(slot_def):
+            if isinstance(ncls_def, dict):
+                yield from _walk_class(ncls, ncls_def, tables, depth + 1, path + ">")
+
+
+def walk_slot_derivations(block):
+    """Yield a :class:`SlotSite` for every slot derivation in ``block``, at every depth.
+
+    The one walker for rules that read slots: a rule that walks only the top level cannot see
+    a ``Quantity`` slot, and every ``value_decimal`` / ``value_integer`` on main is nested.
+    """
+    if not isinstance(block, dict):
+        return
+    class_derivs = block.get("class_derivations")
+    if not isinstance(class_derivs, dict):
+        return
+    for cls_name, cls_def in class_derivs.items():
+        if isinstance(cls_def, dict):
+            yield from _walk_class(cls_name, cls_def, (), 0, "")

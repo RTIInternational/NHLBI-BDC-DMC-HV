@@ -1,0 +1,26 @@
+# fhs_bdy_hgt_b42: copied verbatim from HV main 731984f5 as a fixed test case for #885.
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht006008
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00274708}) + ":FHS")
+      associated_visit:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00274708}) + ":FHS ORIGINAL EXAM 32")
+      age_at_observation:
+        expr: '{pht003099.phv00227008} * 365'
+      observation_type:
+        value: OBA:VT0001253
+        range: string
+      body_position:
+        value: ORTHOSTATIC_BODY_POSITION
+      value_quantity:
+        class_derivations:
+        - Quantity:
+            populated_from: pht006008
+            slot_derivations:
+              value_decimal:
+                expr: case(({phv00275241} == 88.88, None), (True, {phv00275241} * 2.54))
+              unit:
+                value: cm
+                range: string

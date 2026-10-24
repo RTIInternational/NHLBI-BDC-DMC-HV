@@ -1,0 +1,22 @@
+# aric_carotid_plaque_b3: copied verbatim from HV main 731984f5 as a fixed test case for #885 (COMPLQ01, 3.17, #881).
+class_derivations:
+  Condition:
+    populated_from: pht004063
+    slot_derivations:
+      associated_participant:
+        expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
+      associated_visit:
+        expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
+      condition_concept:
+        value: OMOP:4102124
+      condition_status:
+        populated_from: phv00204778
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+      condition_provenance:
+        value: STUDY_RECORD
+      associated_evidence:
+        value: carotid ultrasound
+      relationship_to_participant:
+        value: ONESELF
