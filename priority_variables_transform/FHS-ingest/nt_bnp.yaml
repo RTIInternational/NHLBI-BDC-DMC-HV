@@ -10,7 +10,6 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OBA:2045303
-          range: string
         method_type:
           value: immunoassay
           range: string
@@ -23,7 +22,6 @@
                   expr: case(({phv00073727} > 4, {phv00073727}), (True, None))
                 unit:
                   value: pg/mL
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -31,10 +29,8 @@
               slot_derivations:
                 value_decimal:
                   value: '5'
-                  range: string
                 unit:
                   value: pg/mL
-                  range: string
         range_high:
           class_derivations:
           - Quantity:
@@ -42,7 +38,5 @@
               slot_derivations:
                 value_decimal:
                   value: '35000'
-                  range: string
                 unit:
                   value: pg/mL
-                  range: string

@@ -8,7 +8,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00099663}) + ":CHS BASELINE 2")'
         observation_type:
           value: OMOP:21493059
-          range: string
         method_type:
           value: "Food Frequency Questionnaire"
         value_quantity:
@@ -20,7 +19,6 @@
                   expr: '{phv00099896} * 7'
                 unit:
                   value: '{#}/wk'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001490
@@ -33,7 +31,6 @@
           expr: '{phv00105622} * 365'
         observation_type:
           value: OMOP:21493059
-          range: string
         method_type:
           value: "Food Frequency Questionnaire"
         value_quantity:
@@ -45,4 +42,3 @@
                   expr: '{phv00105773} * 7'
                 unit:
                   value: '{#}/wk'
-                  range: string

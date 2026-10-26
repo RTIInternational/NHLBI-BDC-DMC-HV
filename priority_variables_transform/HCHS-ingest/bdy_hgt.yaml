@@ -10,13 +10,11 @@
           expr: '{phv00226251} * 365'
         observation_type:
           value: OBA:VT0001253
-          range: string
         method_type:
           value: "anthropometry"
           range: string
         body_position:
           value: "ORTHOSTATIC_BODY_POSITION"
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -26,7 +24,6 @@
                   populated_from: phv00226281
                 unit:
                   value: cm
-                  range: string
 # Block 2: Recalled height at age 21 -- uses WHEA2A_CM (phv00527446), the derived/unified
 # variable combining metric + imperial respondents (n=9,555). The raw metric-only variable
 # WHEA2A (phv00527433, n=3,232) was removed as a strict subset to avoid duplicate records.
@@ -43,7 +40,6 @@
           range: integer
         observation_type:
           value: OBA:VT0001253
-          range: string
         method_type:
           value: height recalled at age 21
           range: string
@@ -56,4 +52,3 @@
                   populated_from: phv00527446
                 unit:
                   value: cm
-                  range: string

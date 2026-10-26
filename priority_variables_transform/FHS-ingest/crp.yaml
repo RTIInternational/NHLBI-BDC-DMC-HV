@@ -10,7 +10,6 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: Particle Enhanced Immunonephelometry
           range: string
@@ -23,7 +22,6 @@
                   populated_from: phv00021690
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -31,10 +29,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.16'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
         range_high:
           class_derivations:
           - Quantity:
@@ -42,10 +38,8 @@
               slot_derivations:
                 value_decimal:
                   value: '550'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string                     
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000081
@@ -58,7 +52,6 @@
           expr: '{pht003099.phv00177940} * 365'
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: Particle Enhanced Immunonephelometry
           range: string          
@@ -71,7 +64,6 @@
                   populated_from: phv00021693
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -79,10 +71,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.16'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
         range_high:
           class_derivations:
           - Quantity:
@@ -90,10 +80,8 @@
               slot_derivations:
                 value_decimal:
                   value: '550'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string                     
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -106,7 +94,6 @@
           expr: '{pht003099.phv00177932} * 365'  
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -120,7 +107,6 @@
                   expr: 'case(({phv00172203} == 1, "LESS_THAN"))'
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -128,10 +114,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.15'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -144,7 +128,6 @@
           expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -158,7 +141,6 @@
                   expr: 'case(({phv00227067} == 1, "LESS_THAN"))'
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -166,10 +148,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.15'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012880
@@ -182,7 +162,6 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OMOP:4208414
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -192,7 +171,6 @@
                   populated_from: phv00520365
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -200,10 +178,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.15'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht010726
@@ -216,7 +192,6 @@
           expr: '{pht003099.phv00177934} * 365'
         observation_type:
           value: OMOP:4208414
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -228,7 +203,6 @@
                   expr: 'case(({phv00462201} == 1, "LESS_THAN"))'
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -236,10 +210,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.15'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012881
@@ -252,7 +224,6 @@
           expr: 'case(({phv00520377} == ''1'', {pht003099.phv00177942} * 365), ({phv00520377} == ''7'', {pht003099.phv00177932} * 365))'
         observation_type:
           value: OMOP:4208414
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -262,7 +233,6 @@
                   populated_from: phv00520381
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012882
@@ -275,7 +245,6 @@
           expr: 'case(({phv00520396} == ''1'', {pht003099.phv00177944} * 365), ({phv00520396} == ''7'', {pht003099.phv00177934} * 365))'
         observation_type:
           value: OMOP:4208414
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -287,4 +256,3 @@
                   expr: 'case(({phv00520398} == 0.14, "LESS_THAN"))'
                 unit:
                   value: mg/L
-                  range: string

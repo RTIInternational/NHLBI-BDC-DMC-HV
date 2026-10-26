@@ -14,7 +14,6 @@
           expr: case(({phv00191192} == 4, {phv00086727} * 365), ({phv00191192} == 3, {pht001119.phv00086259} * 365))
         observation_type:
           value: OBA:VT0002668
-          range: string
         method_type:
           value: "blood assay"
           range: string
@@ -27,7 +26,6 @@
                   populated_from: phv00191191
                 unit:
                   value: mmol/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003089
@@ -38,7 +36,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175973}) + ":MESA ANCILLARY")'
         observation_type:
           value: OBA:VT0002668
-          range: string
         method_type:
           value: "blood assay"
           range: string
@@ -51,4 +48,3 @@
                   populated_from: phv00175982
                 unit:
                   value: mmol/L
-                  range: string

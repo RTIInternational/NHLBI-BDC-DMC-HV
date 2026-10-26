@@ -9,7 +9,6 @@
           range: string
         condition_concept:
           value: MONDO:0005252
-          range: string
         condition_status:
           populated_from: phv00077636
           value_mappings:
@@ -19,12 +18,10 @@
             '3': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000991
@@ -36,7 +33,6 @@
           range: string
         condition_concept:
           value: MONDO:0005252
-          range: string
         condition_status:
           populated_from: phv00077761
           value_mappings:
@@ -44,12 +40,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000992
@@ -61,7 +55,6 @@
           range: string
         condition_concept:
           value: MONDO:0005252
-          range: string
         condition_status:
           populated_from: phv00077871
           value_mappings:
@@ -69,12 +62,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000993
@@ -86,7 +77,6 @@
           range: string
         condition_concept:
           value: MONDO:0005252
-          range: string
         condition_status:
           populated_from: phv00078035
           value_mappings:
@@ -94,12 +84,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000994
@@ -111,7 +99,6 @@
           range: string
         condition_concept:
           value: MONDO:0005252
-          range: string
         condition_status:
           populated_from: phv00078175
           value_mappings:
@@ -119,12 +106,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000995
@@ -136,7 +121,6 @@
           range: string
         condition_concept:
           value: MONDO:0005252
-          range: string
         condition_status:
           populated_from: phv00078316
           value_mappings:
@@ -144,12 +128,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000998
@@ -161,7 +143,6 @@
           range: string
         condition_concept:
           value: MONDO:0005252
-          range: string
         condition_status:
           populated_from: phv00078486
           value_mappings:
@@ -169,12 +150,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000999
@@ -186,7 +165,6 @@
           range: string
         condition_concept:
           value: MONDO:0005009
-          range: string
         condition_status:
           populated_from: phv00078533
           value_mappings:
@@ -194,12 +172,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht002769
@@ -214,7 +190,6 @@
           expr: 'case(({phv00202363} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00202364}))'
         condition_concept:
           value: MONDO:0005009
-          range: string
         condition_status:
           populated_from: phv00202363
           value_mappings:
@@ -222,12 +197,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht002770
@@ -239,7 +212,6 @@
           range: string
         condition_concept:
           value: MONDO:0005009
-          range: string
         condition_status:
           populated_from: phv00202375
           value_mappings:
@@ -247,10 +219,8 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003414
@@ -265,7 +235,6 @@
           expr: 'case(({phv00193703} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193704}))'
         condition_concept:
           value: MONDO:0005009
-          range: string
         condition_status:
           populated_from: phv00193703
           value_mappings:
@@ -273,12 +242,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -296,7 +263,6 @@
           range: string
         condition_concept:
           value: MONDO:0005252
-          range: string
         condition_status:
           populated_from: phv00283463
           value_mappings:
@@ -307,12 +273,10 @@
             '5': UNKNOWN
         condition_provenance:
           value: HEALTH_RECORD
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -330,7 +294,6 @@
           range: string
         condition_concept:
           value: MONDO:0005252
-          range: string
         condition_status:
           populated_from: phv00283495
           value_mappings:
@@ -338,9 +301,7 @@
             '2': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string

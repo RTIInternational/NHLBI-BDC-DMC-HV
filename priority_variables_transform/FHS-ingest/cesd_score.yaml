@@ -8,7 +8,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023794}) + ":FHS PSIP INITIAL, ORIGINAL/OFFSPRING")'
         observation_type:
           value: OMOP:36303297
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -18,7 +17,6 @@
                   populated_from: phv00023792
                 unit:
                   value: '{score}'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000172
@@ -29,7 +27,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023901}) + ":FHS PSIP RECURRENT, ORIGINAL/OFFSPRING")'
         observation_type:
           value: OMOP:36303297
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -39,4 +36,3 @@
                   populated_from: phv00023899
                 unit:
                   value: '{score}'
-                  range: string
