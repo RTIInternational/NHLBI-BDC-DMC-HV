@@ -175,7 +175,7 @@
         age_at_condition_start:
           expr: 'case(({phv00100824} == 3, ({pht001452.phv00100487} * 365) + {phv00100825}))'
         condition_concept:
-          expr: 'case(({phv00100824} == 3 and {phv00100830} == 1, "HP:0002140"), ({phv00100824} == 3 and {phv00100830} == 0, "MONDO:0013792"), ({phv00100824} == 3, "MONDO:0005098"))'
+          expr: 'case(({phv00100824} == 3 and {phv00100830} == 1, "MONDO:1060198"), ({phv00100824} == 3 and {phv00100830} == 0, "MONDO:0013792"), ({phv00100824} == 3, "MONDO:0005098"))'
         condition_status:
           expr: 'case(({phv00100824} == 3, "PRESENT"))'
         condition_provenance:

@@ -70,8 +70,6 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -86,6 +84,8 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00071923} == '110', ({pht003099.phv00177930} * 365) + {phv00071936}))"
 
 - class_derivations:
     Condition:
@@ -93,8 +93,6 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -109,6 +107,8 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00071924} == '111', ({pht003099.phv00177930} * 365) + {phv00071936}))"
 
 - class_derivations:
     Condition:
@@ -116,8 +116,6 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -132,6 +130,8 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00071925} == '112', ({pht003099.phv00177930} * 365) + {phv00071936}))"
 
 - class_derivations:
     Condition:
@@ -139,8 +139,6 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -155,6 +153,8 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00071926} == '113', ({pht003099.phv00177930} * 365) + {phv00071936}))"
 
 - class_derivations:
     Condition:
@@ -162,8 +162,6 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -185,8 +183,6 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -472,8 +468,6 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005399
         condition_status:
@@ -490,14 +484,14 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00071915} == '1', ({pht003099.phv00177930} * 365) + {phv00071942}))"
 - class_derivations:
     Condition:
       populated_from: pht000744
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005399
         condition_status:
@@ -514,14 +508,14 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00071917} == '1', ({pht003099.phv00177930} * 365) + {phv00071942}))"
 - class_derivations:
     Condition:
       populated_from: pht000744
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005399
         condition_status:
@@ -538,14 +532,14 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00071919} == '1', ({pht003099.phv00177930} * 365) + {phv00071942}))"
 - class_derivations:
     Condition:
       populated_from: pht000744
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005399
         condition_status:
@@ -561,14 +555,14 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00071934} == '1', ({pht003099.phv00177930} * 365) + {phv00071942}))"
 - class_derivations:
     Condition:
       populated_from: pht000744
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005399
         condition_status:
@@ -583,14 +577,14 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00071930} == '114', ({pht003099.phv00177930} * 365) + {phv00071942}))"
 - class_derivations:
     Condition:
       populated_from: pht000744
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005399
         condition_status:
@@ -611,8 +605,6 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005399
         condition_status:
@@ -653,8 +645,6 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00276975}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276975}) + ":" + case(({phv00276976} == ''0'', ''FHS ORIGINAL VTR''), ({phv00276976} == ''1'', ''FHS OFFSPRING VTR''), ({phv00276976} == ''2'', ''FHS NEW OFFSPRING SPOUSE VTR''), ({phv00276976} == ''3'', ''FHS GENERATION 3 VTR''), ({phv00276976} == ''7'', ''FHS OMNI 1 VTR''), ({phv00276976} == ''72'', ''FHS OMNI 2 VTR''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005252
         condition_status:
@@ -670,3 +660,5 @@
         #   range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00276986} == '1', ({pht003099.phv00177930} * 365) + {phv00277010}))"

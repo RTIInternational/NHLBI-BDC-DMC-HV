@@ -20,6 +20,8 @@
         method_type:
           value: Mean of the mean far wall intima media t (var=CCA_FWME)
           range: string
+        qualifier:
+          value: AVERAGE
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001468
@@ -42,20 +44,25 @@
         method_type:
           value: Mean of the mean far wall intima-media t
           range: string
+        qualifier:
+          value: AVERAGE
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001473
       joins:
-        pht001452:
+        pht001491:
           source_key: phv00101233
-          lookup_key: phv00100285
+          lookup_key: phv00106520
+        pht001490:
+          source_key: phv00101233
+          lookup_key: phv00105099
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00101233}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101233}) + ":CHS YEAR 5")'
         age_at_observation:
-          expr: ({pht001452.phv00100487} * 365) + 1825
+          expr: 'case(({phv00101234} == 1, {pht001491.phv00106844} * 365), ({phv00101234} == 2, {pht001490.phv00105622} * 365))'
         observation_type:
           value: OMOP:4138462
         value_quantity:
@@ -64,13 +71,15 @@
               populated_from: pht001473
               slot_derivations:
                 value_decimal:
-                  expr: ({phv00101265} + {phv00101277}) / 2
+                  expr: (0.0 + {phv00101265} + {phv00101277}) / 2
                 unit:
                   value: mm
         method_type:
           value: mean of YEAR 5 FAR WALL MAX, R. COMMON and YEAR 5 FAR WALL MAX, L.
             COMMON
           range: string
+        qualifier:
+          value: AVERAGE
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001473
@@ -84,7 +93,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101233}) + ":CHS YEAR 5")'
         age_at_observation:
-          expr: ({pht001452.phv00100487} * 365) + 1825          
+          expr: '{pht001452.phv00100487} * 365'
         observation_type:
           value: OMOP:4138462
         value_quantity:
@@ -93,7 +102,7 @@
               populated_from: pht001473
               slot_derivations:
                 value_decimal:
-                  expr: ({phv00101238} + {phv00101239} + {phv00101250} + {phv00101251})
+                  expr: (0.0 + {phv00101238} + {phv00101239} + {phv00101250} + {phv00101251})
                     / 4
                 unit:
                   value: mm
@@ -102,20 +111,25 @@
             BL REREAD FAR WALL MAX, R. COMMON and BL REREAD NEAR WALL MAX, L. COMMON
             and BL REREAD FAR WALL MAX, L. COMMON
           range: string
+        qualifier:
+          value: AVERAGE
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001473
       joins:
-        pht001452:
+        pht001491:
           source_key: phv00101233
-          lookup_key: phv00100285
+          lookup_key: phv00106520
+        pht001490:
+          source_key: phv00101233
+          lookup_key: phv00105099
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00101233}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101233}) + ":CHS YEAR 5")'
         age_at_observation:
-          expr: ({pht001452.phv00100487} * 365) + 1825          
+          expr: 'case(({phv00101234} == 1, {pht001491.phv00106844} * 365), ({phv00101234} == 2, {pht001490.phv00105622} * 365))'
         observation_type:
           value: OMOP:4138462
         value_quantity:
@@ -124,7 +138,7 @@
               populated_from: pht001473
               slot_derivations:
                 value_decimal:
-                  expr: ({phv00101265} + {phv00101277} + {phv00101264} + {phv00101276})
+                  expr: (0.0 + {phv00101265} + {phv00101277} + {phv00101264} + {phv00101276})
                     / 4
                 unit:
                   value: mm
@@ -133,3 +147,5 @@
             5 FAR WALL MAX, R. COMMON and YEAR 5 NEAR WALL MAX, L. COMMON and YEAR
             5 FAR WALL MAX, L. COMMON
           range: string
+        qualifier:
+          value: AVERAGE

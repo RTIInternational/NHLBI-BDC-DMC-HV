@@ -347,10 +347,10 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: STUDY_RECORD
-        associated_evidence:
-          value: Awareness of Coronary Factors Questionnaire
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: Awareness of Coronary Factors Questionnaire
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -405,8 +405,6 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00276963}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276963}) + ":" + case(({phv00276964} == ''0'', ''FHS ORIGINAL SFS''), ({phv00276964} == ''1'', ''FHS OFFSPRING SFS''), ({phv00276964} == ''2'', ''FHS NEW OFFSPRING SPOUSE SFS''), ({phv00276964} == ''3'', ''FHS GENERATION 3 SFS''), ({phv00276964} == ''7'', ''FHS OMNI 1 SFS''), ({phv00276964} == ''72'', ''FHS OMNI 2 SFS''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005098
         condition_status:
@@ -423,14 +421,14 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00276965} == '1', ({pht003099.phv00177930} * 365) + {phv00276968}))"
 - class_derivations:
     Condition:
       populated_from: pht006023
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00276963}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276963}) + ":" + case(({phv00276964} == ''0'', ''FHS ORIGINAL SFS''), ({phv00276964} == ''1'', ''FHS OFFSPRING SFS''), ({phv00276964} == ''2'', ''FHS NEW OFFSPRING SPOUSE SFS''), ({phv00276964} == ''3'', ''FHS GENERATION 3 SFS''), ({phv00276964} == ''7'', ''FHS OMNI 1 SFS''), ({phv00276964} == ''72'', ''FHS OMNI 2 SFS''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           populated_from: phv00276966
           value_mappings:
@@ -464,14 +462,14 @@
         #   range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00276965} == '1', ({pht003099.phv00177930} * 365) + {phv00276968}))"
 - class_derivations:
     Condition:
       populated_from: pht006024
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00276969}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276969}) + ":" + case(({phv00276970} == ''0'', ''FHS ORIGINAL SFS''), ({phv00276970} == ''1'', ''FHS OFFSPRING SFS''), ({phv00276970} == ''2'', ''FHS NEW OFFSPRING SPOUSE SFS''), ({phv00276970} == ''3'', ''FHS GENERATION 3 SFS''), ({phv00276970} == ''7'', ''FHS OMNI 1 SFS''), ({phv00276970} == ''72'', ''FHS OMNI 2 SFS''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005098
         condition_status:
@@ -488,14 +486,14 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00276971} == '1', ({pht003099.phv00177930} * 365) + {phv00276974}))"
 - class_derivations:
     Condition:
       populated_from: pht006024
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00276969}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276969}) + ":" + case(({phv00276970} == ''0'', ''FHS ORIGINAL SFS''), ({phv00276970} == ''1'', ''FHS OFFSPRING SFS''), ({phv00276970} == ''2'', ''FHS NEW OFFSPRING SPOUSE SFS''), ({phv00276970} == ''3'', ''FHS GENERATION 3 SFS''), ({phv00276970} == ''7'', ''FHS OMNI 1 SFS''), ({phv00276970} == ''72'', ''FHS OMNI 2 SFS''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           populated_from: phv00276972
           value_mappings:
@@ -529,3 +527,5 @@
         #   range: string
         relationship_to_participant:
           value: ONESELF
+        age_at_condition_start:
+          expr: "case(({phv00276971} == '1', ({pht003099.phv00177930} * 365) + {phv00276974}))"

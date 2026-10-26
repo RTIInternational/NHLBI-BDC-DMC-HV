@@ -10,9 +10,9 @@
         age_at_procedure:
           expr: '{phv00082639} * 365'
         procedure_concept:
-          expr: case(({phv00082702} == '1' or {phv00082702} == '2', "OMOP:45772840"))
+          value: OMOP:45772840
         procedure_provenance:
-          expr: case(({phv00082702} == '1' or {phv00082702} == '2', "CASE_REPORT_FORM"))
+          value: CASE_REPORT_FORM
         procedure_status:
           populated_from: phv00082702
           value_mappings:
@@ -31,9 +31,9 @@
         age_at_procedure:
           expr: '{phv00087071} * 365'
         procedure_concept:
-          expr: case(({phv00087149} == '1', "OMOP:45772840"))
+          value: OMOP:45772840
         procedure_provenance:
-          expr: case(({phv00087149} == '1', "PATIENT_SELF_REPORT"))
+          value: PATIENT_SELF_REPORT
         procedure_status:
           populated_from: phv00087149
           value_mappings:
@@ -52,9 +52,9 @@
         age_at_procedure:
           expr: '{phv00174588} * 365'
         procedure_concept:
-          expr: case(({phv00174642} == '1', "OMOP:45772840"))
+          value: OMOP:45772840
         procedure_provenance:
-          expr: case(({phv00174642} == '1', "PATIENT_SELF_REPORT"))
+          value: PATIENT_SELF_REPORT
         procedure_status:
           populated_from: phv00174642
           value_mappings:
@@ -72,9 +72,9 @@
         age_at_procedure:
           expr: '{phv00176011} * 365'
         procedure_concept:
-          expr: case(({phv00176065} == '1', "OMOP:45772840"))
+          value: OMOP:45772840
         procedure_provenance:
-          expr: case(({phv00176065} == '1', "PATIENT_SELF_REPORT"))
+          value: PATIENT_SELF_REPORT
         procedure_status:
           populated_from: phv00176065
           value_mappings:

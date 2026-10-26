@@ -266,26 +266,6 @@
         visit_category:
           value: STUDY_SITE_VISIT
 
-# CHS SHHS 1 -- CHS_SHHS1_15K (pht001460)
-- class_derivations:
-    Visit:
-      populated_from: pht001460
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100693}) + ":CHS SHHS 1")'
-        name:
-          value: CHS SHHS 1
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100693}) + ":CHS")'
-        age_at_visit_start:
-          expr: '{phv00100694} * 365'
-        age_at_visit_end:
-          expr: '{phv00100694} * 365'
-        visit_provenance:
-          value: STUDY_RECORD
-        visit_category:
-          value: STUDY_SITE_VISIT
-
 # CHS PSG 2 -- SHHS2_PSG (pht003700)
 - class_derivations:
     Visit:

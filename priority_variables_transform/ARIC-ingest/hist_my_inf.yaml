@@ -12,7 +12,6 @@
         condition_status:
           populated_from: phv00203749
           value_mappings:
-            N: ABSENT
             Y: PRESENT
         condition_provenance:
           value: DEATH_RECORD
@@ -199,9 +198,7 @@
         condition_status:
           populated_from: phv00204461
           value_mappings:
-            N: ABSENT
             Y: PRESENT
-            U: UNKNOWN
         condition_provenance:
           value: HEALTH_RECORD
         # associated_evidence:
@@ -424,7 +421,6 @@
         condition_status:
           populated_from: phv00207018
           value_mappings:
-            N: ABSENT
             Y: PRESENT
         condition_provenance:
           value: HEALTH_RECORD
@@ -569,9 +565,7 @@
         condition_status:
           populated_from: phv00294654
           value_mappings:
-            'N': ABSENT
             'Y': PRESENT
-            U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
         # associated_evidence:
@@ -593,9 +587,7 @@
         condition_status:
           populated_from: phv00294655
           value_mappings:
-            'N': ABSENT
             'Y': PRESENT
-            U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
         # associated_evidence:
@@ -641,9 +633,7 @@
         condition_status:
           populated_from: phv00294786
           value_mappings:
-            'N': ABSENT
             'Y': PRESENT
-            U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
         # associated_evidence:
@@ -715,7 +705,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            M: UNKNOWN
+            T: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
         relationship_to_participant:
@@ -797,7 +787,7 @@
           value_mappings:
             '1': PRESENT
             '0': ABSENT
-            M: UNKNOWN
+            T: UNKNOWN
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
         # associated_evidence:
@@ -821,7 +811,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            M: UNKNOWN
+            T: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
         relationship_to_participant:
@@ -866,7 +856,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            M: UNKNOWN
+            T: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
         relationship_to_participant:
@@ -1086,6 +1076,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            T: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
         # associated_evidence:
@@ -1152,13 +1143,7 @@
           value: MONDO:0005068
         condition_status:
           populated_from: phv00294812
-          # phv00294812 (AFUCOMP7_V1) is string-typed and uses N/Y codes
-          # (var_report: N=2,179, Y=434). The previous '1'/'2' keys never
-          # matched -> condition_status was silently null on every pht006416
-          # hist-MI record. Aligned with sibling pht006416 blocks at L645-650
-          # and L672-677 in this file which correctly use 'N'/'Y'.
           value_mappings:
-            'N': ABSENT
             'Y': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT

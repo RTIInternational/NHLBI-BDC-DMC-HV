@@ -5,7 +5,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113019}) + ":CARDIA")'
         age_at_condition_start:
-          expr: case((phv00113052 == 2, {phv00113053} * 365))
+          expr: case(({phv00113052} == 2, {phv00113053} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113019}) + ":CARDIA YEAR 0")'
         condition_concept:

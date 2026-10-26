@@ -21,26 +21,3 @@
                   expr: '{phv00111871} * 7'
                 unit:
                   value: '{#}/wk'
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht006218
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283348}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283348}) + ":WHI SCREENING")'
-          range: string
-        observation_type:
-          value: OMOP:37311566
-        method_type:
-          value: "questionnaire"
-          range: string
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht006218
-              slot_derivations:
-                value_decimal:
-                  expr: '{phv00283395} * 7'
-                unit:
-                  value: '{#}/wk'

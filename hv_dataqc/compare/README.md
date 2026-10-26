@@ -7,17 +7,13 @@ report. Runs **outside the enclave** — no participant-level data.
 Re-run as often as needed as HV YAMLs evolve. Only the two JSON summary files
 and the current HV YAML checkout are required.
 
+> Design note: handling multi-PHV / multi-input YAML transforms —
+> [`../docs/EXPECTED_SUMMARY_DESIGN.md`](../docs/EXPECTED_SUMMARY_DESIGN.md).
+
 ---
 
-## Quick start
-
-Use the convenience wrapper in `local_scripts/` which auto-finds the latest
-JSONs, YAML dir, and cache:
-
-```bash
-cd ../local_scripts/
-./compare.sh COPDGene
-```
+dm-bip's harmonization workflow runs compare per cohort
+([`hv-dataqc-cohort.sh`](https://github.com/linkml/dm-bip/blob/main/scripts/workflow/hv-dataqc-cohort.sh)).
 
 ## Usage (direct)
 
@@ -54,12 +50,8 @@ python -m hv_dataqc.compare \
 | `--report FILE` | No | Markdown report output path (default: `<cohort>_comparison_report.md`) |
 | `--json-report FILE` | No | JSON report output path (default: `<cohort>_comparison_results.json`) |
 
-When run via `local_scripts/compare.sh`, the wrapper sets `--report` /
-`--json-report` to a fresh `local_output/archive/<commit>_<ts>/` directory
-and updates both stable and timestamped `local_output/<cohort>_comparison_*`
-symlinks afterward. The Markdown report header records the source JSON file,
-harmonized JSON file, and YAML directory used. See the top-level
-[README](../README.md#output-layout) for the archive layout.
+The Markdown report header records the source JSON file, harmonized JSON
+file, and YAML directory used.
 
 ---
 
