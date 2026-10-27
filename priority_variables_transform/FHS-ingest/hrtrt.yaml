@@ -116,7 +116,19 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: 'Electrocardiogram'
+          value: 'treadmill stage 0 (1.7 mph, 0% grade)'
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: CONCURRENT_WITH
         value_quantity:
           class_derivations:
           - Quantity:
@@ -141,33 +153,19 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: resting, sit
-          range: string
-        value_quantity:
+          value: 'treadmill stage 1 (1.7 mph, 10% grade)'
+        context:
           class_derivations:
-          - Quantity:
-              populated_from: pht000031
+          - Context:
               slot_derivations:
-                value_decimal:
-                  populated_from: phv00008198
-                unit:
-                  value: '{beats}/min'
-                  range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000031
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008379}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008379}) + ":FHS OFFSPRING EXAM 2")'
-        age_at_observation:
-          expr: '{pht003099.phv00177932} * 365'
-        observation_type:
-          value: OBA:1001087
-          range: string
-        method_type:
-          value: 'Electrocardiogram'
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: CONCURRENT_WITH
         value_quantity:
           class_derivations:
           - Quantity:
@@ -192,7 +190,19 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: 'Electrocardiogram'
+          value: 'treadmill stage 2 (2.5 mph, 12% grade)'
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: CONCURRENT_WITH
         value_quantity:
           class_derivations:
           - Quantity:
@@ -217,7 +227,19 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: 'Electrocardiogram'
+          value: 'treadmill stage 3 (3.4 mph, 14% grade)'
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: CONCURRENT_WITH
         value_quantity:
           class_derivations:
           - Quantity:
@@ -242,7 +264,19 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: 'Electrocardiogram'
+          value: 'treadmill stage 4 (4.2 mph, 16% grade)'
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: CONCURRENT_WITH
         value_quantity:
           class_derivations:
           - Quantity:
@@ -267,7 +301,19 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: 'Electrocardiogram'
+          value: 'treadmill stage 5 (5.0 mph, 18% grade)'
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: CONCURRENT_WITH
         value_quantity:
           class_derivations:
           - Quantity:
@@ -292,7 +338,19 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: 'Electrocardiogram'
+          value: 'treadmill recovery, immediate'
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -317,7 +375,19 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: 'Electrocardiogram'
+          value: 'treadmill recovery, 1 min'
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -342,7 +412,19 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: 'Electrocardiogram'
+          value: 'treadmill recovery, 2 min'
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -367,7 +449,19 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: 'Electrocardiogram'
+          value: 'treadmill recovery, 3 min'
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -392,7 +486,19 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: 'Electrocardiogram'
+          value: 'treadmill recovery, 4 min'
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -400,31 +506,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00008319
-                unit:
-                  value: '{beats}/min'
-                  range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000031
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008379}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008379}) + ":FHS OFFSPRING EXAM 2")'
-        age_at_observation:
-          expr: '{pht003099.phv00177932} * 365'
-        observation_type:
-          value: OBA:1001087
-          range: string
-        method_type:
-          value: 'Electrocardiogram'
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht000031
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00008331
                 unit:
                   value: '{beats}/min'
                   range: string
@@ -467,8 +548,20 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: deflation
+          value: 'Brachial Vascular Reactivity Test'
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: MEDICAL_PROCEDURE
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -620,8 +713,20 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: deflation
+          value: 'Brachial Vascular Reactivity Test'
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: MEDICAL_PROCEDURE
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -776,8 +881,20 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: deflation 
+          value: 'Brachial Vascular Reactivity Test'
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: MEDICAL_PROCEDURE
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -827,8 +944,20 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: deflation
+          value: 'Brachial Vascular Reactivity Test'
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: MEDICAL_PROCEDURE
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -1065,6 +1194,18 @@
         method_type:
           value: recovery immediate
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -1091,6 +1232,18 @@
         method_type:
           value: recovery 3 min
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -1117,6 +1270,18 @@
         method_type:
           value: recovery 5 min
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
