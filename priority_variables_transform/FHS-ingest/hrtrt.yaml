@@ -153,32 +153,6 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: resting, sit
-          range: string
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht000031
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00008198
-                unit:
-                  value: '{beats}/min'
-                  range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000031
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008379}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008379}) + ":FHS OFFSPRING EXAM 2")'
-        age_at_observation:
-          expr: '{pht003099.phv00177932} * 365'
-        observation_type:
-          value: OBA:1001087
-          range: string
-        method_type:
           value: 'treadmill stage 1 (1.7 mph, 10% grade)'
         context:
           class_derivations:
@@ -537,31 +511,6 @@
                   range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000031
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008379}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008379}) + ":FHS OFFSPRING EXAM 2")'
-        age_at_observation:
-          expr: '{pht003099.phv00177932} * 365'
-        observation_type:
-          value: OBA:1001087
-          range: string
-        method_type:
-          value: 'Electrocardiogram'
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht000031
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00008331
-                unit:
-                  value: '{beats}/min'
-                  range: string
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht000194
       slot_derivations:
         associated_participant:
@@ -599,8 +548,20 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: deflation
+          value: 'Brachial Vascular Reactivity Test'
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: MEDICAL_PROCEDURE
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -752,8 +713,20 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: deflation
+          value: 'Brachial Vascular Reactivity Test'
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: MEDICAL_PROCEDURE
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -908,8 +881,20 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: deflation 
+          value: 'Brachial Vascular Reactivity Test'
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: MEDICAL_PROCEDURE
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
@@ -959,8 +944,20 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: deflation
+          value: 'Brachial Vascular Reactivity Test'
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: MEDICAL_PROCEDURE
+                relative_timing:
+                  value: AFTER
         value_quantity:
           class_derivations:
           - Quantity:
