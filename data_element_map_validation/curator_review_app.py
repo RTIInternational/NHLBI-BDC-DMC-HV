@@ -927,17 +927,21 @@ def _find_block_for_phv(text: str, slot: str, phv: str) -> tuple[int, int, int] 
 
 def _vm_table_re(slot: str) -> re.Pattern:
     """Match a `value_mappings:` dict nested under `{slot}:` (usually via an
-    intervening `populated_from:` line). Group 1 is the table's own
-    indentation; group 2 is the entries block, matched only while each entry
-    line is indented strictly deeper than the table header (via backreference
-    to group 1) — this is what stops the capture at the first sibling key
+    intervening `populated_from:` line). Group 1 is the slot's own indentation;
+    every line between the slot and `value_mappings:` (and `value_mappings:`
+    itself) must be indented strictly deeper than it, so a slot with no table
+    of its own can't walk forward into the next sibling slot's table (e.g.
+    `observation_type:` matching `value_enum:`'s table — PR #821 review).
+    Group 2 is the table's own indentation; group 3 is the entries block,
+    matched only while each entry line is indented strictly deeper than the
+    table header — this is what stops the capture at the first sibling key
     (e.g. `condition_provenance:`) instead of swallowing the rest of the file.
     """
     return re.compile(
-        rf"^[ \t]*{re.escape(slot)}:\s*\n"
-        rf"(?:[ \t]+\S.*\n)*?"
-        rf"([ \t]+)value_mappings:\s*\n"
-        rf"((?:\1[ \t]+\S.*\n?)+)",
+        rf"^([ \t]*){re.escape(slot)}:\s*\n"
+        rf"(?:\1[ \t]+\S.*\n)*?"
+        rf"(\1[ \t]+)value_mappings:\s*\n"
+        rf"((?:\2[ \t]+\S.*\n?)+)",
         re.MULTILINE,
     )
 
@@ -961,11 +965,78 @@ def _iter_value_mapping_entries(text_scope: str, slot: str, original_curie: str)
     """
     table_re = _vm_table_re(slot)
     for tm in table_re.finditer(text_scope):
-        entries_text = tm.group(2)
-        entries_offset = tm.start(2)
+        entries_text = tm.group(3)
+        entries_offset = tm.start(3)
         for lm in _VM_ENTRY_RE.finditer(entries_text):
             if lm.group(3) == original_curie:
                 yield entries_offset + lm.start(), entries_offset + lm.end(), lm.group(2), lm.group(0)
+
+
+_PHV_TOKEN_RE = re.compile(r"\bphv\d+\b")
+
+
+def _enclosing_block_span(text: str, offset: int) -> tuple[int, int] | None:
+    """Return (start, end) of the smallest `- class_derivations:` block whose
+    span contains *offset* — same span rules as _find_block_for_phv."""
+    markers = [(m.start(1), len(m.group(1))) for m in _BLOCK_MARKER_RE.finditer(text)]
+    best: tuple[int, int] | None = None
+    for i, (start, indent) in enumerate(markers):
+        if start > offset:
+            break
+        end = len(text)
+        for j in range(i + 1, len(markers)):
+            if markers[j][1] <= indent:
+                end = markers[j][0]
+                break
+        if offset < end and (best is None or end - start < best[1] - best[0]):
+            best = (start, end)
+    return best
+
+
+def _value_mapping_csv_phvs(
+    study: str, yaml_file: str, slot: str, phv: str = "", original_curie: str = "",
+) -> set[str] | None:
+    """If _apply_yaml would apply this finding by editing a `value_mappings:`
+    entry, return every phv referenced in the edited block; otherwise None.
+
+    Must be called BEFORE _apply_yaml (it locates the entry by its current
+    value, original_curie). Needed because curie.csv is a cross-product: within
+    one PHT block, every phv gets a row for every CURIE the block's tables
+    emit (e.g. ARIC demography.yaml's PHT004061 block files the race CURIEs
+    under both phv00204568/STRX10 and phv00204449/STRC9). One table entry is
+    therefore described by several CSV rows, and updating only the finding's
+    own phv row leaves the siblings recording a CURIE the YAML no longer emits
+    (PR #821 review). Scoped to the block's phvs, not the PHT: 594 of 1,958
+    real (file, slot, PHT) groups span more than one value_mappings block
+    (e.g. ARIC carotid_plaque.yaml, 15 under one PHT), so a PHT-wide update
+    would rewrite other, unedited tables' rows.
+    """
+    if not original_curie:
+        return None
+    yaml_path = STUDIES[study]["yaml_dir"] / Path(yaml_file).name
+    if not yaml_path.exists():
+        return None
+    text = yaml_path.read_text(encoding="utf-8")
+    if phv:
+        found = _find_block_for_phv(text, slot, phv)
+        if not found:
+            return None
+        start, end, _ = found
+        block = text[start:end]
+        # _apply_yaml tries a plain value:/expr: line before value_mappings
+        if re.search(rf"^[ \t]*{re.escape(slot)}:\s*\n[ \t]+(?:value|expr):", block, re.MULTILINE):
+            return None
+        if len(list(_iter_value_mapping_entries(block, slot, original_curie))) != 1:
+            return None
+    else:
+        entries = list(_iter_value_mapping_entries(text, slot, original_curie))
+        if len(entries) != 1:
+            return None
+        span = _enclosing_block_span(text, entries[0][0])
+        if not span:
+            return None
+        start, end = span
+    return set(_PHV_TOKEN_RE.findall(text[start:end]))
 
 
 def _apply_yaml(
@@ -1210,8 +1281,12 @@ def _apply_yaml(
 
 def _apply_csv(
     study: str, yaml_file: str, slot: str, new_curie: str,
-    original_curie: str = "", phv: str = "",
+    original_curie: str = "", phv: str = "", phvs: set[str] | None = None,
 ) -> tuple[bool, str]:
+    """*phvs*, when given (a value_mappings edit — see _value_mapping_csv_phvs),
+    replaces the single-*phv* filter: every row for this file/slot/original
+    CURIE whose PHV is in the edited block is updated together, since they
+    all describe the same table entry."""
     fieldnames, rows = load_curie_csv(study)
     # A single unambiguous row is still safe to update without a phv — there's
     # nothing else it could be confused with. The actual danger (same as
@@ -1219,7 +1294,7 @@ def _apply_csv(
     # silently updating *multiple* rows together just because they currently
     # agree — that's no proof they're the same variable. So: refuse only when
     # more than one row would be touched and there's no phv to say which one.
-    if not phv:
+    if not phv and phvs is None:
         candidates = [
             r for r in rows
             if r.get("YAML File") == Path(yaml_file).name and r.get("Slot") == slot
@@ -1248,7 +1323,12 @@ def _apply_csv(
             # finding carries one, on top of (not instead of) original_curie,
             # since original_curie alone could coincidentally match more than
             # one variable's row (as happened with the Age-variable incident).
-            if phv and row.get("PHV") != phv:
+            if phvs is not None:
+                if row.get("PHV") not in phvs:
+                    skipped_other_phv += 1
+                    updated.append(row)
+                    continue
+            elif phv and row.get("PHV") != phv:
                 skipped_other_phv += 1
                 updated.append(row)
                 continue
@@ -1258,8 +1338,9 @@ def _apply_csv(
         updated.append(row)
     if changed == 0:
         if skipped_other_phv:
+            who = f"any PHV in the edited block ({', '.join(sorted(phvs))})" if phvs is not None else f"PHV `{phv}`"
             return False, (
-                f"⚠ No CSV rows match `{yaml_file}` / `{slot}` with PHV `{phv}` — "
+                f"⚠ No CSV rows match `{yaml_file}` / `{slot}` with {who} — "
                 f"{skipped_other_phv} row(s) for this file/slot exist but belong to a different "
                 "variable and were left untouched. Re-check the finding before applying."
             )
@@ -1282,7 +1363,10 @@ def _apply_csv(
             "Close the file in Excel or any other application and try again."
         )
     load_curie_csv.clear()
-    phv_note = f" (phv `{phv}`)" if phv else ""
+    if phvs is not None:
+        phv_note = f" (value_mappings entry, all rows for phvs in its block: {', '.join(sorted(phvs))})"
+    else:
+        phv_note = f" (phv `{phv}`)" if phv else ""
     return True, f"✓ CSV: {changed} row(s) → `{new_curie}` for `{yaml_file}` [{slot}]{phv_note}"
 
 
@@ -1309,6 +1393,9 @@ def submit_all(study: str, pending: dict, curator: str) -> tuple[list[str], int,
             # Do not mark applied — YAML and CSV are untouched
             continue
         for yf in yf_list:
+            # Computed before _apply_yaml, which rewrites the entry this
+            # locates by its current value (original_curie).
+            vm_phvs = _value_mapping_csv_phvs(study, yf, slot, phv, original_curie)
             yaml_ok, yaml_msg = _apply_yaml(study, yf, slot, new_curie, phv, original_curie)
             row_res.append((yaml_ok, yaml_msg))
             # Only write the CSV half if the YAML half actually landed — never
@@ -1318,7 +1405,7 @@ def submit_all(study: str, pending: dict, curator: str) -> tuple[list[str], int,
             # went ahead and wrote anyway, leaving the CSV recording a value
             # the YAML never actually emitted.
             if yaml_ok:
-                row_res.append(_apply_csv(study, yf, slot, new_curie, original_curie, phv))
+                row_res.append(_apply_csv(study, yf, slot, new_curie, original_curie, phv, phvs=vm_phvs))
             else:
                 row_res.append((False, f"⚠ CSV write skipped — YAML edit did not land: {yaml_msg}"))
         msgs = [msg for _, msg in row_res]
