@@ -8,7 +8,6 @@
           expr: case(({phv00128103} == 'Yes', {phv00128104} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128084}) + ":JHS Exam 1")'
-          range: string
         condition_concept:
           value: MONDO:0004979
         condition_status:
@@ -35,7 +34,6 @@
           expr: case(({phv00128346} == "No", {phv00128354} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128330}) + ":JHS Exam 1")'
-          range: string
         condition_concept:
           value: MONDO:0004979
         condition_status:
@@ -58,7 +56,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00400849}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
-          range: string
         condition_concept:
           value: MONDO:0004979
         condition_status:
@@ -78,7 +75,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
-          range: string
         condition_concept:
           value: MONDO:0004979
         condition_status:
@@ -101,7 +97,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00402777}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402777}) + ":JHS Exam 2")'
-          range: string
         age_at_condition_start:
           expr: case(({phv00402795} == '1', {phv00402796} * 365))
         condition_concept:
@@ -127,7 +122,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00403624}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403624}) + ":JHS Exam 3")'
-          range: string
         age_at_condition_start:
           expr: case(({phv00403643} == 'Yes', {phv00403644} * 365))
         condition_concept:
