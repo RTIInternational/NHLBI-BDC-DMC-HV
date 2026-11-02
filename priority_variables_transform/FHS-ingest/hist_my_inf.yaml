@@ -40,12 +40,16 @@
             # emitted the literal string "UNKNOWN" as the concept, producing
             # 141 harmonized rows with condition_concept="UNKNOWN" (invalid
             # CURIE, tallied by hv-dataqc as condition_UNKNOWN sentinel).
-            # Source var_report codes present: 0,1,2,3,4,7,8 (no 5 or 6).
+            # Multi-territory codes 4 (A+I), 5 (A+TP), 6 (I+TP) and 7 (ALL3)
+            # take the generic MI CURIE until MONDO has location codes (#943);
+            # 5 and 6 are declared in the data dictionary but unobserved.
             '0': MONDO:0005068
             '1': MONDO:0006652
             '2': MONDO:0006803
             '3': MONDO:0003672
             '4': MONDO:0005068
+            '5': MONDO:0005068
+            '6': MONDO:0005068
             '7': MONDO:0005068
             '8': MONDO:0005068
         condition_status:
@@ -56,6 +60,8 @@
             '2': PRESENT
             '3': PRESENT
             '4': PRESENT
+            '5': PRESENT
+            '6': PRESENT
             '7': PRESENT
             '8': UNKNOWN
         condition_provenance:
@@ -81,12 +87,16 @@
             # Same fix as pht000019 block above -- code 8 ("MAYBE") maps to
             # the generic MI CURIE with condition_status=UNKNOWN (rather than
             # emitting the literal string "UNKNOWN" as the concept).
-            # Source var_report codes present: 0,1,2,3,4,7,8 (no 5 or 6).
+            # Multi-territory codes 4 (A+I), 5 (A+TP), 6 (I+TP) and 7 (ALL3)
+            # take the generic MI CURIE until MONDO has location codes (#943);
+            # 5 and 6 are declared in the data dictionary but unobserved.
             '0': MONDO:0005068
             '1': MONDO:0006652
             '2': MONDO:0006803
             '3': MONDO:0003672
             '4': MONDO:0005068
+            '5': MONDO:0005068
+            '6': MONDO:0005068
             '7': MONDO:0005068
             '8': MONDO:0005068
         condition_status:
@@ -97,6 +107,8 @@
             '2': PRESENT
             '3': PRESENT
             '4': PRESENT
+            '5': PRESENT
+            '6': PRESENT
             '7': PRESENT
             '8': UNKNOWN
         condition_provenance:
@@ -529,66 +541,6 @@
             '1': PRESENT
             '2': UNKNOWN
             .: UNKNOWN
-        condition_provenance:
-          value: STUDY_RECORD
-          range: string
-        associated_evidence:
-          value: Electrocardiogram
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht000019
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003261}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003261}) + ":FHS ORIGINAL EXAM 17")'
-        condition_concept:
-          value: MONDO:0005068
-          range: string
-        condition_status:
-          populated_from: phv00003199
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': PRESENT
-            '3': PRESENT
-            '4': PRESENT
-            '7': PRESENT
-            '8': UNKNOWN
-        condition_provenance:
-          value: STUDY_RECORD
-          range: string
-        associated_evidence:
-          value: Electrocardiogram
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht000020
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003667}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
-        condition_concept:
-          value: MONDO:0005068
-          range: string
-        condition_status:
-          populated_from: phv00003614
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': PRESENT
-            '3': PRESENT
-            '4': PRESENT
-            '7': PRESENT
-            '8': UNKNOWN
         condition_provenance:
           value: STUDY_RECORD
           range: string
