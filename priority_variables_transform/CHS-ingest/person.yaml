@@ -29,7 +29,7 @@
                 cause:
                   expr: 'case(({pht001464.phv00100775} == 1, "ICD10CM:I20-I25"), ({pht001464.phv00100775} == 2, "ICD10CM:I60-I69"), ({pht001464.phv00100775} == 3, "ICD10CM:I70"), ({pht001464.phv00100775} == 4, "ICD10CM:I00-I99"))'
                 order:
-                  value: 1
+                  expr: 'case(({pht001464.phv00100775} in [1, 2, 3, 4], 1))'
           - CauseOfDeath:
               populated_from: pht001447
               joins:
@@ -40,4 +40,4 @@
                 cause:
                   expr: 'case(({pht001466.phv00100832} == 1, "ICD10CM:I20-I25"), ({pht001466.phv00100832} == 2, "ICD10CM:I60-I69"), ({pht001466.phv00100832} == 3, "ICD10CM:I70"), ({pht001466.phv00100832} == 4, "ICD10CM:I00-I99"))'
                 order:
-                  value: 2
+                  expr: 'case(({pht001466.phv00100832} in [1, 2, 3, 4], 2))'
