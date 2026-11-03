@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
-          expr: 'case(({phv00226332} == 1, "ATC:C08"))'
+          value: ATC:C08
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -25,7 +25,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
-          expr: 'case(({phv00258121} == 1, "RxCUI:3443"))'
+          value: RxCUI:3443
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -43,7 +43,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
-          expr: 'case(({phv00258122} == 1, "RxCUI:11170"))'
+          value: RxCUI:11170
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

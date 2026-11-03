@@ -103,24 +103,3 @@
                   populated_from: phv00207286
                 unit:
                   value: "10*3/uL"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht012503
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00506928}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00506928}) + ":ARIC CHEM 2")'
-        observation_type:
-          value: OBA:VT0000217
-        method_type:
-          value: "blood assay"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht012503
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00507184
-                unit:
-                  value: "10*3/uL"

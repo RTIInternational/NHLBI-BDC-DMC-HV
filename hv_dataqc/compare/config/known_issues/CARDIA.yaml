@@ -309,24 +309,6 @@ known_issues:
       from source pool. YAML is more complete and correct than source extraction.
     confirmed_date: "2026-07-05"
 
-  # ── Cig_smok: PHV correction causes source/harmonized crosswalk mismatch ─
-  - checks: [C1, C2, C3]
-    variable_key: "a09yrsqt"
-    yaml_file: cig_smok.yaml
-    status: false_positive
-    root_cause: phv_correction_source_crosswalk_mismatch
-    summary: >
-      cig_smok.yaml pht001572 block was corrected from phv00113169
-      (a09yrsqt = years quit smoking) to phv00113168 (smoking status,
-      current vs former vs never). The source crosswalk still uses
-      phv00113169 as the source key (a09yrsqt), which has n_valid=7,376
-      non-null "years quit" rows. The harmonized now uses phv00113168 for
-      the value_enum, which has n_valid=8,379 valid rows. The N gain
-      (C2) and missing-rate change (C3) are an artifact of comparing two
-      different PHVs from the same table. The PHV fix is correct; a fresh
-      source extraction using the updated YAML will resolve this mismatch.
-    confirmed_date: "2026-06-30"
-
   # ── Insulin: source crosswalk incomplete (recently added YAML) ───────────
   - checks: [C4, C6]
     variable_key: "al4ins"
@@ -357,22 +339,6 @@ known_issues:
       the µIU/mL → pmol/L conversion (factor 6.945); the harmonized value is
       correct and the mismatch is a unit_conversion_mean_crosswalk artifact.
     related_issues: []
-    confirmed_date: "2026-07-06"
-
-  # ── Cig_smok: code-0 (never-smoked) → null suppresses never-smokers ──────
-  - checks: [C1, C2, C3, C7]
-    variable_key: "a09smknw"
-    yaml_file: cig_smok.yaml
-    status: false_positive
-    root_cause: code_zero_null_suppression
-    summary: >
-      cig_smok.yaml pht001573 block (A10SMOKE, Year 0 -- table A4F10,
-      confirmed from dbGaP data dict) maps code '0' (never smoked) to None,
-      intentionally excluding never-smokers from the harmonized Observation
-      pool. Source extraction includes all rows (n_valid=4,948); harmonized
-      output only includes ever-smokers who have a smoking-status code mapped
-      to a non-null value. N loss and missing-rate increase (C2/C3) are
-      expected. Same design pattern as chr_bronchitis.yaml (a12cbron above).
     confirmed_date: "2026-07-06"
 
   # ── CHD: undocumented codes removed (open issue #219) ─────────────────────

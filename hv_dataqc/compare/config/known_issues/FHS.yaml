@@ -531,27 +531,6 @@ known_issues:
       investigate independently. Re-investigate if all consent groups run.
     confirmed_date: "2026-07-20"
 
-  # -- C6: QT interval SD d=0.0266 (multi-exam pool composition) -------------
-  - checks: [C6]
-    variable_key: "digecg_qt1+digecg_qt2+digecg_qrs3+digecg_qt3+digecg_qt4+dg8"
-    yaml_file: qt_ekg.yaml
-    status: false_positive
-    root_cause: crosswalk_source_scope_mismatch
-    summary: >
-      QT interval pool from qt_ekg.yaml across 10 PHTs: FHS Original Exam 2-8
-      (pht000014-017), Offspring (pht000019-020), and Exam 2-8 labs
-      (pht000030-032, pht000149). qt_ekg.yaml has 10 pht003099 joins.
-      C4 PASSES (mean preserved). C6 SD mismatch d=0.0266 (source SD 74.21 ->
-      harmonized 72.23, SD 2.7% lower in harmonized). SD shift without mean
-      shift indicates outlier composition change: either (a) early FHS Original
-      Exam participants (who tend to be older, with more cardiac pathology and
-      longer QTs) are slightly underrepresented in c1+c2 relative to source,
-      or (b) QT interval calculation differences across exam-specific digitizers
-      contribute different variance profiles across consent groups. Magnitude
-      (2.7%) is below typical clinical significance. C4 PASSES confirming no
-      unit error. Re-investigate if all FHS consent groups are run together.
-    confirmed_date: "2026-07-20"
-
   # -- C4/C6: urine creatinine mean/SD (compare tool cannot replay 2-PHV ratio) --
   # The 1000x inflation bug (pht004809 block: (Cr24*100)/Vol24) was FIXED on
   # branch fix/hv-fhs-20260806 -> Cr24/(Vol24*10). Residual mismatch is a tool

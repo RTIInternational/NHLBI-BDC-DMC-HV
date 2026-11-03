@@ -1,0 +1,73 @@
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        observations:
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004715
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
+                observation_type:
+                  value: OMOP:4274406
+                age_at_observation:
+                  expr: '{phv00226251} * 365'
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004715
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00226275
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht004715
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
+                observation_type:
+                  value: OBA:1001086
+                age_at_observation:
+                  expr: '{phv00226251} * 365'
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004715
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00226263
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht004715
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
+                observation_type:
+                  value: OMOP:4273023
+                age_at_observation:
+                  expr: '{phv00226251} * 365'
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004715
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00226265
+                        unit:
+                          value: ms
+                          range: string

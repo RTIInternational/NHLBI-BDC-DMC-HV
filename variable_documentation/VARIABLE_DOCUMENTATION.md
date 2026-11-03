@@ -627,7 +627,7 @@ Concentration of Factor VII in blood, typically measured in plasma. Also known a
 **Properties:**
 - **Datatype:** decimal
 - **Unit:** % of normal
-- **UCUM Unit:** %{Normal}
+- **UCUM Unit:** %{normal}
 
 **Ontology References:**
 - **OMOP:** [OMOP:4217630](https://athena.ohdsi.org/search-terms/terms/4217630)
@@ -1708,7 +1708,7 @@ Concentration of von willebrand factor in blood
 **Properties:**
 - **Datatype:** decimal
 - **Unit:** IU/dL
-- **UCUM Unit:** %{Normal}
+- **UCUM Unit:** %{normal}
 
 **Ontology References:**
 - **OMOP:** [OMOP:4252203](https://athena.ohdsi.org/search-terms/terms/4252203)

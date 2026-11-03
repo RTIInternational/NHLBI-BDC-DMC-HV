@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
-          expr: 'case(({phv00226339} == 1, "ATC:C03"))'
+          value: ATC:C03
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -25,7 +25,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
-          expr: 'case(({phv00226340} == 1, "NDFRT:N0000175419"))'
+          value: NDFRT:N0000175419
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -43,7 +43,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
-          expr: 'case(({phv00258117} == 1, "NDFRT:N0000175419"))'
+          value: NDFRT:N0000175419
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

@@ -82,8 +82,11 @@ def run_component(name: str, cohort: str, fail_on: str,
     comp = COMPONENTS[name]
     script = comp["script"]
     if not script.exists():
-        print(f"  WARNING: {script.name} not found -- skipping")
-        return 0
+        # A component that is not on disk did not run, so it cannot have passed. This
+        # returned 0 -- a missing checker was silently indistinguishable from a clean one.
+        print(f"  ERROR: {script.name} not found -- this component DID NOT RUN",
+              file=sys.stderr)
+        return 1
 
     cmd = [sys.executable, str(script)]
 

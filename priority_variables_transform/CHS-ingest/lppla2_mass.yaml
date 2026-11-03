@@ -1,13 +1,17 @@
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001449
+      joins:
+        pht001452:
+          source_key: phv00098763
+          lookup_key: phv00100285
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00098763}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098763}) + ":CHS BASELINE")'
         age_at_observation:
-          expr: '{phv00100487} * 365'
+          expr: '{pht001452.phv00100487} * 365'
         observation_type:
           value: OMOP:3041450
           range: string

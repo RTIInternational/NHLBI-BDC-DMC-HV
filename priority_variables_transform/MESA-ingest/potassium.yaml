@@ -1,13 +1,17 @@
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
+      joins:
+        pht001119:
+          source_key: phv00086726
+          lookup_key: phv00086258
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'case(({phv00191192} == 3, uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 3")), ({phv00191192} == 4, uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")))'
         age_at_observation:
-          expr: case(({phv00191192} == 4, {phv00086727} * 365), ({phv00191192} == 3, {phv00086259} * 365))
+          expr: case(({phv00191192} == 4, {phv00086727} * 365), ({phv00191192} == 3, {pht001119.phv00086259} * 365))
         observation_type:
           value: OBA:VT0002668
           range: string
