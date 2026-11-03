@@ -6,6 +6,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078435}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078435}) + ":WHI SCREENING")'
+          range: string
         condition_concept:
           value: MONDO:0005098
         condition_status:
@@ -27,6 +28,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078435}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078435}) + ":WHI SCREENING")'
+          range: string
         condition_concept:
           value: MONDO:0005264
         condition_status:
@@ -491,6 +493,7 @@
           expr: 'case(({phv00283533} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
+          range: string
         condition_concept:
           value: MONDO:0005098
         condition_status:
@@ -517,6 +520,7 @@
           expr: 'case(({phv00283705} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
+          range: string
         condition_concept:
           value: MONDO:0005098
         condition_status:

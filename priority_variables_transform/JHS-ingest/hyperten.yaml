@@ -8,6 +8,7 @@
           expr: case(({phv00128087} == 'Yes', {phv00128088} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128084}) + ":JHS Exam 1")'
+          range: string
         condition_concept:
           value: MONDO:0005044
         condition_status:
