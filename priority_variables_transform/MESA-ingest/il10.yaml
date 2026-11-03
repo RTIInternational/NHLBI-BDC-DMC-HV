@@ -8,7 +8,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00142665}) + ":MESA IL-10")'
         observation_type:
           value: OMOP:3004578
-          range: string
         method_type:
           value: "blood assay"
           range: string
@@ -19,10 +18,8 @@
               slot_derivations:
                 value_decimal:
                   value: '10000'
-                  range: string
                 unit:
                   value: pg/mL
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -30,10 +27,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.13'
-                  range: string
                 unit:
                   value: pg/mL
-                  range: string                      
         value_quantity:
           class_derivations:
           - Quantity:
@@ -43,7 +38,6 @@
                   populated_from: phv00142666
                 unit:
                   value: pg/mL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002105
@@ -54,7 +48,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00150369}) + ":MESA STRESS")'
         observation_type:
           value: OMOP:3004578
-          range: string
         method_type:
           value: "blood assay"
           range: string
@@ -67,4 +60,3 @@
                   populated_from: phv00160519
                 unit:
                   value: pg/mL
-                  range: string

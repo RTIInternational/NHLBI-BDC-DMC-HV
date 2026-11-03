@@ -10,7 +10,6 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OBA:2045301
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -22,7 +21,6 @@
                   populated_from: phv00008113
                 unit:
                   value: pg/{cell}
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -35,7 +33,6 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OBA:2045301
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -45,7 +42,6 @@
                   populated_from: phv00172183
                 unit:
                   value: pg/{cell}
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -58,7 +54,6 @@
           expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OBA:2045301
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -70,7 +65,6 @@
                   populated_from: phv00227030
                 unit:
                   value: pg/{cell}
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001045
@@ -83,7 +77,6 @@
           expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), ({phv00081047} == 21, {pht003099.phv00177970} * 365))
         observation_type:
           value: OBA:2045301
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -95,7 +88,6 @@
                   populated_from: phv00081035
                 unit:
                   value: pg/{cell}
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht015118
@@ -108,7 +100,6 @@
           expr: case(({phv00546069} == 1, {pht003099.phv00177948} * 365), ({phv00546069} == 7, {pht003099.phv00177938} * 365))
         observation_type:
           value: OBA:2045301
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -118,4 +109,3 @@
                   populated_from: phv00546089
                 unit:
                   value: pg/{cell}
-                  range: string

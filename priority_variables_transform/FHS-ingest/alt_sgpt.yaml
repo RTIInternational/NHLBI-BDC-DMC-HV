@@ -10,7 +10,6 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OBA:2050062
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -20,7 +19,6 @@
                   populated_from: phv00008098
                 unit:
                   value: '[IU]/L'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -33,7 +31,6 @@
           expr: '{pht003099.phv00177932} * 365'      
         observation_type:
           value: OBA:2050062
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -48,7 +45,6 @@
                         )'
                 unit:
                   value: '[IU]/L'
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -56,10 +52,8 @@
               slot_derivations:
                 value_decimal:
                   value: '5.0'
-                  range: string
                 unit:
                   value: '[IU]/L'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -72,7 +66,6 @@
           expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OBA:2050062
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -88,7 +81,6 @@
                         )'
                 unit:
                   value: '[IU]/L'
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -96,10 +88,8 @@
               slot_derivations:
                 value_decimal:
                   value: '5.0'
-                  range: string
                 unit:
                   value: '[IU]/L'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001045
@@ -112,7 +102,6 @@
           expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), ({phv00081047} == 21, {pht003099.phv00177970} * 365))            
         observation_type:
           value: OBA:2050062
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -124,4 +113,3 @@
                   populated_from: phv00081020
                 unit:
                   value: '[IU]/L'
-                  range: string

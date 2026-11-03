@@ -11,7 +11,6 @@
           range: string
         condition_concept:
           value: MONDO:0005068
-          range: string
         condition_status:
           populated_from: phv00078482
           value_mappings:
@@ -19,12 +18,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003407
@@ -39,7 +36,6 @@
           expr: 'case(({phv00193169} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193170}))'
         condition_concept:
           value: MONDO:0005068
-          range: string
         condition_status:
           populated_from: phv00193169
           value_mappings:
@@ -47,12 +43,10 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "adjudicated event"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -70,16 +64,13 @@
           range: string
         condition_concept:
           value: MONDO:0005068
-          range: string
         condition_status:
           populated_from: phv00283527
           value_mappings:
             '1': PRESENT
         condition_provenance:
           value: HEALTH_RECORD
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string

@@ -10,7 +10,6 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OBA:VT0010540
-          range: string
         method_type:
           value: colorimetric, modified Jaffee (rate blanked)
         value_quantity:
@@ -22,7 +21,6 @@
                   populated_from: phv00036494
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006011
@@ -35,7 +33,6 @@
           expr: '{pht003099.phv00177934} * 365'
         observation_type:
           value: OBA:VT0010540
-          range: string
         method_type:
           value: 'colorimetric'
         value_quantity:
@@ -47,7 +44,6 @@
                   populated_from: phv00275419
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000685
@@ -60,7 +56,6 @@
           expr: '{pht003099.phv00177942} * 365'
         observation_type:
           value: OBA:VT0010540
-          range: string
         method_type:
           value: 'urine assay'
         value_quantity:
@@ -72,7 +67,6 @@
                   expr: '{phv00070900} * 11.312'
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000742
@@ -85,7 +79,6 @@
           expr: '{pht003099.phv00177944} * 365'
         observation_type:
           value: OBA:VT0010540
-          range: string
         method_type:
           value: 'Jaffe Reaction'
         value_quantity:
@@ -97,7 +90,6 @@
                   populated_from: phv00071896
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -110,7 +102,6 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OBA:VT0010540
-          range: string
         method_type:
           value: 'urine assay'
         value_quantity:
@@ -122,7 +113,6 @@
                   populated_from: phv00172162
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004363
@@ -135,7 +125,6 @@
           expr: case(({phv00219545} == 1, {pht003099.phv00177942} * 365), ({phv00219545} == 7, {pht003099.phv00177932} * 365))
         observation_type:
           value: OBA:VT0010540
-          range: string
         method_type:
           value: 'colorimetric'
         value_quantity:
@@ -147,7 +136,6 @@
                   populated_from: phv00219548
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -160,7 +148,6 @@
           expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OBA:VT0010540
-          range: string
         method_type:
           value: 'urine assay'
         value_quantity:
@@ -172,7 +159,6 @@
                   populated_from: phv00227046
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004809
@@ -185,7 +171,6 @@
           expr: case(({phv00227262} == 1, {pht003099.phv00177946} * 365), ({phv00227262} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OBA:VT0010540
-          range: string
         method_type:
           value: 'photometric assay'
         value_quantity:
@@ -197,4 +182,3 @@
                   expr: '{phv00227286} / ({phv00227269} * 10)'
                 unit:
                   value: mg/dL
-                  range: string

@@ -11,18 +11,15 @@
           range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           expr: case(({phv00113022} == 5, 'HISTORICAL'), ({phv00113020} == 2, 'PRESENT'))
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001606
@@ -36,18 +33,15 @@
           range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           expr: case(({phv00114387} == 5, 'HISTORICAL'), ({phv00114385} == 2, 'PRESENT'))
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001656
@@ -61,7 +55,6 @@
           range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00115424
           value_mappings:
@@ -71,13 +64,11 @@
             'M': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001715
@@ -91,7 +82,6 @@
           range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00116954
           value_mappings:
@@ -101,13 +91,11 @@
             'M': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001749
@@ -121,7 +109,6 @@
           range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00117935
           value_mappings:
@@ -131,13 +118,11 @@
             'M': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001761
@@ -151,7 +136,6 @@
           range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00118428
           value_mappings:
@@ -160,13 +144,11 @@
             '8': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001811
@@ -180,7 +162,6 @@
           range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00119802
           value_mappings:
@@ -189,13 +170,11 @@
             '8': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001869
@@ -207,18 +186,15 @@
           range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           expr: 'case(({phv00121369} == 2 or {phv00121371} == 2 or {phv00121372} == 2, "PRESENT"))'
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001869
@@ -230,20 +206,17 @@
           range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00121370
           value_mappings:
             '2': PRESENT
         condition_provenance:
           value: PATIENT_MEDICATION_REPORT
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001871
@@ -255,18 +228,15 @@
           range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           expr: 'case(({phv00121588} == 2 or {phv00121590} == 2 or {phv00121591} == 2 or {phv00121592} == 2, "PRESENT"))'
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001871
@@ -278,17 +248,14 @@
           range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00121589
           value_mappings:
             '2': PRESENT
         condition_provenance:
           value: PATIENT_MEDICATION_REPORT
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string

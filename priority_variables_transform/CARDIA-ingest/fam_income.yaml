@@ -9,10 +9,8 @@
           range: string
         observation_type:
           value: OMOP:4076114
-          range: string
         category:
           value: FINANCIAL_INSECURITY
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -34,7 +32,6 @@
                     '10': No response
                 unit:
                   value: USD
-                  range: string
 - class_derivations:
     SdohObservation:
       populated_from: pht001708
@@ -46,10 +43,8 @@
           range: string
         observation_type:
           value: OMOP:4076114
-          range: string
         category:
           value: FINANCIAL_INSECURITY
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -70,7 +65,6 @@
                     '9': Don't know
                 unit:
                   value: USD
-                  range: string
 - class_derivations:
     SdohObservation:
       populated_from: pht001758
@@ -82,10 +76,8 @@
           range: string
         observation_type:
           value: OMOP:4076114
-          range: string
         category:
           value: FINANCIAL_INSECURITY
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -106,7 +98,6 @@
                     '9': Don't know
                 unit:
                   value: USD
-                  range: string
 - class_derivations:
     SdohObservation:
       populated_from: pht001855
@@ -118,10 +109,8 @@
           range: string
         observation_type:
           value: OMOP:4076114
-          range: string
         category:
           value: FINANCIAL_INSECURITY
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -143,4 +132,3 @@
                     '11': $100,000 and greater
                 unit:
                   expr: "case(({phv00120947} != None, 'USD'))"
-                  range: string

@@ -10,7 +10,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190814}) + ":FHS")'
         condition_concept:
           value: MONDO:0005010
-          range: string
         condition_status:
           populated_from: phv00190820
           value_mappings:
@@ -19,13 +18,11 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: Medical History
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         age_at_condition_start:
           expr: "case(({phv00190820} == '1', ({pht003099.phv00177930} * 365) + int({phv00190821})))"
 - class_derivations:
@@ -38,7 +35,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 1")'
         condition_concept:
           value: MONDO:0004995
-          range: string
         condition_status:
           populated_from: phv00000492
           value_mappings:
@@ -46,13 +42,11 @@
             '1': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: Medical History
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht005147
@@ -63,7 +57,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00255463}) + ":FHS OFFSPRING EXAM 8")'
         condition_concept:
           value: MONDO:0004995
-          range: string
         condition_status:
           populated_from: phv00256866
           value_mappings:
@@ -71,13 +64,11 @@
             'CVD': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: RNA sequencing
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003316
@@ -90,7 +81,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190814}) + ":FHS")'
         condition_concept:
           value: MONDO:0004995
-          range: string
         condition_status:
           populated_from: phv00190817
           value_mappings:
@@ -98,13 +88,11 @@
             '1': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: Medical History
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         age_at_condition_start:
           expr: "case(({phv00190817} == '1', ({pht003099.phv00177930} * 365) + int({phv00190823})))"
 - class_derivations:
@@ -119,7 +107,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190814}) + ":FHS")'
         condition_concept:
           value: MONDO:0005009
-          range: string
         condition_status:
           populated_from: phv00190816
           value_mappings:
@@ -127,12 +114,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: Medical History
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         age_at_condition_start:
           expr: "case(({phv00190816} == '1', ({pht003099.phv00177930} * 365) + int({phv00190822})))"

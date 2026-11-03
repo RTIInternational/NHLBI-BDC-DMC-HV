@@ -10,7 +10,6 @@
           expr: '{pht003099.phv00177940} * 365'
         observation_type:
           value: OBA:2045303
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -22,7 +21,6 @@
                   populated_from: phv00055159
                 unit:
                   value: pg/mL
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -30,10 +28,8 @@
               slot_derivations:
                 value_decimal:
                   value: '4'
-                  range: string
                 unit:
                   value: pg/mL
-                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007776
@@ -44,7 +40,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369587}) + ":" + case(({phv00369637} == ''0'', ''FHS ORIGINAL CHF''), ({phv00369637} == ''1'', ''FHS OFFSPRING CHF''), ({phv00369637} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00369637} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00369637} == ''7'', ''FHS OMNI 1 CHF''), ({phv00369637} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT'')))'
         observation_type:
           value: OBA:2045303
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -56,7 +51,6 @@
                   populated_from: phv00369624
                 unit:
                   value: pg/mL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007776
@@ -67,7 +61,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369587}) + ":" + case(({phv00369637} == ''0'', ''FHS ORIGINAL CHF''), ({phv00369637} == ''1'', ''FHS OFFSPRING CHF''), ({phv00369637} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00369637} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00369637} == ''7'', ''FHS OMNI 1 CHF''), ({phv00369637} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT'')))'
         observation_type:
           value: OBA:2045303
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -88,4 +81,3 @@
                   expr: case(({phv00369623} == 0, 80), ({phv00369623} == 1, 500))
                 unit:
                   value: pg/mL
-                  range: string

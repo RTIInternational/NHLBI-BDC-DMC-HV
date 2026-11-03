@@ -8,7 +8,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00150369}) + ":MESA STRESS")'
         observation_type:
           value: OBA:2051979
-          range: string
         method_type:
           value: "blood assay"
           range: string
@@ -21,7 +20,6 @@
                   populated_from: phv00160520
                 unit:
                   value: pg/mL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002198
@@ -32,7 +30,6 @@
           expr: 'case(({phv00160529} == 2, uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA CLASSIC EXAM 2")), ({phv00160529} == 3, uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA CLASSIC EXAM 3")))'
         observation_type:
           value: OBA:2051979
-          range: string
         method_type:
           value: "blood assay"
           range: string
@@ -43,10 +40,8 @@
               slot_derivations:
                 value_decimal:
                   value: 0.16
-                  range: string
                 unit:
                   value: pg/mL
-                  range: string
         range_high:
           class_derivations:
           - Quantity:
@@ -54,10 +49,8 @@
               slot_derivations:
                 value_decimal:
                   value: 12.0
-                  range: string
                 unit:
                   value: pg/mL
-                  range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -69,7 +62,6 @@
                   expr: 'case(({phv00160541} == -333, "LESS_THAN"), ({phv00160541} == -555, "GREATER_THAN"))'
                 unit:
                   value: pg/mL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004326
@@ -82,7 +74,6 @@
           expr: '{phv00219024} * 365'
         observation_type:
           value: OBA:2051979
-          range: string
         method_type:
           value: "blood assay"
           range: string
@@ -95,4 +86,3 @@
                   populated_from: phv00219028
                 unit:
                   value: pg/mL
-                  range: string
