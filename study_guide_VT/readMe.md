@@ -60,12 +60,55 @@ The concept name joins the files to each other and to the harmonization pipeline
 `Example source variable labels` and `Example source variable description`.
 
 - `target unit` -- the UCUM unit the harmonized data is delivered in.
-- `other units and conversion` -- filled only where converting to the target depends on the
-  analyte (for example `mmol/L x18.016` for glucose). Blank otherwise.
+- `other units and conversion` -- the source units seen and the factor to the target unit
+  (for example `mmol/L x18.016` for glucose, which depends on the analyte). Blank when none
+  is needed.
 - `output file` -- the transform YAML file the concept is written to: the bare file name,
   lowercase with underscores, no `.yaml` (for example `blood_pressure`). One file per
   concept; several concepts may share a file. It decides where output goes only; it is never
-  the concept's identity.
+  the concept's identity. When the file HV currently writes a concept to disagrees with this
+  column, the guide column wins and the existing blocks move.
+  "Use when" sentences that tell sibling concepts apart go in the `VT notes` column
+  where the file has one, and otherwise in the concept description.
 - Example lists are `|`-separated. Labels and descriptions do not need to line up one to one.
   Example descriptions are copied verbatim from dbGaP, typos included, because they are used
   to match real source text.
+
+- `VT notes` -- an optional last column for the harmonization (virtual) team's notes, added only
+  where needed (today: `Condition Concepts.tsv` and `MeasurementObservation Variables.tsv`).
+  Notes are a few short plain sentences, with no tabs, newlines or pipes. Existing `Notes` and
+  team notes columns are left untouched, and the empty trailing `DrugExposure Concepts`
+  columns are kept.
+
+## Enum values: name or meaning CURIE
+
+For a BDC-HM enum keyed by CURIE (sex, race, ethnicity, vital status, severity, family
+relationship, smoking, education, occupation, SDOH type, drug route, procedure and measurement
+type) the transform spec may hold the permissible-value title, where the enum has one (for
+example `MALE`, `DEAD`), or its CURIE key (for example `OMOP:8507`). Procedure, measurement type
+and occupation values have no title: write the CURIE. The ingest is expected to emit the CURIE.
+An enum keyed by
+name, such as `ProvenanceEnum` or the condition status, takes the value name only; several
+provenance values have no CURIE.
+
+Retired codes are replaced: unknown sex, race and ethnicity use `OMOP:45877986` (not
+`OMOP:8552`, which other enums, such as occupation, still use); the retired severity code
+`OMOP:3272197` is replaced by `MODERATE` (`OMOP:4285732`).
+
+## Missing vs UNKNOWN
+
+This applies to every class, including existing specs.
+
+- A missing code (a period, `M` or `Missing`) writes no row. On a one-record-per-participant
+  class (Person, Demography) it leaves the slot empty.
+- Refused, do not know, and any asked-but-unanswered value write `UNKNOWN`
+  (`UNKNOWN_IF_EVER_SMOKED` for smoking), so a researcher can see the question was asked.
+- A slot with no `UNKNOWN` value (`vital_status`, numeric values) is left
+  empty when the answer is not known; `cause_of_death` follows its own rule (5) in Person
+  Metadata.
+
+## Specimen
+
+Choose the code from the variable name and description. If the source says blood or whole
+blood, or does not name the specimen, use the generic blood code. Use a serum or plasma code
+only when the variable says serum or plasma. Existing specs are to be swept for this.
