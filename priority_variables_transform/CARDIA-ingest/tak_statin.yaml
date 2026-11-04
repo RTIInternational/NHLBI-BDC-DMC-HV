@@ -27,7 +27,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115507}) + ":CARDIA YEAR 5")'
         drug_concept:
-          expr: 'case((str({phv00115510}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00115510}).lower().strip() == "niacin", "ATC:C10AD"), (str({phv00115510}).lower().strip() == "fred meyers fish oil", "RxCUI:2053495"), (str({phv00115510}).lower().strip() == "qestian", "RxCUI:202582"), (str({phv00115510}).lower().strip() == "lopid", "RxCUI:202999"), (str({phv00115510}).lower().strip() == "mevacoh", "RxCUI:6472"), (str({phv00115510}).lower().strip() == "lorelco", "RxCUI:8699"))'
+          expr: 'case((str({phv00115510}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00115510}).lower().strip() == "niacin", "ATC:C10AD"), (str({phv00115510}).lower().strip() == "fred meyers fish oil", "RxCUI:2053495"), (str({phv00115510}).lower().strip() in ("questian", "qestian", "questran"), "RxCUI:202582"), (str({phv00115510}).lower().strip() == "lopid", "RxCUI:202999"), (str({phv00115510}).lower().strip() == "mevacoh", "RxCUI:6472"), (str({phv00115510}).lower().strip() == "lorelco", "RxCUI:8699"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -42,7 +42,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117468}) + ":CARDIA YEAR 7")'
         drug_concept:
-          expr: 'case((str({phv00117471}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00117471}).lower().strip() == "hydrochlorothiazide", "RxCUI:5487"), (str({phv00117471}).lower().strip() == "proventil", "RxCUI:202908"), (str({phv00117471}).lower().strip() == "lopid", "RxCUI:202999"), (str({phv00117471}).lower().strip() == "questran", "RxCUI:202582"), (str({phv00117471}).lower().strip() == "mavacor 20mg", "RxCUI:316175"))'
+          expr: 'case((str({phv00117471}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00117471}).lower().strip() in ("hydrochlorothiazide", "hydrochlorothiazide 50mg"), "RxCUI:5487"), (str({phv00117471}).lower().strip() == "proventil", "RxCUI:202908"), (str({phv00117471}).lower().strip() == "lopid", "RxCUI:202999"), (str({phv00117471}).lower().strip() == "questran", "RxCUI:202582"), (str({phv00117471}).lower().strip() == "mavacor 20mg", "RxCUI:316175"), (str({phv00117471}).lower().strip() == "don''t know", "ATC:C10A"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -57,7 +57,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118664}) + ":CARDIA YEAR 10")'
         drug_concept:
-          expr: 'case((str({phv00118672}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00118672}).lower().strip() == "zocor", "RxCUI:196503"), (str({phv00118672}).lower().strip() in ("gemfibrozil", "gemfibrozil / lopid"), "ATC:C10AB"), (str({phv00118672}).lower().strip() == "cholestid", "RxCUI:151533"), (str({phv00118672}).lower().strip() == "niacin 500mg tablets", "RxCUI:198024"), (str({phv00118672}).lower().strip() == "pravachol", "RxCUI:203333"), (str({phv00118672}).lower().strip() == "metoprolol", "RxCUI:6918"))'
+          expr: 'case((str({phv00118672}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00118672}).lower().strip() == "zocor", "RxCUI:196503"), (str({phv00118672}).lower().strip() in ("gemfibrozil", "lopid", "gemfibrozil / lopid"), "ATC:C10AB"), (str({phv00118672}).lower().strip() == "cholestid", "RxCUI:151533"), (str({phv00118672}).lower().strip() == "niacin 500mg tablets", "RxCUI:198024"), (str({phv00118672}).lower().strip() == "niacin", "ATC:C10AD"), (str({phv00118672}).lower().strip() == "pravachol", "RxCUI:203333"), (str({phv00118672}).lower().strip() == "metoprolol", "RxCUI:6918"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
