@@ -42,29 +42,6 @@
                   value: "pmol/L"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht004063
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
-        age_at_observation:
-          expr: "{phv00204712} * 365"
-        observation_type:
-          value: OBA:2060174
-        method_type:
-          value: "blood assay"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht004063
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00204739
-                unit:
-                  value: "pmol/L"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht006444
       slot_derivations:
         associated_participant:

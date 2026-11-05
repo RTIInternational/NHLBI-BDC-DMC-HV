@@ -40,12 +40,16 @@
             # emitted the literal string "UNKNOWN" as the concept, producing
             # 141 harmonized rows with condition_concept="UNKNOWN" (invalid
             # CURIE, tallied by hv-dataqc as condition_UNKNOWN sentinel).
-            # Source var_report codes present: 0,1,2,3,4,7,8 (no 5 or 6).
+            # Multi-territory codes 4 (A+I), 5 (A+TP), 6 (I+TP) and 7 (ALL3)
+            # take the generic MI CURIE until MONDO has location codes (#943);
+            # 5 and 6 are declared in the data dictionary but unobserved.
             '0': MONDO:0005068
-            '1': MONDO:0005068
+            '1': MONDO:0006652
             '2': MONDO:0006803
-            '3': MONDO:0005068
+            '3': MONDO:0003672
             '4': MONDO:0005068
+            '5': MONDO:0005068
+            '6': MONDO:0005068
             '7': MONDO:0005068
             '8': MONDO:0005068
         condition_status:
@@ -56,6 +60,8 @@
             '2': PRESENT
             '3': PRESENT
             '4': PRESENT
+            '5': PRESENT
+            '6': PRESENT
             '7': PRESENT
             '8': UNKNOWN
         condition_provenance:
@@ -81,12 +87,16 @@
             # Same fix as pht000019 block above -- code 8 ("MAYBE") maps to
             # the generic MI CURIE with condition_status=UNKNOWN (rather than
             # emitting the literal string "UNKNOWN" as the concept).
-            # Source var_report codes present: 0,1,2,3,4,7,8 (no 5 or 6).
+            # Multi-territory codes 4 (A+I), 5 (A+TP), 6 (I+TP) and 7 (ALL3)
+            # take the generic MI CURIE until MONDO has location codes (#943);
+            # 5 and 6 are declared in the data dictionary but unobserved.
             '0': MONDO:0005068
-            '1': MONDO:0005068
+            '1': MONDO:0006652
             '2': MONDO:0006803
-            '3': MONDO:0005068
+            '3': MONDO:0003672
             '4': MONDO:0005068
+            '5': MONDO:0005068
+            '6': MONDO:0005068
             '7': MONDO:0005068
             '8': MONDO:0005068
         condition_status:
@@ -97,6 +107,8 @@
             '2': PRESENT
             '3': PRESENT
             '4': PRESENT
+            '5': PRESENT
+            '6': PRESENT
             '7': PRESENT
             '8': UNKNOWN
         condition_provenance:
@@ -540,66 +552,6 @@
           range: string
 - class_derivations:
     Condition:
-      populated_from: pht000019
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003261}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003261}) + ":FHS ORIGINAL EXAM 17")'
-        condition_concept:
-          value: MONDO:0005068
-          range: string
-        condition_status:
-          populated_from: phv00003199
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': PRESENT
-            '3': PRESENT
-            '4': PRESENT
-            '7': PRESENT
-            '8': UNKNOWN
-        condition_provenance:
-          value: STUDY_RECORD
-          range: string
-        associated_evidence:
-          value: Electrocardiogram
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht000020
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003667}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
-        condition_concept:
-          value: MONDO:0005068
-          range: string
-        condition_status:
-          populated_from: phv00003614
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': PRESENT
-            '3': PRESENT
-            '4': PRESENT
-            '7': PRESENT
-            '8': UNKNOWN
-        condition_provenance:
-          value: STUDY_RECORD
-          range: string
-        associated_evidence:
-          value: Electrocardiogram
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
       populated_from: pht000021
       slot_derivations:
         associated_participant:
@@ -607,7 +559,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00004021
@@ -661,7 +613,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00004023
@@ -688,7 +640,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004525}) + ":FHS ORIGINAL EXAM 20")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00004445
@@ -742,7 +694,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004525}) + ":FHS ORIGINAL EXAM 20")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00004447
@@ -769,7 +721,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004939}) + ":FHS ORIGINAL EXAM 21")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00004886
@@ -823,7 +775,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004939}) + ":FHS ORIGINAL EXAM 21")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00004888
@@ -850,7 +802,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00005246
@@ -904,7 +856,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00005248
@@ -931,7 +883,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006030}) + ":FHS ORIGINAL EXAM 23")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00005873
@@ -985,7 +937,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006030}) + ":FHS ORIGINAL EXAM 23")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00005875
@@ -1012,7 +964,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00007059
@@ -1066,7 +1018,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00007061
@@ -1093,7 +1045,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007534}) + ":FHS ORIGINAL EXAM 27")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00007494
@@ -1147,7 +1099,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007534}) + ":FHS ORIGINAL EXAM 27")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00007496
@@ -1228,7 +1180,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008743}) + ":FHS OFFSPRING EXAM 3")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00008653
@@ -1282,7 +1234,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008743}) + ":FHS OFFSPRING EXAM 3")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00008655
@@ -1309,7 +1261,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009127}) + ":FHS OFFSPRING EXAM 4")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00009049
@@ -1363,7 +1315,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009127}) + ":FHS OFFSPRING EXAM 4")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00009051
@@ -1390,7 +1342,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009579}) + ":FHS OFFSPRING EXAM 5")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00009504
@@ -1444,7 +1396,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009579}) + ":FHS OFFSPRING EXAM 5")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00009506
@@ -1471,7 +1423,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00010018
@@ -1525,7 +1477,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00010020
@@ -1552,7 +1504,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010694}) + ":FHS OFFSPRING EXAM 7")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00010451
@@ -1606,7 +1558,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010694}) + ":FHS OFFSPRING EXAM 7")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00010453
@@ -1660,7 +1612,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00021167
@@ -1722,7 +1674,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00021169
@@ -1753,7 +1705,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00070736}) + ":FHS ORIGINAL EXAM 28")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00070520
@@ -1807,7 +1759,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00070736}) + ":FHS ORIGINAL EXAM 28")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00070522
@@ -1861,7 +1813,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072580}) + ":FHS OFFSPRING EXAM 8")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00072276
@@ -1915,7 +1867,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072580}) + ":FHS OFFSPRING EXAM 8")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00072278
@@ -1942,7 +1894,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00177477
@@ -1996,7 +1948,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00177479
@@ -2023,7 +1975,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250718}) + ":FHS OMNI 1 EXAM 2")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00251012
@@ -2077,7 +2029,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250718}) + ":FHS OMNI 1 EXAM 2")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00251014
@@ -2104,7 +2056,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00251262}) + ":FHS OMNI 1 EXAM 3")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00251472
@@ -2158,7 +2110,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00251262}) + ":FHS OMNI 1 EXAM 3")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00251474
@@ -2185,7 +2137,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00254221
@@ -2239,7 +2191,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00254223
@@ -2266,7 +2218,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254596}) + ":FHS ORIGINAL EXAM 29")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00254729
@@ -2320,7 +2272,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254596}) + ":FHS ORIGINAL EXAM 29")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00254731
@@ -2347,7 +2299,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254989}) + ":FHS ORIGINAL EXAM 30")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00255120
@@ -2401,7 +2353,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254989}) + ":FHS ORIGINAL EXAM 30")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00255122
@@ -2482,7 +2434,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00273700}) + ":FHS NEW OFFSPRING SPOUSE EXAM 1")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00273989
@@ -2536,7 +2488,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00273700}) + ":FHS NEW OFFSPRING SPOUSE EXAM 1")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00273991
@@ -2563,7 +2515,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274708}) + ":FHS ORIGINAL EXAM 31")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00274845
@@ -2617,7 +2569,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274708}) + ":FHS ORIGINAL EXAM 31")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00274847
@@ -2697,7 +2649,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275063}) + ":FHS ORIGINAL EXAM 32")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00275203
@@ -2751,7 +2703,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275063}) + ":FHS ORIGINAL EXAM 32")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00275205
@@ -2857,7 +2809,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00566152
@@ -2911,7 +2863,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00566154
@@ -2938,7 +2890,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250282}) + ":FHS OMNI 1 EXAM 1")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0006652
           range: string
         condition_status:
           populated_from: phv00565817
@@ -2992,7 +2944,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250282}) + ":FHS OMNI 1 EXAM 1")'
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0003672
           range: string
         condition_status:
           populated_from: phv00565819

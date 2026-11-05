@@ -56,9 +56,15 @@ known_issues:
       unmapped code, condition_concept resolves to null. Same design pattern
       as MESA and JHS diabetes.yaml. The 4,931 rows (~0.3% of 1,536,149
       total Condition rows) are structural nulls from the multi-concept routing
-      design and are not a pipeline defect. Removing the pht001490 block is
-      not acceptable since it is the sole source of MONDO:0006920 (prediabetes)
-      records for CHS.
+      design and are not a pipeline defect. The 4,931 count was measured
+      when pht001490 was the only block routed this way. diabetes.yaml now
+      has three DIABADA blocks that route code 2 (impaired fasting glucose)
+      to MONDO:0006920 (prediabetes): pht001490 phv00106406 (Year 5 New),
+      pht001491 phv00107337 (Year 5 Old) and pht001495 phv00110521 (Year 9);
+      the last two were added in b8a90503 (#848). Any of the three can give
+      null-concept rows, and each is a source of CHS prediabetes records, so
+      removing a block is not an acceptable way to clear this check.
+    related_issues: [848]
     confirmed_date: "2026-07-17"
 
   # -- C3: smoke missing rate 4% (multi-table longitudinal pooling) ----------
