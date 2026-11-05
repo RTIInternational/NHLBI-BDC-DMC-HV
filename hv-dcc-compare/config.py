@@ -860,12 +860,13 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "plausible_hi": 300.0,
         # MESA bdy_wgt.yaml uses OMOP:4099154 (SNOMED 27113001, body weight).
         "aliases": ["OMOP:4099154"],
-        # MESA and HCHS bdy_wgt.yaml also emit recalled weights under the same code and
-        # visit; the DCC reads measured weight, so the comparison selects the measured
-        # block ("Current measured" in MESA; "anthropometry" in HCHS, ANTA4). CARDIA
-        # "Year 0" selects the baseline block among the multi-exam blocks.
+        # MESA, HCHS and CHS bdy_wgt.yaml also emit recalled weights under the same code
+        # and visit; the DCC reads measured weight, so the comparison selects the
+        # measured block ("Current measured" in MESA; "anthropometry" in HCHS, ANTA4,
+        # and in CHS, WEIGHT13). CARDIA "Year 0" selects the baseline block among the
+        # multi-exam blocks.
         "preferred_method_override": {"MESA": "Current measured", "CARDIA": "Year 0",
-                                      "HCHS_SOL": "anthropometry"},
+                                      "HCHS_SOL": "anthropometry", "CHS": "anthropometry"},
     },
     "OBA:2045455": {
         "topmed_var": "bmi_baseline_1",

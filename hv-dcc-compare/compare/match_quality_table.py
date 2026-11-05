@@ -1118,9 +1118,12 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "BDC reads measured WEIGHT13 (phv00100383, pht001452 BASEBOTH, "
             "'WEIGHT - LBS') at CHS BASELINE BOTH, the variable the DCC reads "
             "(x 0.453592); BDC applies 0.45359237, which accounts for the very "
-            "small mean difference. bdy_wgt.yaml maps no age-50 recall "
-            "variables. Measured weights at other visits are not mapped (HV "
-            "#950)."
+            "small mean difference. bdy_wgt.yaml also emits the recalled "
+            "'usual weight at age 50' (WGT5008, WGT50, WGT5058, AG50WT59) with "
+            "age at observation 50 years and method_type 'self-report "
+            "questionnaire'; the comparison selects the measured block "
+            "('anthropometry'). The measured weights in the BASE1, YR5NEW and "
+            "YR10 tables are not mapped (HV #950)."
         ),
     },
     ("CHS", "ever_smoker_baseline_1"): {

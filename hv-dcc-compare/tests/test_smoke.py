@@ -1197,14 +1197,28 @@ class ExtractorAccuracyTests(unittest.TestCase):
         self.assertIn("matched no rows", out)
 
     def test_weight_filter_applies_only_to_cohorts_that_carry_recalled_weights(self) -> None:
-        """MESA keeps its measured-weight rule; other cohorts are not filtered."""
-        vm = self._visits({"v1": "CHS BASELINE BOTH"})
+        """CHS recalled age-50 weights share the code and visit; measured is graded.
+        A cohort with no recalled weights is not filtered."""
         header = ["associated_participant", "observation_type",
                   "value_quantity__value_decimal", "method_type", "associated_visit"]
-        rows = [[f"P{i}", "OBA:VT0001259", "70.0", "anthropometry", "v1"] for i in range(10)]
+        vm = self._visits({"v1": "CHS BASELINE BOTH"})
+        rows = []
+        for i in range(10):
+            # Recalled row first: file order must not decide the result.
+            rows.append([f"P{i}", "OBA:VT0001259", "55.0", "self-report questionnaire", "v1"])
+            rows.append([f"P{i}", "OBA:VT0001259", "70.0", "anthropometry", "v1"])
         _tsv(self.md / "MeasurementObservation.tsv", header, rows)
         stats: dict = {}
         _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "CHS",
+                             set(), 10, stats, visit_mapping=vm)
+        self.assertAlmostEqual(stats["weight_baseline_1"]["mean"], 70.0, places=4)
+        self.assertNotIn("CONFLICTING", out)
+
+        vm = self._visits({"v1": "ARIC EXAM 1"})
+        rows = [[f"P{i}", "OBA:VT0001259", "70.0", "anthropometry", "v1"] for i in range(10)]
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats = {}
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "ARIC",
                              set(), 10, stats, visit_mapping=vm)
         self.assertAlmostEqual(stats["weight_baseline_1"]["mean"], 70.0, places=4)
         self.assertNotIn("method filter", out)
