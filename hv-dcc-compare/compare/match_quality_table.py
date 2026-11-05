@@ -133,17 +133,15 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "UNION_OF_FORMS",
         "no_override": True,
         "note": (
-            "BDC unions 5 drug-class YAML files (ATC:C02 hypert_trt, ATC:C03 tak_diuret, "
-            "ATC:C07A tak_betablk, ATC:C09A tak_aceinhib, ATC:C09C tak_angiorecepblk) across "
-            "two WHI SCREENING tables (pht000999 + pht002770). TOPMed used only the single "
-            "binary antihypertensive question on pht000999. BDC result (61.2% Yes) is higher "
-            "because it picks up participants who reported a specific drug class but may not "
-            "have answered the binary summary question. BDC also has 0% missing vs TOPMed "
-            "3.1% missing because absence of a drug record is treated as 'No' by construction. "
-            "VERDICT: BDC is epidemiologically more complete -- a participant who confirms a "
-            "specific drug class IS taking an antihypertensive regardless of their answer to "
-            "the summary question. However, the 31pp gap means this variable cannot be "
-            "directly compared to TOPMed's single-form figure across cohorts."
+            "Known BDC YAML defect pending a fix, not a methodological difference. "
+            "The drug-class files (tak_diuret, tak_betablk, tak_aceinhib, "
+            "tak_angiorecepblk) carry visit 'WHI UNC HEART FAILURE DETAILS', so the "
+            "baseline filter excludes them. In hypert_trt.yaml the pht002769, pht003413 "
+            "and pht003414 blocks have no associated_visit and are dropped. The "
+            "inflation (BDC 61.2% Yes vs TOPMed 29.9%) comes from the pht002770 block: "
+            "Form 33 F33PILLSHYP (phv00170689) is a follow-up item (mean days from "
+            "enrollment ~1,619) but is linked to the 'WHI SCREENING' visit. TOPMed uses "
+            "Form 44 medications (pht002754 TCCODE) at the baseline visit (F44VTYP == 1)."
         ),
     },
     ("WHI", "angina_prior_1"): {
@@ -281,22 +279,16 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "CLASSIFICATION_DIFF",
         "no_override": True,
         "note": (
-            "T_N=143,127 (miss=0.1%) vs B_N=141,777 (miss=1.0%) -- BDC has 1,350 more "
-            "missing participants. Two classification differences explain the category deltas: "
-            "(1) MULTIPLE RACES: BDC identifies 425 participants as 'Multiple Races' (0.3%); "
-            "TOPMed has 0 in this category -- TOPMed maps multi-race selections to 'Other' "
-            "or a single primary race. BDC's multi-race coding is the more accurate "
-            "representation of participants who selected more than one OMB race category. "
-            "(2) NATIVE HAWAIIAN/PACIFIC ISLANDER: T=111 vs B=9 -- BDC loses 102 NHOPI "
-            "participants, likely because the WHI race form code for NHOPI maps differently "
-            "in BDC's value_mappings than in TOPMed's. These 102 are likely absorbed into "
-            "'Other' (T=2,888 vs B=2,083, a gap of 805 which includes the NHOPI shift and "
-            "the multi-race redistribution). White is 86.7% BDC vs 86.3% TOPMed (+0.4pp), "
-            "consistent with a small number of NHOPI/Other participants being miscoded. "
-            "VERDICT: Mixed. BDC correctly identifies Multiple Races (TOPMed suppresses it). "
-            "BDC undercounts NHOPI by ~102 (likely a value_mapping issue in demography.yaml "
-            "for the NHOPI race code). BDC also has 1,350 more missing -- review WHI race "
-            "source forms for the same coverage gap as ethnicity."
+            "BDC demography.yaml emits two Demography rows per participant, both at "
+            "'WHI SCREENING': Form 2 (pht000998, RACE phv00078450) and Form 41 "
+            "(pht001009, per-race checkboxes). The extractor keeps the first row per "
+            "participant (Form 2). Form 2 has no separate NHOPI code (2 = 'Asian or "
+            "Pacific Islander', mapped to Asian) and BDC maps its Hispanic (4) and "
+            "Other (8) codes to OMOP:8552, so BDC shows NHOPI 0 (T=111) and an inflated "
+            "'Other' (B=7,076 vs T=2,888), with fewer White. TOPMed resolves these "
+            "participants from Form 41. Missingness is comparable (T=0.1%, B=0.0%). "
+            "VERDICT: the category deltas are a row-selection effect in the comparison, "
+            "not a source-coverage gap; Form 41 carries the finer race detail."
         ),
     },
     # ── ARIC ──────────────────────────────────────────────────────────────────
@@ -325,16 +317,15 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "note": (
             "ARIC never conducted CBC labs at Exams 1 or 2; the earliest MCH data exists "
             "in HMTCV301 (pht004109, Exam 3), HMTCV401 (pht004110, Exam 4), and CBC "
-            "(pht006422, Exam 5). BDC uses a per-variable visit_override "
-            "(['ARIC EXAM 3', 'ARIC EXAM 4', 'ARIC EXAM 5']) in BDC_MEASUREMENT_MAP to "
-            "match the TOPMed DCC's own 'first available' convention for this variable. "
-            "The TOPMed DCC anchors on Exam 3 as the earliest available CBC visit "
-            "(N=8,710, 42.1% missing, mean=30.48 pg). BDC takes earliest-per-participant "
-            "across all three tables (Exams 3/4/5), which produces slightly higher N "
-            "(because some participants missing Exam 3 have Exam 4 or 5 data) and may "
-            "shift the mean marginally. Any remaining delta reflects this exam-composition "
-            "difference -- not a YAML error. Both sides are measuring MCH at the earliest "
-            "available visit, not enrollment baseline."
+            "(pht006422, Exam 5). The TOPMed DCC rule for ARIC is: 'The visit with "
+            "the most non-missing phenotype values was chosen first. For subjects "
+            "without measurements at this visit, the visit with the next most "
+            "non-missing values was chosen, and so forth in succession.' The comparison "
+            "applies the same greedy rule (visit_override_mode 'most_nonmissing_first' "
+            "over ARIC Exams 1-5), but the visit order is computed on BDC's rows, so it "
+            "matches the DCC's selection only to the extent that BDC maps every exam "
+            "the DCC read. For MCH, BDC mch.yaml maps Exams 3, 4 and 5, as the DCC "
+            "does. Neither side measures MCH at enrollment baseline."
         ),
     },
     ("ARIC", "pad_prior_1"): {
@@ -346,13 +337,11 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "ABI < 0.9 definition), and (2) MONDO:0005294 (peripheral vascular disease) "
             "from hist_cvd.yaml (pht004102 = Heart Failure Hospital Record Abstraction Form, "
             "variable HFAA11M = self-reported PVD). The reference uses only the Exam 1 "
-            "ABI-based PAD variable. Result: BDC 7.7% (1,156/15,068, 0% missing) vs "
-            "reference 4.3% (613/14,388, 4.4% missing). The +3.4pp inflation comes from "
-            "two sources: (a) multi-visit accumulation (Exam 3/4 incident PAD cases counted "
-            "as present), and (b) hospital form PVD cases (MONDO:0005294) that are a broader "
-            "clinical concept than ABI-defined PAD. The MONDO:0005294 alias must remain in "
-            "BDC_CONDITION_MAP because COPDGene pad.yaml uses only that code. This is a "
-            "known methodological difference, not a pipeline error."
+            "ABI-based PAD variable. The comparison does not fall back to other visits "
+            "for prior-history variables, so the post-baseline hospital-abstraction PVD "
+            "rows (hist_cvd.yaml HFAA11M phv00206807, MONDO:0005294, visit 'ARIC "
+            "Hospital Form') are excluded from pad_prior_1. The MONDO:0005294 alias must "
+            "remain in BDC_CONDITION_MAP because COPDGene pad.yaml uses only that code."
         ),
     },
     ("ARIC", "annotated_sex_1"): {
@@ -639,13 +628,13 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "LABEL_REMAP",
         "no_override": True,
         "note": (
-            "BDC correctly emits only explicit Hispanic/Latino codes from MESA's combined "
-            "race/ethnicity variable (race1c, pht001116/pht001121). Choosing a race code "
-            "(White, Black, Chinese) does NOT imply 'Not Hispanic' — participants may be "
-            "both. TOPMed infers 'Not Hispanic or Latino' from race-only codes, which is "
-            "semantically incorrect. BDC behavior confirmed correct by ontology review "
-            "(Anne, PR #534). BDC T_N=3,096 Hispanic-only; TOPMed adds 919 inferred "
-            "Non-Hispanic records that should not exist. BDC approach is right."
+            "Known BDC YAML defect pending a fix. For MESA Family (pht001121) the DCC uses "
+            "the direct Hispanic question: notHL = scrhispf %in% 0 & !(racefc %in% 4). "
+            "BDC MESA-ingest/demography.yaml (pht001121 ethnicity expr) emits only the "
+            "Hispanic branch and has no notHL branch, so BDC shows 0 Not Hispanic vs "
+            "TOPMed 919. For MESA Classic and AirNR both sides emit Hispanic only from "
+            "race1c == 4 and leave non-Hispanic missing; choosing a race code alone does "
+            "not imply 'Not Hispanic' (ontology review, Anne, PR #534)."
         ),
     },
     ("MESA", "platelet_ncnc_bld_1"): {
@@ -757,21 +746,16 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "EXTENDED_COVERAGE",
         "no_override": True,
         "note": (
-            "BDC demography.yaml maps FHS ethnicity from multiple tables covering all "
-            "sub-cohorts, including pht016162 (vr_racesum_2011) which has code 88 = "
-            "'Defaulted ethnicity (Not Hispanic)' for ~5,209 Original Cohort participants "
-            "whose ethnicity was never directly collected (enrollment 1948-1953 predates "
-            "standardized ethnicity collection). Result: BDC N=15,086 (0.0% missing) vs "
-            "reference N=6,665 (56.1% missing). The dramatic coverage difference stems "
-            "from: (1) BDC maps all sub-cohorts (Original, Offspring, Gen3, Omni 1, "
-            "Omni 2, NOS) while the reference only ran on Offspring and Gen3; (2) BDC "
-            "maps the code-88 imputed ethnicity for Original Cohort per the dbGaP data "
-            "dictionary while the reference excluded Original entirely. The max +-1.8pp "
-            "category delta driving the D grade likely reflects BDC mapping all "
-            "non-Hispanic codes (including imputed code 88) to 'Not Hispanic or Latino' "
-            "while the reference uses a narrower RACE_CODE-based derivation from "
-            "pht006005 only. The BDC mapping is correct per dbGaP metadata; the grade "
-            "reflects a fundamental methodological difference in ethnicity scope."
+            "BDC demography.yaml maps FHS ethnicity from pht016162 (vr_racesum_2011) "
+            "eth_sum (phv00568195), whose code 88 = 'Defaulted ethnicity (Not Hispanic "
+            "or Latino)' (n=7,417). BDC maps code 88 to OMOP:8552 (BDC-HM EthnicityEnum "
+            "UNKNOWN), not to Not Hispanic, and the comparison treats it as missing. "
+            "Codes 0 and 1 map to Not Hispanic and Hispanic. The reference "
+            "(N=6,665, 56.1% missing) reads a different source per sub-cohort: Gen3 "
+            "pht000074 + pht003094, NOS pht006005 + pht003094, Omni 2 pht006006 + "
+            "pht003094, Offspring pht000747 H700/H701 (Exam 8), Omni 1 pht004815 "
+            "h700/h701 (Exam 3). The remaining category and missingness gap reflects "
+            "this difference in ethnicity source and scope."
         ),
     },
     ("FHS", "race_us_1"): {
@@ -821,17 +805,13 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "no_override": True,
         "note": (
             "FHS Original cohort antihypertensive treatment (phv00000705, MF250, pht000009, "
-            "FHS ORIGINAL EXAM 4) was added to hypert_trt.yaml. Result: BDC N=15,089 "
-            "(0.0% missing) vs reference N=14,377 (5.2% missing). The extract logic "
-            "imputes 'No' for all participants without a baseline drug record, causing "
-            "BDC to report 0.0% missing. The 712-participant gap is a stable structural "
-            "difference between the BDC imputation approach (absent record = 'No') and "
-            "the reference's explicit missing handling. Original cohort Exam 4 participants "
-            "with code 9997 (Did Not Take Exam 4) and 9999 (Unknown) resolve to 'No' via "
-            "imputation. Codes 1 (YES DEFINITE) and 2 (YES DOUBTFUL) are mapped to "
-            "ATC:C02. The +-1.4pp max category delta confirms the mapping is correct "
-            "where data exists; the missing-rate difference is a methodological choice, "
-            "not a YAML error."
+            "FHS ORIGINAL EXAM 4) is in hypert_trt.yaml; codes 1 (YES DEFINITE) and 2 "
+            "(YES DOUBTFUL) map to ATC:C02. The extractor uses the ATC:C02 study "
+            "indicator. When that source covers at least half of baseline attendees, "
+            "the participants who answered are the denominator; otherwise attendees "
+            "are. FHS Offspring Exam 1 has no ATC:C02 row (only tak_diuret ATC:C03), so "
+            "Offspring participants are missing rather than substituted by a drug "
+            "class. The reference reads pht006027 phv00277245 for Offspring."
         ),
     },
     ("FHS", "current_smoker_baseline_1"): {
@@ -983,22 +963,17 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "AGGREGATION_DIFF",
         "no_override": True,
         "note": (
-            "BDC sources body weight from three baseline tables (log: '5,531 "
-            "participants from 33,186 baseline rows'): BASE1 measured weight "
-            "(phv00099349, WEIGHT13, lbs converted to kg, n=4,889 nulls=14), BASE1 "
-            "self-reported 'usual weight at age 50' (phv00099153, WGT5008, lbs "
-            "converted to kg, n=4,713 nulls=190), and BASEBOTH measured weight "
-            "(phv00100383, WEIGHT13, lbs converted to kg, n=5,514 nulls=17). BDC "
-            "fills the 17 BASEBOTH-null participants using the BASE1 fallback "
-            "blocks, resulting in n=5,531, miss=0. The reference uses BASEBOTH "
-            "WEIGHT13 (phv00100383) only — n=5,514, miss=17 — exactly matching the "
-            "BASEBOTH var_report. The +0.0033 kg delta (72.794 vs 72.791) is driven "
-            "by the 17 fill-in values: some are filled from WGT5008 ('usual weight "
-            "at age 50'), a self-reported retrospective value that may differ from "
-            "the measured baseline weight in BASEBOTH. The reference approach "
-            "(BASEBOTH only, measured weight) is cleaner; BDC is more complete but "
-            "risks mixing measured and self-reported weight for 17 participants. "
-            "Approach: BDC better on completeness; reference cleaner on data type consistency. "
+            "Known BDC YAML defect pending a fix. CHS-ingest/bdy_wgt.yaml maps three "
+            "'usual weight at age 50' recalls as anthropometry body weight: WGT5008 "
+            "(phv00099153, BASE1, visit 'CHS BASELINE 2'), WGT50 (phv00100355, "
+            "BASEBOTH, visit 'CHS BASELINE BOTH') and WGT5058 (phv00106140, YR5NEW, "
+            "visit 'CHS YEAR 5 NEW'), alongside the measured WEIGHT13 (phv00100383, "
+            "BASEBOTH). CHS YEAR 5 NEW is not a graded baseline visit for weight, so "
+            "only WGT5008 and WGT50 compete with WEIGHT13. The blocks carry "
+            "method_type 'anthropometry', "
+            "so the 'Current measured' preferred_method matches no CHS rows and does not "
+            "separate them. Result: BDC mean 70.66 vs reference 72.79 kg (-2.13 kg), "
+            "N=5,531 vs 5,514. The reference uses BASEBOTH WEIGHT13 only. "
             "dbGaP ground truth: pht001452 BASEBOTH phv00100383 WEIGHT13 (n=5,514, nulls=17)."
         ),
     },

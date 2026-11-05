@@ -597,16 +597,11 @@ DATASETS: dict[str, dict] = {
             "carotid_stenosis_1": {
                 "bdc_label": "Carotid stenosis",
                 "var_type": "categorical",
-                # Deliberately still unmapped -- NOT the same shape as
-                # carotid_plaque_1. TOPMed grades this 0-5, an ordinal
-                # severity scale (MESA: 3,692/1,814/782/30/15/5), and the MESA
-                # YAML bands it as '1':'1-24', '2':'25-49', ... Writing labels
-                # here means committing to what grades 3-5 stand for, which
-                # needs the DCC data dictionary rather than inference from the
-                # pattern. It would change no grade today regardless: BDC
-                # emits 0 valid values for this variable in the only cohort
-                # that has it, so its D is a coverage gap, not a label
-                # mismatch.
+                # Kept as the reference's raw grade codes 0-5 (carotid_stenosis_1.json
+                # encoded_values: 0 None, 1 1%-24%, 2 25%-49%, 3 50%-74%,
+                # 4 75%-99%, 5 100%). The BDC side converts its band labels to
+                # the same codes (BDC_MEASUREMENT_MAP "bdc_grade_map"), so no
+                # map is applied here and the reference need not be re-extracted.
                 "value_map": None,
             },
             "carotid_plaque_1": {
@@ -820,10 +815,13 @@ OMOP_RACE_MAP = {
     "UNKNOWN": "Other",
 }
 
-# Ethnicity has its own UNKNOWN permissible value in BDC-HM, deliberately left
-# unmapped: the reference's ethnicity vocabulary is HL / notHL / both with no
-# "Other" bucket, so there is nothing to align it to and inventing one would
-# manufacture agreement. No cohort emitted it in the 2026-09-10 run.
+# Ethnicity has its own UNKNOWN permissible value in BDC-HM (EthnicityEnum
+# UNKNOWN, meaning OMOP:8552). It is deliberately NOT a category here: the
+# reference's vocabulary is HL / notHL / both with no "Other" bucket, so the
+# extractor treats these codes as a missing answer (the reference sets unknown
+# ethnicity to NA) rather than mapping them to a label.
+ETHNICITY_UNKNOWN_CODES = frozenset({"OMOP:8552", "8552", "UNKNOWN"})
+
 OMOP_ETHNICITY_MAP = {
     "OMOP:38003563": "Hispanic or Latino",
     "OMOP:38003564": "Not Hispanic or Latino",
@@ -1028,6 +1026,8 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "unit": "10^3/uL",
         "plausible_lo": 10.0,
         "plausible_hi": 1000.0,
+        # CARDIA platelet_ct.yaml uses OBA:VT0003179 (platelet quantity).
+        "aliases": ["OBA:VT0003179"],
     },
     "OBA:VT0000217": {
         "topmed_var": "wbc_ncnc_bld_1",
@@ -1054,8 +1054,9 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "unit": "10^3/uL",
         "plausible_lo": 0.0,
         "plausible_hi": 15.0,
-        # MESA eosinophil_ncnc_bld.yaml uses OMOP:3013115 (LOINC 711-2, eosinophils).
-        "aliases": ["OMOP:3013115"],
+        # MESA eosinophil_ncnc_bld.yaml uses OMOP:3013115 (LOINC 711-2, eosinophils);
+        # COPDGene, FHS and HCHS eosinophil specs use OBA:VT0002602.
+        "aliases": ["OMOP:3013115", "OBA:VT0002602"],
     },
     "OBA:VT0000223": {
         "topmed_var": "monocyte_ncnc_bld_1",
@@ -1074,10 +1075,6 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "plausible_hi": 50.0,
         # MESA mch.yaml uses OMOP:37398674 (LOINC 28539-5, MCH).
         "aliases": ["OMOP:37398674"],
-        # ARIC never conducted CBC labs at Exams 1 or 2; the earliest MCH data
-        # is at Exam 3. Use earliest-per-participant across Exams 3/4/5, matching
-        # the TOPMed DCC's own "first available" convention for this variable.
-        "visit_override": {"ARIC": ["ARIC EXAM 3", "ARIC EXAM 4", "ARIC EXAM 5"]},
     },
     "OMOP:37393850": {
         "topmed_var": "mchc_mcnc_rbc_1",
@@ -1199,6 +1196,8 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "unit": "10^3/uL",
         "plausible_lo": 0.0,
         "plausible_hi": 20.0,
+        # ARIC, COPDGene, HCHS and MESA lympho_ct specs use OBA:VT0000717.
+        "aliases": ["OBA:VT0000717"],
     },
     "OMOP:37208699": {
         "topmed_var": "neutrophil_ncnc_bld_1",
@@ -1207,6 +1206,8 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "unit": "10^3/uL",
         "plausible_lo": 0.0,
         "plausible_hi": 30.0,
+        # COPDGene and HCHS neutrophil specs use OBA:VT0000222.
+        "aliases": ["OBA:VT0000222"],
     },
     # ── Inflammation / biomarkers (entries added 2026-04-01) ──────────────────
     # MESA eselectin.yaml, tnfa.yaml, tnfa_r1.yaml use OBA codes; missing from map.
@@ -1289,19 +1290,28 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "unit": "mm",
         "plausible_lo": 0.3,
         "plausible_hi": 3.0,
+        # cimt_1.json CHS unit reads CCA_FWME (common carotid, phv00100864);
+        # CHS-ingest/carotid_imt.yaml also emits ICA_FWME (internal carotid)
+        # under the same code at the same visit, told apart only by method.
+        "preferred_method_override": {
+            "CHS": "Mean of the mean far wall intima media t (var=CCA_FWME)"},
     },
-    # MESA carotid_sten_left.yaml and carotid_sten_right.yaml each measure
-    # carotid stenosis (left vs right side). TOPMed merges into one binary
-    # variable (carotid_stenosis_1). We treat both side-codes as aliases here.
-    # var_type is categorical: YAML uses value_concept to store coded scale
-    # (value_mappings: '1':'1-24', '2':'25-49', ..., '6':'0', '7':None).
-    # TOPMed uses integer grade 0-5. Label mismatch is expected.
+    # Carotid stenosis, one code per side (left OMOP:43020498, right
+    # OMOP:43021859). BDC stores the band label in value_concept; the extractor
+    # converts it to the reference's grade code via bdc_grade_map.
     "OMOP:43020498": {
         "topmed_var": "carotid_stenosis_1",
         "bdc_label": "Carotid stenosis",
         "var_type": "categorical",
         # OMOP:43021859 = carotid stenosis right side
         "aliases": ["OMOP:43021859"],
+        # BDC band label -> reference grade code (carotid_stenosis_1.json).
+        # The participant's grade is the max over both sides, as the reference
+        # computes max(rsten1, lsten1). Bands not listed (e.g. MESA codes 7/8,
+        # which the YAML leaves unmapped) are missing, as the reference sets
+        # them to NA.
+        "bdc_grade_map": {"0": "0", "1-24": "1", "25-49": "2", "50-74": "3",
+                          "75-99": "4", "100": "5"},
     },
     # MESA cac_score.yaml and cac_volume.yaml; previously missing from map.
     "OMOP:42872742": {
@@ -1321,6 +1331,161 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "plausible_hi": 10000.0,
     },
 }
+
+# ─────────────────────────────────────────────────────────────────────────────
+# FHS: grade each variable at the exams the reference used
+# ─────────────────────────────────────────────────────────────────────────────
+# BASELINE_VISIT_CONFIG gives FHS's enrolment exams, but the reference picked
+# exams per variable. Each list below is a PRIORITY order taken from the
+# reference's harmonized-variable JSON (comment or per-unit R function); a
+# participant's value comes from the first listed exam where they have one.
+# A participant belongs to one sub-cohort, so sub-cohort lists concatenate.
+# Where BDC does not map a listed exam the result is a coverage gap; no other
+# exam is substituted.
+_FHS_OFFSPRING_LATEST_CBC = [
+    # "Only the Offspring subcohort had measurements at multiple visits
+    # (exams). For this subcohort, the measurement at the most recent exam
+    # available was chosen" -- hematocrit/hemoglobin/rbc/wbc_..._1.json; the
+    # R code reads Exam 9 (pht004802), then 2 (pht000031), then 1 (pht000030),
+    # Omni 1 at Exam 4 and Gen3/NOS/Omni 2 at Exam 2 (pht002889).
+    "FHS OFFSPRING EXAM 9", "FHS OFFSPRING EXAM 2", "FHS OFFSPRING EXAM 1",
+    "FHS OMNI 1 EXAM 4", "FHS GENERATION 3 EXAM 2",
+    "FHS NEW OFFSPRING SPOUSE EXAM 2", "FHS OMNI 2 EXAM 2",
+]
+_FHS_SINGLE_EXAM_CBC = [
+    # platelet/rdw/basophil/eosinophil/monocyte/lymphocyte/neutrophil_..._1.json:
+    # the R code reads only pht004802 (Offspring Exam 9, Omni 1 Exam 4) and
+    # pht002889 (Gen3/NOS/Omni 2 Exam 2).
+    "FHS OFFSPRING EXAM 9", "FHS OMNI 1 EXAM 4", "FHS GENERATION 3 EXAM 2",
+    "FHS NEW OFFSPRING SPOUSE EXAM 2", "FHS OMNI 2 EXAM 2",
+]
+_FHS_EXAM1_ALL = [
+    # height/weight_baseline_1.json: Original MF67/MF69 "EXAM 1" with age1;
+    # every other sub-cohort at its Exam 1. BMI is derived from those two.
+    "FHS ORIGINAL EXAM 1", "FHS OFFSPRING EXAM 1", "FHS GENERATION 3 EXAM 1",
+    "FHS NEW OFFSPRING SPOUSE EXAM 1", "FHS OMNI 1 EXAM 1", "FHS OMNI 2 EXAM 1",
+]
+_FHS_LIPID_EXAM1 = [
+    # hdl/total_cholesterol/triglycerides_1.json: "DCC analysts could not
+    # confirm that data from the Original cohort available in dbGaP should be
+    # used for harmonization, and they are not included." Units read
+    # pht006026/pht006027 at AGE1; no Omni 1 unit. LDL is Friedewald from these.
+    "FHS OFFSPRING EXAM 1", "FHS GENERATION 3 EXAM 1",
+    "FHS NEW OFFSPRING SPOUSE EXAM 1", "FHS OMNI 2 EXAM 1",
+]
+_FHS_MEASUREMENT_VISITS: dict[str, list[str]] = {
+    "OBA:2045381": _FHS_OFFSPRING_LATEST_CBC,    # hematocrit
+    "OBA:2060175": _FHS_OFFSPRING_LATEST_CBC,    # hemoglobin
+    "OBA:VT0001586": _FHS_OFFSPRING_LATEST_CBC,  # rbc
+    "OBA:VT0000217": _FHS_OFFSPRING_LATEST_CBC,  # wbc
+    "OBA:2045301": _FHS_OFFSPRING_LATEST_CBC,    # mch
+    "OMOP:37393850": _FHS_OFFSPRING_LATEST_CBC,  # mchc
+    "OBA:0003460": _FHS_OFFSPRING_LATEST_CBC,    # mcv
+    "OMOP:4267147": _FHS_SINGLE_EXAM_CBC,        # platelets
+    "OMOP:37397924": _FHS_SINGLE_EXAM_CBC,       # rdw
+    "OBA:VT0002607": _FHS_SINGLE_EXAM_CBC,       # basophils
+    "OMOP:37208634": _FHS_SINGLE_EXAM_CBC,       # eosinophils
+    "OBA:VT0000223": _FHS_SINGLE_EXAM_CBC,       # monocytes
+    "OMOP:37208689": _FHS_SINGLE_EXAM_CBC,       # lymphocytes
+    "OMOP:37208699": _FHS_SINGLE_EXAM_CBC,       # neutrophils
+    # crp_1.json: Offspring "EXAM 7 ... age = age7", Gen3 "EXAM 1 ... age1",
+    # NOS/Omni 2 pht002889 age2, Omni 1 pht002888 age3; "The FHS Original
+    # Cohort is not included".
+    "OMOP:4208414": ["FHS OFFSPRING EXAM 7", "FHS GENERATION 3 EXAM 1",
+                     "FHS NEW OFFSPRING SPOUSE EXAM 2", "FHS OMNI 2 EXAM 2",
+                     "FHS OMNI 1 EXAM 3"],
+    # cac_score_1.json: Gen3 pht000144 and Offspring pht000145 ("use earliest
+    # exam time"). The Omni arm (pht005161) carries no BDC visit, so it cannot
+    # be selected and stays a coverage gap.
+    "OMOP:42872742": ["FHS GENERATION 3 EXAM 1", "FHS OFFSPRING EXAM 7"],
+    # sleep_duration_1.json R code: Original rbind(ex12, ex20); Offspring/Omni 1
+    # "Bind harmonized data row-wise in order of preference" ex4, ex2, Exam 8,
+    # ex7, Exam 9 / Omni 1 Exam 4, SHHS, ex6 (BDC labels pht000098 Exam 5);
+    # Gen3 pht000074 age1. The JSON comment ("largest visit") disagrees with
+    # the code; the code is what produced the reference values.
+    "OBA:2040171": ["FHS ORIGINAL EXAM 12", "FHS ORIGINAL EXAM 20",
+                    "FHS OFFSPRING EXAM 4", "FHS OFFSPRING EXAM 2",
+                    "FHS OFFSPRING EXAM 8", "FHS OFFSPRING EXAM 7",
+                    "FHS OFFSPRING EXAM 9", "FHS OMNI 1 EXAM 4",
+                    "FHS OFFSPRING SHHS EXAM 1", "FHS OMNI 1 SHHS EXAM 1",
+                    "FHS OFFSPRING EXAM 5", "FHS GENERATION 3 EXAM 1"],
+    # carotid_stenosis_1.json FHS unit reads pht000083 with age6.
+    "OMOP:43020498": ["FHS OFFSPRING EXAM 6"],
+    "OBA:VT0001253": _FHS_EXAM1_ALL,             # height
+    "OBA:VT0001259": _FHS_EXAM1_ALL,             # weight
+    "OBA:2045455": _FHS_EXAM1_ALL,               # bmi
+    "OBA:VT0000184": _FHS_LIPID_EXAM1,           # hdl
+    "OBA:VT0001815": _FHS_LIPID_EXAM1,           # ldl
+    "OBA:VT0000180": _FHS_LIPID_EXAM1,           # total cholesterol
+    "OBA:VT0002644": _FHS_LIPID_EXAM1,           # triglycerides
+}
+for _code, _visits in _FHS_MEASUREMENT_VISITS.items():
+    BDC_MEASUREMENT_MAP[_code].setdefault("visit_override", {})["FHS"] = list(_visits)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Other cohorts: variables the reference graded away from the enrolment exam
+# ─────────────────────────────────────────────────────────────────────────────
+# Same rule as the FHS block: each entry cites the reference's JSON, and an
+# exam BDC has not mapped is left as a gap rather than substituted.
+#
+# ARIC CBC: "The visit with the most non-missing phenotype values was chosen
+# first. For subjects without measurements at this visit, the visit with the
+# next most non-missing values was chosen, and so forth in succession."
+# (blood_cell_count/*_1.json). That order depends on the data, so these use
+# visit_override_mode "most_nonmissing_first", which runs the same greedy rule
+# on BDC's rows over the listed exams. Held back until BDC maps the exams the
+# reference read: mchc (BDC has Exams 4-5 only), monocytes and lymphocytes
+# (reference derives counts from Exam 1/2 percentages BDC does not map).
+_ARIC_CBC_EXAMS = ["ARIC EXAM 1", "ARIC EXAM 2", "ARIC EXAM 3", "ARIC EXAM 4", "ARIC EXAM 5"]
+_OTHER_COHORT_MEASUREMENT_VISITS: dict[str, dict[str, list[str]]] = {
+    "ARIC": {
+        "OBA:2045301": _ARIC_CBC_EXAMS,    # mch
+        "OMOP:37397924": _ARIC_CBC_EXAMS,  # rdw
+        "OBA:VT0001586": _ARIC_CBC_EXAMS,  # rbc
+        "OBA:0003460": _ARIC_CBC_EXAMS,    # mcv
+        "OBA:2045381": _ARIC_CBC_EXAMS,    # hematocrit
+        "OBA:2060175": _ARIC_CBC_EXAMS,    # hemoglobin
+        "OBA:VT0000217": _ARIC_CBC_EXAMS,  # wbc
+        "OMOP:4267147": _ARIC_CBC_EXAMS,   # platelets
+        "OMOP:4208414": ["ARIC EXAM 5"],   # crp_1.json: "| ARIC | Visit 5 |"
+    },
+    "CARDIA": {
+        "OMOP:4208414": ["CARDIA YEAR 15"],  # crp_1.json: "Year 15/Exam 6"
+        "OBA:2052890": ["CARDIA YEAR 15"],   # il6_1.json: "Year 15/Exam 6"
+        "OMOP:4284103": ["CARDIA YEAR 5"],   # icam1_1.json: "Year 5/Exam 3"
+        "OBA:2040171": ["CARDIA YEAR 15"],   # sleep_duration_1.json: "Year 15"
+    },
+    "CHS": {
+        "OMOP:4138462": ["CHS IMT"],   # cimt_1.json reads pht001468 IMT_POLACK
+        "OMOP:42872742": ["CHS CAC"],  # cac_score_1.json reads pht001459
+    },
+    "JHS": {
+        "OMOP:42872742": ["JHS Exam 2"],    # cac_score_1.json reads pht001948
+        # cimt_1 deliberately not aligned: the reference averages six wall
+        # measures (pht001978) while JHS-ingest/carotid_imt.yaml emits each wall
+        # as its own row, so any one row is not the same quantity.
+    },
+    "MESA": {
+        # Every MESA CBC function reads pht004319 (Epigenomic CBC, "Age at Exam 5").
+        **{code: ["MESA EPIGENOMICS"] for code in (
+            "OBA:VT0000217", "OBA:2045381", "OBA:2060175", "OMOP:4267147",
+            "OBA:VT0002607", "OMOP:37208634", "OBA:VT0000223", "OMOP:37208689",
+            "OMOP:37208699", "OBA:2045301", "OMOP:37393850", "OBA:0003460",
+            "OBA:VT0001586")},
+        # tnfa_1.json: "| MESA_Classic | Exam 2 or 3 |"
+        "OBA:2051979": ["MESA CLASSIC EXAM 2", "MESA CLASSIC EXAM 3"],
+        "OMOP:3004578": ["MESA IL-10"],      # il10_1.json reads pht002099
+        "OMOP:36305170": ["MESA ANCILLARY"],  # lppla2_act_1.json reads pht002512
+        "OMOP:3041450": ["MESA ANCILLARY"],   # lppla2_mass_1.json reads pht002512
+        "OBA:2040171": ["MESA CLASSIC EXAM 4"],  # sleep_duration_1.json: "Exam 4"
+    },
+}
+for _cohort, _by_code in _OTHER_COHORT_MEASUREMENT_VISITS.items():
+    for _code, _visits in _by_code.items():
+        BDC_MEASUREMENT_MAP[_code].setdefault("visit_override", {})[_cohort] = list(_visits)
+for _code, _visits in _OTHER_COHORT_MEASUREMENT_VISITS["ARIC"].items():
+    if _visits is _ARIC_CBC_EXAMS:
+        BDC_MEASUREMENT_MAP[_code].setdefault("visit_override_mode", {})["ARIC"] = "most_nonmissing_first"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # BDC Condition concept → TOPMed variable mapping
@@ -1459,11 +1624,16 @@ BASELINE_VISIT_CONFIG: dict[str, dict] = {
     },
     "CHS": {
         # visit.yaml labels: CHS BASELINE, CHS BASELINE 2, CHS BASELINE BOTH, CHS YEAR 3-11, etc.
-        # CHS has 3 "baseline" visits for different sub-populations:
-        #   - CHS BASELINE (pht001449): original cohort only
-        #   - CHS BASELINE 2 (pht001450/1451): new cohort enrolled later
-        #   - CHS BASELINE BOTH (pht001452): combined measures for both sub-cohorts
-        # Old config had "CHS Baseline" (wrong case, missing BASELINE 2/BOTH).
+        # CHS baseline visits by sub-cohort:
+        #   - CHS BASELINE (pht001449), CHS BASELINE 2 (pht001450/1451):
+        #     original cohort (1989-90)
+        #   - CHS BASELINE BOTH (pht001452): combined baseline for both
+        #     sub-cohorts, including the African American cohort's 1992-93
+        #     enrolment values
+        # CHS YEAR 5 NEW (pht001490) is deliberately NOT here: every graded
+        # variable except smoking already has a BASELINE BOTH row for those
+        # participants, so adding it would union or duplicate their answers.
+        # Smoking alone uses it, through SMOKING_VISIT_OVERRIDE.
         "exact": ["CHS BASELINE", "CHS BASELINE 2", "CHS BASELINE BOTH"],
         "pattern": r"(?i)CHS\s+BASELINE",
     },
@@ -1510,8 +1680,8 @@ BASELINE_VISIT_CONFIG: dict[str, dict] = {
         #   MESA LUNG SPIROMETRY, MESA FAMILY, MESA FAMILY SPIROMETRY, MESA LUNG CT
         # DCC row-binds 3 subcohort Exam 1 tables as baseline:
         #   - pht001116 (Classic Exam 1)  -> "MESA CLASSIC EXAM 1"
-        #   - pht001111 (Family)          -> "MESA FAMILY"
-        #   - pht001121 (AirNR)           -> "MESA AIR EXAM"
+        #   - pht001121 (Family)          -> "MESA FAMILY"
+        #   - pht001111 (AirNR)           -> "MESA AIR EXAM"
         # Old config had "MESA Exam 1" which never matched any of these.
         "exact": ["MESA CLASSIC EXAM 1", "MESA FAMILY", "MESA AIR EXAM"],
         "pattern": r"(?i)MESA\s+(CLASSIC\s+EXAM\s+1|FAMILY|AIR\s+EXAM)$",
@@ -1645,6 +1815,11 @@ BASELINE_VISIT_PREFS: dict[str, list[str]] = {
 # smoking matches the TOPMed DCC approach (FHS_Original current_smoker and
 # ever_smoker both use MF71 from pht000009).
 SMOKING_VISIT_OVERRIDE: dict[str, list[str]] = {
+    # The African American cohort's smoking status exists only at its
+    # enrolment exam (pht001490 YR5NEW, SMOKE phv00105886); the cohorts are
+    # disjoint, so listing it last adds those participants and changes no one
+    # else's value.
+    "CHS": ["CHS BASELINE", "CHS BASELINE 2", "CHS BASELINE BOTH", "CHS YEAR 5 NEW"],
     "FHS": [
         "FHS ORIGINAL EXAM 1",
         "FHS OFFSPRING EXAM 1",
@@ -1658,41 +1833,38 @@ SMOKING_VISIT_OVERRIDE: dict[str, list[str]] = {
 # ─────────────────────────────────────────────────────────────────────────────
 # PER-VARIABLE VISIT OVERRIDES FOR CONDITIONS AND PROCEDURES
 # ─────────────────────────────────────────────────────────────────────────────
-# Some condition/procedure variables are only available at later exams, not at
-# the BASELINE_VISIT_CONFIG visit.  This dict maps topmed_var -> cohort ->
-# list of visit labels to use INSTEAD of the global baseline visits.
-#
-# CABG: FHS hist_cor_bypg.yaml maps Original Cohort to Exam 21 and Offspring
-# to Exam 5 — the earliest exams with CABG questions (surgery wasn't widespread
-# before the 1970s).  Earlier exams maximize participant coverage since the
-# question is cumulative ("HISTORY OF coronary bypass surgery").
-# Without this override, only Gen3 Exam 1 matches the standard baseline config.
+# Condition/procedure variables graded at visits other than the cohort
+# baseline: topmed_var -> cohort -> visit labels (rows at any listed visit
+# count). An entry must implement the reference's documented rule for that
+# variable. FHS cabg_prior_1 / pad_prior_1 deliberately have none: the
+# reference counts surveillance events dated on or before each participant's
+# Exam 1 (pht000389, pht000309), while BDC maps cumulative exam questions asked
+# decades later (Original Exam 21, Offspring Exam 5), which count post-baseline
+# events. Grading those later exams is not like-for-like, so FHS is graded at
+# its baseline exams and the remaining gap is a coverage/method difference.
 CONDITION_PROCEDURE_VISIT_OVERRIDE: dict[str, dict[str, list[str]]] = {
-    "cabg_prior_1": {
-        "FHS": [
-            "FHS ORIGINAL EXAM 21",
-            "FHS OFFSPRING EXAM 5",
-            "FHS GENERATION 3 EXAM 1",
-            "FHS OMNI 1 EXAM 1",
-            "FHS OMNI 2 EXAM 1",
-            "FHS NEW OFFSPRING SPOUSE EXAM 1",
-        ],
-    },
-    # PAD: FHS pad.yaml maps Offspring to Exam 5 (CDI-PVD, pht000034) and adds
-    # pht000309 joins block (EVENT=30, IC) for Original cohort.  Offspring Exam 5
-    # is not in standard baseline config so needs override.
-    "pad_prior_1": {
-        "FHS": [
-            "FHS ORIGINAL EXAM 4",
-            "FHS OFFSPRING EXAM 5",
-            "FHS GENERATION 3 EXAM 1",
-            "FHS OMNI 1 EXAM 1",
-            "FHS OMNI 2 EXAM 1",
-            "FHS NEW OFFSPRING SPOUSE EXAM 1",
-        ],
-    },
+    # MESA: the reference grades prior history for MESA Classic only, over
+    # pht001116 ("set all participants to 0" -- the Classic cohort was CVD-free
+    # at entry). BDC's rows are Family / AirNR / the visit-less events table,
+    # so at Classic Exam 1 BDC has no answer and the variable is not
+    # comparable, rather than graded on different sub-cohorts.
+    **{var: {"MESA": ["MESA CLASSIC EXAM 1"]} for var in (
+        "angina_prior_1", "mi_prior_1", "pad_prior_1", "cabg_prior_1",
+        "coronary_angioplasty_prior_1")},
 }
 
+
+# Medication variables (DrugExposure) graded at visits other than the cohort
+# baseline: topmed_var -> cohort -> visit labels in PRIORITY order. Each
+# participant contributes only the rows of the first listed visit they have.
+# Every entry implements the reference's documented visit choice for that
+# variable and cohort, cited from its harmonized-variable JSON.
+DRUG_VISIT_OVERRIDE: dict[str, dict[str, list[str]]] = {
+    # lipid_lowering_medication_1.json: "DCC analysts could not confirm that
+    # data from the FHS Original cohort available in dbGaP should be used for
+    # harmonization, and they are not included"; LIPRX1 at AGE1 (pht006026/7).
+    "lipid_lowering_medication_1": {"FHS": list(_FHS_LIPID_EXAM1)},
+}
 
 # =============================================================================
 # PART 3 -- dm-bip OUTPUT LAYOUT DISCOVERY
