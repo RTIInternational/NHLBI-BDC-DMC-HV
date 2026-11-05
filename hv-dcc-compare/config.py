@@ -847,6 +847,9 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "plausible_hi": 220.0,
         # MESA bdy_hgt.yaml uses OMOP:607590 (SNOMED 1153637007, body height).
         "aliases": ["OMOP:607590"],
+        # HCHS-ingest/bdy_hgt.yaml also emits height recalled at age 21 at HCHS EXAM;
+        # the DCC reads measured HEIGHT (phv00226281), method_type "anthropometry".
+        "preferred_method_override": {"HCHS_SOL": "anthropometry"},
     },
     "OBA:VT0001259": {
         "topmed_var": "weight_baseline_1",
@@ -857,15 +860,12 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "plausible_hi": 300.0,
         # MESA bdy_wgt.yaml uses OMOP:4099154 (SNOMED 27113001, body weight).
         "aliases": ["OMOP:4099154"],
-        # MESA bdy_wgt.yaml includes recalled weight at age 20/40 alongside current
-        # measured weight. All blocks share the same observation_type. Filter to
-        # "Current measured" for DCC comparison so recalled weights don't pull the
-        # mean down (~71 kg vs TOPMed 79.5 kg).
-        "preferred_method": "Current measured",
-        # CARDIA bdy_wgt.yaml has multi-exam blocks; Year 10 blocks with active
-        # age_at_observation win the sort, biasing weight upward (+5.3 kg).
-        # Filter to "Year 0" baseline weight.
-        "preferred_method_override": {"CARDIA": "Year 0"},
+        # MESA and HCHS bdy_wgt.yaml also emit recalled weights under the same code and
+        # visit; the DCC reads measured weight, so the comparison selects the measured
+        # block ("Current measured" in MESA; "anthropometry" in HCHS, ANTA4). CARDIA
+        # "Year 0" selects the baseline block among the multi-exam blocks.
+        "preferred_method_override": {"MESA": "Current measured", "CARDIA": "Year 0",
+                                      "HCHS_SOL": "anthropometry"},
     },
     "OBA:2045455": {
         "topmed_var": "bmi_baseline_1",
@@ -897,11 +897,11 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         # (phv00210290), method_type "Seated random-zero average". See bp_systolic_1.json
         # in the UW-GAC/topmed-dcc-harmonized-phenotypes repo, ARIC harmonization unit.
         #
-        # JHS bp_systolic.yaml has analysis-derived blocks from the Omron automated
-        # device (pht008729/8730/8731) which reads systematically higher than the
-        # sphygmomanometer used by TOPMed. TOPMed used pht001974 SBPA19 (phv00128376),
-        # the seated sphygmomanometer net average. This matches the JHS DBP override
-        # below — both BP components should use the same instrument (sphygmomanometer).
+        # JHS bp_systolic.yaml also has analysis-derived blocks (pht008729/8730/8731);
+        # the DCC reads the random-zero readings. The DCC recomputes from pht001974
+        # SBPA13-SBPA18 (phv00128370-75): random-zero corrected readings 1 and 2, each
+        # kept only when SBP >= DBP, then averaged. BDC grades the study's stored net
+        # average SBPA19 (phv00128376), method_type "Sphygmomanometer average".
         "preferred_method_override": {"ARIC": "Seated random-zero average", "JHS": "Sphygmomanometer average"},
         # What the reference pipeline used, so a report reader can confirm the
         # two sides measured the same thing. Transcribed from the comments
@@ -909,8 +909,8 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "reference_method": {
             "ARIC": "pht004192 SBPA15-SBPA20 -- mean of random-zero corrected "
                     "seated readings 2 and 3, recomputed (SBP >= DBP per reading)",
-            "JHS": "pht001974 SBPA19 (phv00128376) -- seated sphygmomanometer "
-                   "net average",
+            "JHS": "pht001974 SBPA13-SBPA18 -- mean of random-zero corrected "
+                   "readings 1 and 2, recomputed (SBP >= DBP per reading)",
         },
     },
     "OMOP:4154790": {
@@ -921,21 +921,21 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "plausible_lo": 30.0,
         "plausible_hi": 160.0,
         "preferred_method": "Analysis derived",
-        # JHS analysis-derived DBP blocks source from the Omron automated device
-        # (pht008729/8730/8731), which reads ~3 mmHg lower than sphygmomanometer.
-        # TOPMed used pht001974 SBPA20 (random-zero sphygmomanometer).  Use the
-        # sphygmomanometer average for JHS to match the cross-cohort device standard.
-        # Full domain science discussion deferred; see CHANGELOG.md session 6.
+        # JHS bp_diastolic.yaml also has analysis-derived blocks (pht008729/8730/8731).
+        # The DCC recomputes JHS DBP from pht001974 SBPA13-SBPA18 (random-zero corrected
+        # readings 1 and 2); BDC grades the stored net average SBPA20, method_type
+        # "Sphygmomanometer average".
         # Same ARIC fallthrough issue as SBP (see OMOP:4152194 above). BDC grades the
         # stored average SBPA22 (phv00210291), method_type "Seated random-zero average";
-        # the DCC recomputes it from SBPA16/SBPA19 minus the zero readings SBPA17/SBPA20. Without the override, 7.1% BDC missing vs
-        # 0.8% TOPMed and +1.7 mmHg mean elevation from mixed positional readings.
+        # the DCC recomputes it from SBPA16/SBPA19 minus the zero readings SBPA17/SBPA20.
+        # Without the override the extractor mixes positional readings.
         "preferred_method_override": {"JHS": "Sphygmomanometer average", "ARIC": "Seated random-zero average"},
         # See the note on reference_method for bp_systolic_1.
         "reference_method": {
             "ARIC": "pht004192 SBPA15-SBPA20 -- mean of random-zero corrected "
                     "seated readings 2 and 3, recomputed (SBP >= DBP per reading)",
-            "JHS": "pht001974 SBPA20 -- random-zero sphygmomanometer",
+            "JHS": "pht001974 SBPA13-SBPA18 -- mean of random-zero corrected "
+                   "readings 1 and 2, recomputed (SBP >= DBP per reading)",
         },
     },
     # ── Lipids ───────────────────────────────────────────────────────────────
@@ -1316,6 +1316,12 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
             "CHS": "Mean of the mean far wall intima media t (var=CCA_FWME)",
             "ARIC": ("Mean of the average common carotid IMT far wall both sides "
                      "from optimal, anterior, and posterior angle")},
+        "reference_method": {
+            "CHS": "pht001468 CCA_FWME (phv00100864) -- common carotid far-wall mean",
+            "ARIC": "pht004207 far-wall IMT at optimal, anterior and posterior angles "
+                    "(phv00211095-97, phv00211101-03) -- mean of the left and right "
+                    "per-side means",
+        },
     },
     # Carotid stenosis, one code per side (left OMOP:43020498, right
     # OMOP:43021859). BDC stores the band label in value_concept; the extractor

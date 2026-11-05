@@ -1176,13 +1176,30 @@ class ExtractorAccuracyTests(unittest.TestCase):
         vm = self._visits({"v1": "CHS BASELINE BOTH"})
         header = ["associated_participant", "observation_type",
                   "value_quantity__value_decimal", "method_type", "associated_visit"]
+        # SBP's global preferred method ("Analysis derived") has no CHS block.
+        rows = [[f"P{i}", "OMOP:4152194", "130.0", "Seated average", "v1"] for i in range(10)]
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "CHS",
+                             set(), 10, stats, visit_mapping=vm)
+        self.assertNotIn("bdc_method", stats["bp_systolic_1"])
+        self.assertIn("matched no rows", out)
+
+    def test_weight_filter_applies_only_to_cohorts_that_carry_recalled_weights(self) -> None:
+        """MESA keeps its measured-weight rule; other cohorts are not filtered."""
+        vm = self._visits({"v1": "CHS BASELINE BOTH"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
         rows = [[f"P{i}", "OBA:VT0001259", "70.0", "anthropometry", "v1"] for i in range(10)]
         _tsv(self.md / "MeasurementObservation.tsv", header, rows)
         stats: dict = {}
         _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "CHS",
                              set(), 10, stats, visit_mapping=vm)
-        self.assertNotIn("bdc_method", stats["weight_baseline_1"])
-        self.assertIn("matched no rows", out)
+        self.assertAlmostEqual(stats["weight_baseline_1"]["mean"], 70.0, places=4)
+        self.assertNotIn("method filter", out)
+        self.assertEqual(self.ex.cohort_lookup(
+            self.ex.BDC_MEASUREMENT_MAP["OBA:VT0001259"]["preferred_method_override"], "MESA"),
+            "Current measured")
 
     def test_aric_cimt_reads_the_mean_far_wall_not_the_maximum(self) -> None:
         mean_method = ("Mean of the average common carotid IMT far wall both sides "
@@ -1222,6 +1239,45 @@ class ExtractorAccuracyTests(unittest.TestCase):
         self.assertAlmostEqual(stats["crp_1"]["mean"], 3.0, places=4)
         self.assertEqual(stats["crp_1"]["bdc_method"], "BNII method rerun (FL6CRPBN)")
         self.assertNotIn("CONFLICTING", out)
+
+    def test_hchs_height_and_weight_grade_measured_not_recalled(self) -> None:
+        """Recalled height/weight share the code and visit; only measured is graded."""
+        vm = self._visits({"v1": "HCHS EXAM"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
+        rows = []
+        for i in range(10):
+            # Recalled rows first: file order must not decide the result.
+            rows.append([f"P{i}", "OBA:VT0001253", "150.0", "height recalled at age 21", "v1"])
+            rows.append([f"P{i}", "OBA:VT0001253", "165.0", "anthropometry", "v1"])
+            rows.append([f"P{i}", "OBA:VT0001259", "55.0", "self-report questionnaire", "v1"])
+            rows.append([f"P{i}", "OBA:VT0001259", "80.0", "anthropometry", "v1"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        for cohort in ("HCHS_SOL", "hchs_sol"):
+            stats: dict = {}
+            _, out = self._quiet(self.ex.process_measurements, [str(self.md)], cohort,
+                                 set(), 10, stats, visit_mapping=vm)
+            self.assertAlmostEqual(stats["height_baseline_1"]["mean"], 165.0, places=4)
+            self.assertAlmostEqual(stats["weight_baseline_1"]["mean"], 80.0, places=4)
+            self.assertEqual(stats["weight_baseline_1"]["bdc_method"], "anthropometry")
+            self.assertNotIn("CONFLICTING", out)
+
+    def test_categorical_rollup_reports_valid_n_not_cohort_total(self) -> None:
+        """Section 4 of the cross-cohort summary must show answered counts."""
+        for extra in (str(ROOT), str(ROOT / "compare")):
+            if extra not in sys.path:
+                sys.path.insert(0, extra)
+        import compare as cmp  # noqa: PLC0415
+
+        def side(n_valid: int) -> dict:
+            return {"cohort": {"name": "MESA"}, "total_participants": 100,
+                    "variables": {"cabg_prior_1": {
+                        "type": "categorical", "bdc_label": "CABG", "n_total": 100,
+                        "n_valid": n_valid, "pct_missing": 100 - n_valid,
+                        "distribution": {}}}}
+        summary, _ = self._quiet(cmp.run_comparison, side(80), side(0))
+        self.assertEqual(summary["variables"]["cabg_prior_1"]["topmed_n"], 80)
+        self.assertEqual(summary["variables"]["cabg_prior_1"]["bdc_n"], 0)
 
     def test_match_quality_mean_delta_keeps_its_sign(self) -> None:
         """MeanDelta prints BDC minus reference; the tier uses the magnitude."""

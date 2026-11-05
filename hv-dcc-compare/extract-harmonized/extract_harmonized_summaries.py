@@ -1309,8 +1309,8 @@ def process_measurements(
         # current measured weights (age~16000+) in the earliest-first dedup, making
         # the post-dedup preferred_method filter silently empty.
         # Per-cohort overrides take precedence over the global preferred_method.
-        preferred = spec.get("preferred_method_override", {}).get(cohort,
-                             spec.get("preferred_method"))
+        preferred = cohort_lookup(spec.get("preferred_method_override", {}), cohort,
+                                  spec.get("preferred_method"))
         method_applied = None
         if preferred and "method_type" in subset.columns:
             method_filtered = subset[subset["method_type"] == preferred]
