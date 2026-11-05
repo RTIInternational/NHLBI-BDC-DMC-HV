@@ -1214,32 +1214,6 @@
           value: MONDO:0005068
           range: string
         condition_status:
-          populated_from: phv00204740
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            T: UNKNOWN
-        condition_provenance:
-          value: PATIENT_SELF_REPORT
-          range: string
-        # associated_evidence:
-        #   value: Rose questionnaire
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht004063
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
-          range: string
-        condition_concept:
-          value: MONDO:0005068
-          range: string
-        condition_status:
           populated_from: phv00204705
           value_mappings:
             '0': ABSENT
