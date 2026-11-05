@@ -296,19 +296,13 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "ADMIN_VS_SURVEY",
         "no_override": True,
         "note": (
-            "BDC uses pht004063 HYPTMDCODE01 (phv00204798, N=15,636) — a Medi-Span GPI "
-            "pharmaceutical-code-based derived variable that captures any participant who "
-            "filled an antihypertensive prescription, regardless of self-attribution. "
-            "This yields 4,791 Yes (30.6%). Reference data uses HYPTMD01 (phv00204754, "
-            "same pht004063 table), the survey-form-based variable where participants "
-            "explicitly attributed their medication to high blood pressure, yielding "
-            "~3,961 Yes (25.3%). The 830-participant gap (~4.9pp) represents patients on "
-            "antihypertensive therapy who did not attribute their drug to BP (e.g., "
-            "diuretics prescribed for edema, beta-blockers for arrhythmia). BDC approach "
-            "(pharmaceutical code) is epidemiologically more complete and correct. The "
-            "HYPTMD01 block is also present in hypert_trt.yaml as a redundant last block "
-            "(pure subset of HYPTMDCODE01 in the same table). BDC 0% missing vs reference "
-            "1.3% missing because absence of a drug record is treated as No by construction."
+            "BDC is graded on its ATC:C02 indicators at ARIC EXAM 1, a union of three "
+            "Visit 1 variables in hypert_trt.yaml: HYPTMD01 (phv00204754, pht004063, the "
+            "DCC's variable), HYPTMDCODE01 (phv00204798, pht004063, medication-code "
+            "based) and MSRA08A (phv00207913, pht004129, medication survey 'for high "
+            "blood pressure'). A participant positive on any of the three is Yes. "
+            "Result: BDC 30.7% Yes (4,618/15,066) vs reference 25.7% (3,823/14,854). "
+            "Methodological: the union is broader than the DCC's single variable."
         ),
     },
     ("ARIC", "mch_entmass_rbc_1"): {
@@ -445,8 +439,8 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "EXTENDED_COVERAGE",
         "no_override": True,
         "note": (
-            "BDC achieves 15,060 valid records (0.1% missing) vs reference 14,817 (1.5% "
-            "missing), a 243-record coverage gap. Category distributions are IDENTICAL: "
+            "BDC achieves 15,059 valid records (0.1% missing) vs reference 14,817 (1.5% "
+            "missing), a 242-record coverage gap. Category distributions are IDENTICAL: "
             "98.4% No Prior History / 1.6% Prior History in both pipelines (0.0pp max "
             "difference). BDC's lower missing rate stems from broader YAML source coverage "
             "using the same underlying ARIC Exam 1 CABG data. The identical distribution "
@@ -623,6 +617,46 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "primary source for ever_smoker_baseline and reserve SMNOW only for current_smoker."
         ),
     },
+    ("CARDIA", "il6_1"): {
+        "code": "DERIVATION_DIFF",
+        "no_override": True,
+        "note": (
+            "Both sides read FL6IL6 (phv00121064, pht001862, Year 15). The DCC also sets "
+            "il6 = 12 where FL6IL6CM == 'High > 12' (values above the detection limit); "
+            "BDC il6.yaml does not impute. Result: BDC N=689 vs 695, mean 1.74 vs 1.83 "
+            "pg/mL, P99 8.17 vs 10.84. Methodological."
+        ),
+    },
+    ("CARDIA", "platelet_ncnc_bld_1"): {
+        "code": "DATA_QUALITY_FLAG",
+        "no_override": True,
+        "note": (
+            "Known BDC YAML defect pending a fix. A05PLATL (phv00112690, pht001563, "
+            "Year 0) is in units of 10^5/uL (var_report mean 2.713); platelet_ct.yaml "
+            "emits it unscaled as 10*3/uL, so BDC mean is 2.71 vs DCC 271.31. The DCC "
+            "multiplies by 100."
+        ),
+    },
+    ("CARDIA", "crp_1"): {
+        "code": "DATA_QUALITY_FLAG",
+        "no_override": True,
+        "note": (
+            "Known BDC YAML defect pending a fix. crp.yaml has two Year 15 blocks with "
+            "the same code (OMOP:4208414) and method ('blood assay'): FL6CRP "
+            "(phv00120758) and FL6CRPBN (phv00120759, 'RERUN CRP - BNII METHOD'). FL6CRP "
+            "wins on file order (BDC mean 2.05 = FL6CRP var_report mean); the DCC uses "
+            "FL6CRPBN (mean 3.30)."
+        ),
+    },
+    ("CARDIA", "sleep_duration_1"): {
+        "code": "DATA_QUALITY_FLAG",
+        "no_override": True,
+        "note": (
+            "Known BDC YAML defect pending a fix. F67SLPHR (phv00120534, pht001839, "
+            "Year 15) is mapped unguarded (var_report max 280 hours), giving BDC SD 8.29 "
+            "vs 1.29 and 8 implausible values. The DCC keeps values < 24."
+        ),
+    },
     # ── MESA ──────────────────────────────────────────────────────────────────
     ("MESA", "hispanic_or_latino_1"): {
         "code": "LABEL_REMAP",
@@ -650,6 +684,34 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "change between Exam 1 era and Exam 5 for the overlapping sub-cohort. Both "
             "approaches are pragmatic workarounds for the same missing-data limitation."
         ),
+    },
+    ("MESA", "antihypertensive_meds_1"): {
+        "code": "UNION_OF_FORMS",
+        "no_override": True,
+        "note": (
+            "BDC hypert_trt.yaml emits two ATC:C02 indicators at the same exam, which "
+            "are unioned: htnmed1c (computed) and bpmed1 ('taking meds for "
+            "hypertension') -- Classic Exam 1 phv00085324 / phv00085236, AirNR "
+            "phv00083163 / phv00082998. Family has htnmedfc (phv00087093) only. The DCC "
+            "uses htnmed1c (htnmedfc for Family). Result: BDC 39.9% Yes (3,307/8,296) vs "
+            "reference 39.2% (3,236/8,254). Methodological."
+        ),
+    },
+    **{
+        ("MESA", _var): {
+            "code": "STUDY_DESIGN",
+            "no_override": True,
+            "note": (
+                "The DCC grades MESA Classic only and sets every pht001116 participant "
+                "to 0 (Classic was CVD-free at entry). BDC's rows for this variable come "
+                "from Family (pht001121), AirNR (pht001111) or the visit-less events "
+                "table (pht001123), so the comparison grades it at MESA CLASSIC EXAM 1, "
+                "finds no BDC answer, and reports it NOT COMPARABLE (all missing). Not "
+                "a BDC defect."
+            ),
+        }
+        for _var in ("angina_prior_1", "mi_prior_1", "pad_prior_1", "cabg_prior_1",
+                     "coronary_angioplasty_prior_1")
     },
 
     # ── FHS ───────────────────────────────────────────────────────────────────
@@ -691,55 +753,29 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "VISIT_SCOPE_DIFF",
         "no_override": True,
         "note": (
-            "CABG was rewritten from a Procedure entity to a Condition entity (matching "
-            "the MESA pattern) and now uses CONDITION_PROCEDURE_VISIT_OVERRIDE to select "
-            "the earliest exams with CABG history questions: Original Exam 21 (pht000023, "
-            "phv00003839 MG284), Offspring Exam 5 (pht000034, phv00008328 E320), and "
-            "Gen3 Exam 1 (pht000074, phv00021304 G3A197). The SHHS regex exclusion was "
-            "also applied to prevent false matches on sub-study visits. Result: BDC "
-            "N=8,925 (40.9% missing) vs reference N=11,814 (22.1% missing). The higher "
-            "BDC missing rate reflects that CABG history was NOT asked at all baseline "
-            "exams -- Original Exam 21 is the earliest FHS exam with a CABG question "
-            "(far later than the Exam 4 baseline), and Omni 1, Omni 2, NOS sub-cohorts "
-            "lack CABG history entirely. The reference achieves lower missing by using "
-            "the FHS CVD surveillance/event adjudication system: pht000389 (Cardiovascular "
-            "Event Forms, VESSEL count + PROCDATE), pht000309 (Verified Events, EVENT "
-            "codes + DATE), pht003099 (age crosswalk, age1), and pht003316 (Survival "
-            "dataset, cvd/cvddate) as a denominator booster -- any participant with a CVD "
-            "follow-up record in pht003316 who had no CABG event is coded 0. This "
-            "surveillance architecture covers ALL followed FHS participants regardless of "
-            "which exam they attended, unlike BDC's exam-based history questions which are "
-            "limited to the specific exams where CABG was asked. The +-1.1pp category "
-            "delta confirms the mapping is directionally correct where data exists. "
-            "The residual missing gap is a coverage limitation inherent in the exam-based "
-            "approach, not a YAML error."
+            "The DCC counts surveillance procedures (pht000389, PROCDATE) dated on or "
+            "before Exam 1 (date <= 0), with pht003316 survival records as negatives, "
+            "covering all followed participants. BDC hist_cor_bypg.yaml maps exam "
+            "history questions (Original Exam 21, Offspring Exam 5, Gen3 Exam 1), and "
+            "FHS is graded at its baseline exams, so only Gen3 Exam 1 (pht000074 "
+            "G3A255 phv00021084) contributes. Result: BDC 7 Prior History of 4,036 (73.3% "
+            "missing) vs reference 17 of 11,814 (22.1% missing). The missingness is a "
+            "method and coverage difference, not a YAML error."
         ),
     },
     ("FHS", "angina_prior_1"): {
         "code": "SURVEILLANCE_DENOMINATOR_GAP",
         "no_override": True,
         "note": (
-            "Angina was rewritten to use ONLY the pht000309 surveillance block (EVENT=6, "
-            "AP first episode, DATE<=0 for pre-baseline events). Four Rose Questionnaire "
-            "single-question blocks (G3A169 = 'chest discomfort with exertion or "
-            "excitement') were removed because they overcounted angina 4x: the prior "
-            "extract showed 401 positives (3.1%) vs reference 104 (0.7%). G3A169 is the "
-            "first screening question of the Rose Angina Questionnaire, NOT a Rose-positive "
-            "diagnosis -- answering 'yes' to exertional chest discomfort captures many "
-            "non-cardiac causes (musculoskeletal, GERD, anxiety). After removal, BDC now "
-            "finds exactly 104 positives -- matching the reference perfectly. Result: BDC "
-            "N=8,730 (42.1% missing) vs reference N=15,154 (0.1% missing); max +-0.5pp "
-            "category delta. The high missing rate is a denominator booster gap: the "
-            "reference uses pht003316 (Survival dataset) to code ALL followed participants "
-            "without an angina event as 0, achieving near-complete coverage. BDC's "
-            "pht000309 block only emits PRESENT rows (EVENT=6, DATE<=0) -- participants "
-            "without events have no record and fall to missing. The 8,626 'No Prior "
-            "History' records come from the extract's imputation logic (participants with "
-            "other condition records but no angina = imputed No). The accuracy is correct "
-            "(104 positives match exactly); the D grade reflects the structural inability "
-            "to generate negative-evidence rows from the surveillance system without a "
-            "pipeline-level denominator booster (same limitation as CABG). This is a "
-            "pipeline architecture constraint, not a YAML error."
+            "BDC angina.yaml uses only the pht000309 surveillance block: status PRESENT "
+            "for EVENT == 6 (AP, first episode) with DATE <= 0, and a blank status for "
+            "every other pht000309 event row. Blank condition rows count as answers, so "
+            "participants with any other surveillance event are 'No Prior History' "
+            "(8,626); participants with no pht000309 row are missing. The reference "
+            "uses pht003316 survival records as negatives for all followed "
+            "participants. Result: 104 Prior History on both sides; BDC N=8,730 (42.1% "
+            "missing) vs reference N=15,154 (0.1% missing). The missingness gap is a "
+            "denominator difference, not a YAML error."
         ),
     },
     ("FHS", "hispanic_or_latino_1"): {
@@ -854,6 +890,49 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "cohort, not a YAML mapping error."
         ),
     },
+    ("FHS", "pad_prior_1"): {
+        "code": "SURVEILLANCE_DENOMINATOR_GAP",
+        "no_override": True,
+        "note": (
+            "The DCC uses surveillance events: pht000309 EVENT == 30 dated on or before "
+            "Exam 1 (DATE <= 0), plus pht003316 survival records as negatives, covering "
+            "all followed participants. BDC pad.yaml uses exam questions (Offspring Exam "
+            "5 E630, Gen3 Exam 1, Omni 1, Omni 2 and NOS Exam 1) and has no Original "
+            "block. The comparison grades FHS at its baseline exams with no override. "
+            "Result: BDC 15 Prior History of 5,014 (66.8% missing) vs reference 39 of "
+            "15,154 (0.1% missing). Methodological."
+        ),
+    },
+    ("FHS", "hematocrit_vfr_bld_1"): {
+        "code": "DATA_QUALITY_FLAG",
+        "no_override": True,
+        "note": (
+            "Known BDC YAML defect pending a fix. Offspring Exam 2 B764 (phv00008111, "
+            "pht000031) is stored as hematocrit / 10 (var_report mean 4.41) and "
+            "hemat.yaml emits it unscaled as '%'. Result: BDC mean 32.98 vs 41.86 and "
+            "1,767 implausible values."
+        ),
+    },
+    ("FHS", "basophil_ncnc_bld_1"): {
+        "code": "DATA_QUALITY_FLAG",
+        "no_override": True,
+        "note": (
+            "Known BDC YAML defect pending a fix. basophil_ncnc_bld.yaml reads the "
+            "lab-reported BA_NUM counts (phv00172197 pht002889, phv00227044 pht004802), "
+            "which are recorded at 0.1 x10^3/uL resolution (mostly 0.0 or 0.1). The DCC "
+            "derives WBC x BA_PER / 100. Result: BDC mean 0.031 vs 0.042."
+        ),
+    },
+    ("FHS", "cac_score_1"): {
+        "code": "DATA_QUALITY_FLAG",
+        "no_override": True,
+        "note": (
+            "Known BDC YAML defect pending a fix. cac_score.yaml emits AA (aortic "
+            "artery calcium, phv00023196) under the coronary CAC code OMOP:42872742, and "
+            "emits CA1 and CA2 (coronary scans 1 and 2) as separate rows. The DCC uses "
+            "rowMeans(CA1, CA2). Result: BDC mean 281.6 vs 133.4 Agatston."
+        ),
+    },
     # ── CHS ───────────────────────────────────────────────────────────────────
     ("CHS", "bmi_baseline_1"): {
         "code": "AGGREGATION_DIFF",
@@ -918,22 +997,12 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "AGGREGATION_DIFF",
         "no_override": True,
         "note": (
-            "Two differences exist between BDC and reference for CABG prior history. "
-            "(1) Missing policy: the reference uses BPSSUR/BPSSURBL "
-            "(phv00100321/phv00100785, pht001452/pht001464, n=5,493, 38 nulls) and "
-            "preserves the 38 missing as unknown. BDC extracts from Procedure "
-            "entities and defaults all participants with no CABG record to 'No Prior "
-            "History', eliminating all missing (n=5,531, miss=0). The reference is "
-            "more accurate for those 38 participants whose CABG status was "
-            "genuinely not recorded. (2) Prevalence: BDC=218 Prior History (3.9%), "
-            "reference=236 (4.3%) — a gap of 18 participants. BDC's baseline-visit "
-            "filter ('CHS BASELINE 2 + CHS BASELINE BOTH') excludes 18 CABG "
-            "Procedure records that the reference captures via EVENT_SUMMARY "
-            "BPSSURBL, which aggregates CABG history across all pre-baseline "
-            "sources. The categorical delta is 0.4pp (within A+ threshold) but the "
-            "reference is more complete on both counts: it preserves uncertainty for "
-            "38 participants and counts 18 additional CABG cases. BDC approach "
-            "slightly understates prevalence and over-classifies unknowns as No. "
+            "The reference uses BPSSUR/BPSSURBL (phv00100321/phv00100785, "
+            "pht001452/pht001464, n=5,493, 38 nulls) and keeps the 38 as missing. BDC "
+            "grades CABG Procedure rows at CHS BASELINE 2 + CHS BASELINE BOTH. "
+            "Prevalence is identical: 236 Prior History (4.3%) on both sides. BDC has "
+            "0 missing (n=5,531) vs reference 38, so BDC classifies those 38 as 'No "
+            "Prior History'. "
             "dbGaP ground truth: pht001452 phv00100321 BPSSUR (n=5,493, nulls=38)."
         ),
     },
@@ -981,24 +1050,11 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "AGGREGATION_DIFF",
         "no_override": True,
         "note": (
-            "BDC sources antihypertensive medication from two baseline tables: "
-            "pht001450 BASE1 (phv00099656, original 1989 cohort only, N=4,900) at visit "
-            "'CHS BASELINE 2', and pht001452 BASEBOTH (phv00100595, both cohorts merged, "
-            "N=5,526, 5 missing) at visit 'CHS BASELINE BOTH'. The reference extract uses "
-            "BASEBOTH (phv00100595) only — the CHS study team's authoritative merged "
-            "baseline file covering both the original and new cohorts — and its output "
-            "exactly matches the BASEBOTH var_report (Yes=2,634 / No=2,892 / missing=5). "
-            "BDC's union across both tables results in 5,531 classified participants (0 "
-            "missing), inflating Yes by ~36 and reducing No by ~31 relative to BASEBOTH "
-            "alone. The discrepancy arises because BASE1 and BASEBOTH partially overlap for "
-            "original-cohort participants; when BASE1 records a Yes for a participant whose "
-            "BASEBOTH entry is No or missing, the union-level extract counts them as Yes. "
-            "BASEBOTH is the correct single authoritative source (it already contains all "
-            "participants from both cohorts); using BASE1 on top of it is redundant and "
-            "over-classifies 36 participants as hypertension-medication users. "
-            "Gap: reference Yes=47.7% (2,634/5,526) vs BDC Yes=48.3% (2,670/5,531), "
-            "a 0.6pp difference. The reference approach is cleaner; BDC's dual-source "
-            "approach is a minor over-count but not a clinical error. "
+            "At baseline, BDC hypert_trt.yaml has one ATC:C02 indicator: BASEBOTH "
+            "phv00100595 (pht001452, visit 'CHS BASELINE BOTH'), the same variable the "
+            "reference uses. Yes is identical (2,634). BDC has No=2,897 and 0 missing "
+            "vs reference No=2,892 and 5 missing: the 5 participants the reference "
+            "leaves missing are 'No' in BDC. "
             "dbGaP ground truth: pht001452 BASEBOTH phv00100595 var_report "
             "(n=5,526, Yes=2,634, No=2,892, missing=5)."
         ),
@@ -1007,23 +1063,14 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "AGGREGATION_DIFF",
         "no_override": True,
         "note": (
-            "BDC sources from BASEBOTH EVERSM (phv00100372, pht001452) — the CHS "
-            "study team's own pre-derived ever-regular-smoker binary variable. BDC "
-            "output (2,966 Yes / 2,559 No / 6 missing) exactly matches the dbGaP "
-            "var_report count for EVERSM. "
-            "The reference extract instead reconstructs ever-smoker status from 4 raw "
-            "questionnaire fields across pht001450+pht001490: SMOKE101 smoked-in-lifetime "
-            "(phv00098844), SMOKE201 smoked-last-30-days (phv00098845), SMKAGE age-started "
-            "(phv00099157), and AMOUNT cigs/day (phv00099159). It sums these with "
-            "rowSums(na.rm=TRUE) and treats any non-zero value as evidence of ever-smoking, "
-            "overriding a primary 'No' on SMOKE101. This reclassifies 102 participants "
-            "whose CHS study team EVERSM = No as ever-smokers — for example, a participant "
-            "who reported 'never smoked' but has a non-zero SMKAGE or AMOUNT entry (which "
-            "could reflect data entry artifacts or misinterpretation) gets overridden. "
-            "The CHS study team presumably adjudicated these edge cases when deriving EVERSM, "
-            "making their curated variable more authoritative than a mechanical heuristic. "
-            "Result: reference 55.60% (3,068/5,519) vs BDC 53.70% (2,966/5,525), a 1.9pp "
-            "gap. BDC approach is correct per dbGaP ground truth (EVERSM). "
+            "BDC derives ever-smoker from the study's derived SMOKE status (cig_smok.yaml: "
+            "BASE1 phv00099445 at 'CHS BASELINE 2' and YR5NEW phv00105886 at 'CHS YEAR 5 "
+            "NEW', which covers the African American cohort), so both sides now cover "
+            "both cohorts. The reference counts any positive indication across "
+            "pht001450 + pht001490: SMOKE101 (phv00098844), SMOKE201 (phv00098845), "
+            "SMKAGE (phv00099157) or AMOUNT > 0 (phv00099159). Result: reference 55.6% "
+            "(3,068/5,519) vs BDC 53.7% (2,966/5,525), a 1.9pp like-for-like gap from "
+            "the different definitions. "
             "Source: UW-GAC/topmed-dcc-harmonized-phenotypes, "
             "harmonized-variable-documentation/baseline_common_covariates/"
             "ever_smoker_baseline_1.json, CHS harmonization unit, v4."
@@ -1049,49 +1096,23 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "PARTICIPANT_UNIVERSE_DIFF",
         "no_override": True,
         "note": (
-            "BDC pad.yaml uses phv00401122 (abi) from pht008729 (analysis1 — Exam 1 "
-            "analysis-derived dataset), applying the standard ABI < 0.9 threshold "
-            "(ACC/AHA clinical criterion for PAD). This is the gold-standard objective "
-            "PAD definition and covers all 3,883 Exam 1 participants (0% missing). "
-            "Current data: BDC 2.3% (89/3,883, 0% missing) vs TOPMed 2.7% (83/3,126, "
-            "13.2% missing). "
-            "The C grade is driven entirely by the 13.2pp missingness differential "
-            "(B_miss=0% vs T_miss=13.2%), not by a prevalence discrepancy (0.4pp is "
-            "well within the A-grade 1pp threshold). TOPMed sources JHS PAD from "
-            "ESP_HeartGO_JHS_Subject_Phenotypes (pht002539, phv00181292 ESP_pad) -- "
-            "a participant-level dataset for the NHLBI Exome Sequencing Project "
-            "subsample. ESP covers only ~87% of JHS participants; the 13.2% missing "
-            "in TOPMed reflects participants not selected for ESP sequencing, introducing "
-            "potential selection bias (ESP phenotype-enriched, may over-sample CVD cases). "
-            "BDC's ABI-based source is methodologically superior: it uses objective "
-            "measurement, covers the full cohort, and avoids subsample selection bias. "
-            "The 0.4pp prevalence agreement between the two sources (2.3% vs 2.7%) "
-            "further confirms the YAML is correct. "
-            "Note: the old source (pht008725 PADEVER, cumulative AFU self-report) was "
-            "already removed from pad.yaml and is no longer used. "
-            "Assessment: SAME -- 0.4pp prevalence gap is within A-grade threshold; "
-            "C grade is a denominator-coverage artifact (full cohort vs ESP subsample), "
-            "not a mapping error. BDC's implementation is the more correct approach."
+            "BDC pad.yaml's only PAD source is the AFU follow-up (pht008725, visit 'JHS "
+            "AFU', MONDO:0005294). The DCC derives prevalent PAD from ABI < 0.9 at Exam 1 "
+            "(pht001921 ankle and arm pressures). The comparison grades JHS at Exam 1 "
+            "with no fallback to other visits, so BDC has no answer and pad_prior_1 is "
+            "NOT COMPARABLE (all missing). TOPMed: 83 Prior History of 3,126."
         ),
     },
     ("JHS", "antihypertensive_meds_1"): {
         "code": "PARTICIPANT_UNIVERSE_DIFF",
         "no_override": True,
         "note": (
-            "BDC unions 7 antihypertensive drug-class YAML files (ATC:C02 hypert_trt, "
-            "ATC:C03 tak_diuret, ATC:C07A tak_betablk, ATC:C08 tak_calchanblk, "
-            "ATC:C09A tak_aceinhib, ATC:C09C tak_angiorecepblk) across JHS exam tables. "
-            "Closed-world assumption: absence of any drug record = 'No exposure' (0% missing). "
-            "Current data: BDC 49.9% Yes (1,939/3,883, 0% missing) vs TOPMed 53.8% Yes "
-            "(1,794/3,335, 7.4% missing). Apparent gap: 3.9pp, BDC LOWER than TOPMed. "
-            "Denominator adjustment: TOPMed 7.4% missing = 267 of 3,602 participants. "
-            "If those 267 are counted as No (matching BDC's closed-world): TOPMed Yes = "
-            "1,794 / 3,602 = 49.8% -- virtually identical to BDC's 49.9%. The C grade "
-            "(3.9pp categorical diff, >3pp B threshold) is almost entirely a denominator "
-            "artifact from TOPMed's missing-value policy rather than a true prevalence gap. "
-            "Assessment: SAME -- after correcting for TOPMed's 7.4% missing vs BDC's "
-            "closed-world No assignment, both approaches yield ~49.8-49.9% antihypertensive "
-            "prevalence at JHS Exam 1 baseline."
+            "BDC is graded on the ATC:C02 indicator MSRA30A (phv00127922, pht001964, JHS "
+            "Exam 1). hypert_trt.yaml emits a blank-status row for each missing answer "
+            "(var_report nulls=210); the extractor counts a blank medication status as "
+            "missing, not 'No' (it was counted as 'No' in the 2026-11-05 runs, giving 50.1% "
+            "Yes, 1,939/3,868). The DCC uses BPM01 (pht001949): 53.8% (1,794/3,335, 7.4% "
+            "missing)."
         ),
     },
     ("JHS", "total_cholesterol_1"): {
@@ -1130,6 +1151,17 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "not a systematic mapping difference."
         ),
     },
+    ("JHS", "cac_score_1"): {
+        "code": "VERSION_MISMATCH",
+        "no_override": True,
+        "note": (
+            "Same variable on both sides: CSTA24 (phv00126002, pht001948, Agatston score "
+            "all coronary). BDC reads dbGaP v7 (pht001948.v3, var_report n=2,144). The "
+            "DCC read phs000286.v5 pht001948.v1, inner-joined to AGE01 (pht001949) on "
+            "topmed_subject_id (DCC N=1,664). Result: BDC mean 175.7 vs 146.0. A release "
+            "and sample difference, not a mapping error."
+        ),
+    },
     # ── HCHS-SOL ──────────────────────────────────────────────────────────────
     ("HCHS_SOL", "race_us_1"): {
         "code": "LABEL_REMAP",
@@ -1149,26 +1181,33 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         ),
     },
     ("HCHS_SOL", "antihypertensive_meds_1"): {
-        "code": "UNION_OF_FORMS",
+        "code": "VERSION_MISMATCH",
         "no_override": True,
         "note": (
-            "BDC unions 5 antihypertensive ATC drug classes from the pipeline output: "
-            "ATC:C02 from phv00226324 (MED_ANTIHYPERT, the binary summary question, "
-            "1,972 exposed), ATC:C03 from phv00226339 (MED_DIURETIC, 1,161), ATC:C07A "
-            "from phv00226330 (MED_BB beta blockers, 869), ATC:C09A from phv00226325 "
-            "(MED_ANTIHYPERT_ACEI, 1,327), and ATC:C09C from phv00226326 "
-            "(MED_ANTIHYPERT_AT2RAS ARBs, 540). The union yields 2,565 unique participants "
-            "on any antihypertensive (21.7%). TOPMed used only the single binary variable "
-            "MED_ANTIHYPERT (phv00226324) and reports 2,078 Yes (16.9%) with 615 missing "
-            "(4.8%). The +4.8pp difference comes from 593 participants who answered No or "
-            "were missing on the binary summary question but reported Yes on a specific drug "
-            "class (ACE inhibitor, ARB, beta blocker, diuretic, or calcium channel blocker). "
-            "BDC also shows 0% missing because absence of any drug exposure record is "
-            "treated as No by construction, whereas TOPMed preserves the binary variable's "
-            "missingness. The BDC approach is more complete -- a participant reporting a "
-            "specific ACE inhibitor IS taking an antihypertensive regardless of their answer "
-            "to the summary question. Same UNION_OF_FORMS pattern as WHI. All source PHVs "
-            "are from pht004715."
+            "Both sides use the study indicator MED_ANTIHYPERT (phv00226324, "
+            "pht004715); BDC is graded on that ATC:C02 indicator only. Result: BDC 16.7% "
+            "Yes (1,972/11,831, 0 missing) vs TOPMed 16.9% (2,078/12,280, 615 missing). "
+            "The N difference is the cohort-level version difference."
+        ),
+    },
+    ("HCHS_SOL", "basophil_ncnc_bld_1"): {
+        "code": "DATA_QUALITY_FLAG",
+        "no_override": True,
+        "note": (
+            "Known BDC YAML defect pending a fix. basophil_ncnc_bld.yaml reads the "
+            "lab-reported count LABA27 (phv00226301, pht004715), recorded at 0.1 x10^9/L "
+            "resolution (mostly 0 or 0.1). The DCC derives WBC (LABA1) x % basophils "
+            "(LABA14) / 100. Result: BDC mean 0.023 vs 0.034."
+        ),
+    },
+    ("HCHS_SOL", "eosinophil_ncnc_bld_1"): {
+        "code": "DATA_QUALITY_FLAG",
+        "no_override": True,
+        "note": (
+            "Known BDC YAML defect pending a fix. eosinophil_ncnc_bld.yaml reads the "
+            "lab-reported count LABA26 (phv00226300, pht004715), recorded at 0.1 x10^9/L "
+            "resolution, and LABA26 has a 230 outlier (var_report max 230; BDC SD 2.19 vs "
+            "0.19). The DCC derives WBC (LABA1) x % eosinophils (LABA13) / 100."
         ),
     },
     # ── COPDGene ──────────────────────────────────────────────────────────────
@@ -1200,9 +1239,9 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
 # JHS: 13 A/A+ variables (Sex, Race, Height, Body weight, BMI, SBP, DBP,
 # Current smoker, Ever smoker, Platelet count, MCH, History of MI, CABG)
 # have no variable-specific notes -- the cohort-level PARTICIPANT_UNIVERSE_DIFF
-# note fully explains their comparison differences. Only 4 JHS variables
-# (antihypertensive_meds_1, total_cholesterol_1, triglycerides_1, pad_prior_1)
-# retain per-variable notes because they have additional explanations beyond
+# note fully explains their comparison differences. Only 5 JHS variables
+# (antihypertensive_meds_1, total_cholesterol_1, triglycerides_1, pad_prior_1,
+# cac_score_1) retain per-variable notes because they have additional explanations beyond
 # the participant universe difference.
 
 
@@ -1275,17 +1314,14 @@ COHORT_LEVEL_NOTES: dict[str, dict] = {
     "MESA": {
         "code": "CVD_HISTORY_SOURCE_DIFF",
         "note": (
-            "TOPMed sourced all CVD history variables (MI, Angina, CABG) exclusively "
-            "from pht001123 (ThruYear2011Events), which covers only the Classic sub-cohort "
-            "(T_N=6,429, 22.5% missing). However, TOPMed included MESA Family participants "
-            "(1,871) for all other variables -- demographics, anthropometrics, BP, lipids, "
-            "and smoking all show T_N~8,250+. BDC includes Family data consistently across "
-            "all variables, including CVD history from pht001121 (FamilyExamMain) which has "
-            "self-report questions for MI (heartaf), angina (anginaf), and CABG (corobyf). "
-            "Since Classic participants were CVD-free at enrollment by clinical adjudication, "
-            "the only informative CVD history data in MESA comes from the Family sub-study. "
-            "BDC captures 51 MI, 69 angina, and 22 CABG real positives that TOPMed misses "
-            "entirely. The C/D grades on these 4 variables reflect BDC's broader coverage."
+            "TOPMed grades MESA prior CVD history (angina, MI, PAD, CABG, coronary "
+            "angioplasty) for MESA Classic only, and sets every pht001116 participant to 0 "
+            "(e.g. mi_prior_1.json: 'set all participants to 0'), because Classic was "
+            "CVD-free at enrollment. BDC's prior-history rows come from MESA Family "
+            "(pht001121 self-report), AirNR (pht001111) and the visit-less events table "
+            "(pht001123). The comparison grades these variables at MESA CLASSIC EXAM 1, "
+            "where BDC has no answer, so they are NOT COMPARABLE (all missing) rather than "
+            "graded across different sub-cohorts. Not a BDC defect."
         ),
     },
     "FHS": {

@@ -1099,6 +1099,79 @@ class ExtractorAccuracyTests(unittest.TestCase):
         self.assertEqual(dist["Hispanic or Latino"]["n"], 10)
         self.assertNotIn("UNMAPPED", dist)
 
+    def test_blank_drug_status_is_missing_not_no(self) -> None:
+        rows = ([[f"P{i}", "ATC:C10AA", "PRESENT", "v1"] for i in range(10)]
+                + [[f"P{i}", "ATC:C10AA", "ABSENT", "v1"] for i in range(10, 80)]
+                + [[f"P{i}", "ATC:C10AA", "", "v1"] for i in range(80, 90)])
+        s = self._drugs(rows)["lipid_lowering_medication_1"]
+        self.assertEqual(s["distribution"]["No"]["n"], 70)  # not 80
+        self.assertEqual(s["n_missing"], 20)
+
+    def test_heavily_skipped_question_stays_a_question(self) -> None:
+        # 60 of 100 blank: still a question (explicit negatives exist), so the
+        # denominator is who answered, not all attendees.
+        rows = ([[f"P{i}", "ATC:C10AA", "PRESENT", "v1"] for i in range(10)]
+                + [[f"P{i}", "ATC:C10AA", "ABSENT", "v1"] for i in range(10, 40)]
+                + [[f"P{i}", "ATC:C10AA", "", "v1"] for i in range(40, 100)])
+        s = self._drugs(rows)["lipid_lowering_medication_1"]
+        self.assertEqual(s["distribution"]["No"]["n"], 30)
+        self.assertEqual(s["n_missing"], 60)
+
+    def test_same_visit_tie_under_override_is_reported(self) -> None:
+        vm = self._visits({"y15": "CARDIA YEAR 15"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "associated_visit"]
+        rows = []
+        for i in range(10):
+            rows.append([f"P{i}", "OMOP:4208414", "2.0", "y15"])   # one assay
+            rows.append([f"P{i}", "OMOP:4208414", "3.3", "y15"])   # another assay
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "CARDIA",
+                             set(), 10, {}, visit_mapping=vm)
+        self.assertIn("10 participant(s) had CONFLICTING values", out)
+
+        # Different values at DIFFERENT listed visits are resolved by priority,
+        # not a conflict.
+        vm = self._visits({"e9": "FHS OFFSPRING EXAM 9", "e2": "FHS OFFSPRING EXAM 2"})
+        rows = []
+        for i in range(10):
+            rows.append([f"P{i}", "OBA:VT0000217", "6.0", "e9"])
+            rows.append([f"P{i}", "OBA:VT0000217", "7.0", "e2"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "FHS",
+                             set(), 10, {}, visit_mapping=vm)
+        self.assertNotIn("CONFLICTING", out)
+
+    def test_fhs_ldl_reads_the_calculated_value(self) -> None:
+        vm = self._visits({"f1": "FHS OFFSPRING EXAM 1"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
+        rows = []
+        for i in range(10):
+            rows.append([f"P{i}", "OBA:VT0001815", "125.0", "fasted for minimum 12 hrs", "f1"])
+            rows.append([f"P{i}", "OBA:VT0001815", "120.0",
+                         "fasted for minimum 12 hrs - calculated value", "f1"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_measurements, [str(self.md)], "FHS", set(), 10,
+                    stats, visit_mapping=vm)
+        self.assertAlmostEqual(stats["ldl_1"]["mean"], 120.0, places=4)
+
+    def test_preferred_method_override_selects_the_reference_source(self) -> None:
+        vm = self._visits({"v1": "JHS Exam 1"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
+        rows = []
+        for i in range(10):
+            rows.append([f"P{i}", "OBA:VT0000184", "40.0", "Analysis derived", "v1"])
+            rows.append([f"P{i}", "OBA:VT0000184", "50.0", "Fasting lab assay", "v1"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_measurements, [str(self.md)], "JHS", set(), 10,
+                    stats, visit_mapping=vm)
+        self.assertAlmostEqual(stats["hdl_1"]["mean"], 50.0, places=4)
+        self.assertEqual(stats["hdl_1"]["bdc_method"], "Fasting lab assay")
+
     def test_unmatched_preferred_method_is_not_reported_as_applied(self) -> None:
         vm = self._visits({"v1": "CHS BASELINE BOTH"})
         header = ["associated_participant", "observation_type",

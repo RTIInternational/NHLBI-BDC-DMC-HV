@@ -273,9 +273,22 @@ POSITIVE_STATUSES = ("PRESENT", "HISTORICAL", "HISTORY")
 UNKNOWN_STATUSES = ("UNKNOWN",)
 
 
-def answered_rows(df: pd.DataFrame, status_col: str) -> pd.DataFrame:
-    """Rows that are not an explicit UNKNOWN."""
-    return df[~df[status_col].isin(UNKNOWN_STATUSES)]
+# Spellings a blank status takes after astype(str) on a missing value.
+BLANK_STATUSES = ("", "NAN", "NONE", "<NA>")
+
+
+def answered_rows(df: pd.DataFrame, status_col: str,
+                  blank_is_answer: bool = True) -> pd.DataFrame:
+    """Rows that are not an explicit UNKNOWN (and, unless blank_is_answer, not
+    blank). Conditions keep blanks (skip-pattern follow-ups, see above);
+    medications do not: a blank drug status is a missing answer (JHS
+    statinMedsSelf: 81 nulls that would otherwise read as "No")."""
+    status = df[status_col]
+    if blank_is_answer:
+        return df[~status.isin(UNKNOWN_STATUSES)]
+    # String dtypes keep a missing value as NA through astype(str), so test
+    # isna() as well as the spelled-out blanks.
+    return df[~(status.isna() | status.isin(UNKNOWN_STATUSES + BLANK_STATUSES))]
 
 # Medication groupings, matched by ATC prefix so subclasses (C10AA statins,
 # C10AB fibrates, ...) are not silently dropped by an exact-code lookup.
@@ -1018,6 +1031,11 @@ def _select_baseline_visit(
         filtered = (pool.assign(_visit_rank=pool[label_col].map(rank))
                     .sort_values("_visit_rank", kind="stable"))
         if id_col in filtered.columns:
+            best_rank = filtered.groupby(id_col)["_visit_rank"].transform("min")
+            # Ties at the winning visit (two blocks, one code, one visit) are
+            # decided by file order; count them here, before the dedup below
+            # removes the evidence.
+            n_ties = count_dedup_conflicts(filtered[filtered["_visit_rank"] == best_rank])
             if one_row_per_participant:
                 # One whole row per participant. A column-wise "first"
                 # downstream could otherwise mix value columns across visits.
@@ -1025,9 +1043,10 @@ def _select_baseline_visit(
             else:
                 # Every row at the participant's best visit (e.g. both sides
                 # of a bilateral measurement).
-                best = filtered.groupby(id_col)["_visit_rank"].transform("min")
-                filtered = filtered[filtered["_visit_rank"] == best]
+                filtered = filtered[filtered["_visit_rank"] == best_rank]
         used = [v for v in matched_prefs if v in set(filtered[label_col])]
+        if id_col in filtered.columns:
+            filtered.attrs["n_same_visit_conflicts"] = n_ties
         return filtered, f"{' > '.join(used)} [override{mode_tag}]"
 
     # Collect ALL matching baseline visits (case-insensitive + pattern fallback)
@@ -1342,7 +1361,13 @@ def process_measurements(
         # matter more here than the discovered ones. The counter was originally
         # added only to the discovery loop, which is why the 43 conflicts on the
         # 2026-09-10 run all sat outside the comparison.
-        _n_conflicts_mapped = count_dedup_conflicts(baseline)
+        _n_conflicts_mapped = baseline.attrs.get("n_same_visit_conflicts")
+        if spec.get("bdc_grade_map") and "_obs_type" in baseline.columns:
+            # Left and right differ by design; only a tie WITHIN one side is a conflict.
+            _n_conflicts_mapped = sum(count_dedup_conflicts(g)
+                                      for _, g in baseline.groupby("_obs_type"))
+        elif _n_conflicts_mapped is None:
+            _n_conflicts_mapped = count_dedup_conflicts(baseline)
         if _n_conflicts_mapped:
             print(f"      {spec['bdc_label']}: WARNING {_n_conflicts_mapped:,} "
                   f"participant(s) had CONFLICTING values before dedup -- 'first' "
@@ -2722,17 +2747,22 @@ def process_drugs(
             return
         if has_exposure_status:
             pos_ids = set(rows.loc[rows["_exp_status"] == "PRESENT", id_col].dropna())
-            answered_ids = set(answered_rows(rows, "_exp_status")[id_col].dropna()) | pos_ids
+            answered_ids = (set(answered_rows(rows, "_exp_status", blank_is_answer=False)
+                                [id_col].dropna()) | pos_ids)
+            # Whether the source is a question is decided on everyone it
+            # reached, blanks included: a heavily skipped question is still a
+            # question, and must not fall to the list-style denominator.
+            reached_ids = set(rows[id_col].dropna())
             has_negatives = bool((rows["_exp_status"] == "ABSENT").any())
         else:
             pos_ids = set(rows[id_col].dropna())
-            answered_ids = pos_ids
+            answered_ids = reached_ids = pos_ids
             has_negatives = False
 
         pop_ids = attendee_ids if attendee_ids is not None else med_denom_ids
         n_pop = len(pop_ids) if pop_ids else n_med_denom
         is_question = (has_negatives and n_pop > 0
-                       and len(answered_ids) >= QUESTION_COVERAGE * n_pop)
+                       and len(reached_ids) >= QUESTION_COVERAGE * n_pop)
         if is_question:
             n_denom = len(answered_ids)
             n_on = len(pos_ids)

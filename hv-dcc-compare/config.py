@@ -945,6 +945,10 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "plausible_lo": 5.0,
         "plausible_hi": 200.0,
         "preferred_method": "Analysis derived",
+        # JHS: hdl_1.json reads HDLC phv00125930 (pht001945), which BDC emits
+        # as "Fasting lab assay"; "Analysis derived" is the fasting-only
+        # analysis1 hdl, a different (smaller) population.
+        "preferred_method_override": {"JHS": "Fasting lab assay"},
         # MESA (and potentially other cohorts) split HDL into fasting vs
         # non-fasting observation_type codes via case() on fasting hours.
         # OMOP:4041720 = fasting HDL; both codes represent the same measurement.
@@ -974,6 +978,10 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "plausible_lo": 10.0,
         "plausible_hi": 400.0,
         "aliases": ["OBA:VT0000181", "OMOP:4041721", "OMOP:4042061"],
+        # FHS: ldl_1.json derives LDL by the Friedewald formula, so the
+        # calculated LDL is the comparable value; at Offspring Exam 1 BDC also
+        # emits the lab-measured A12 under the same code and visit.
+        "preferred_method_override": {"FHS": "fasted for minimum 12 hrs - calculated value"},
     },
     "OBA:VT0000180": {
         "topmed_var": "total_cholesterol_1",
