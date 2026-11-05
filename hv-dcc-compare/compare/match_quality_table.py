@@ -290,16 +290,20 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "value per column. In phs000200.v12 RACE has 5,468 Hispanic (4), "
             "1,595 Other (8), 3,498 Asian or Pacific Islander (2) and 348 null. "
             "Form 2 has no NHOPI code (2 is mapped to Asian), and BDC maps "
-            "codes 4 and 8 to OMOP:8552, which BDC-HM labels Unknown and the "
-            "comparison reports as Other. The DCC applies the same Form 2 "
+            "Form 2 code 4 (Hispanic/Latino) and code 8 (Other) to OMOP:8552, "
+            "which the comparison reports as Unknown. Code 4 is an ethnicity "
+            "answer with no race given; code 8 is a recorded Other race answer "
+            "that BDC-HM, which has no Other race value, cannot express; Form "
+            "41 OTHERRACE (phv00079331) is mapped the same way. The DCC applies the same Form 2 "
             "precedence and, per a comment in its code citing WHI "
             "study-investigator guidance, uses Form 41 to assign a specific "
             "race to Form 2 Hispanic and Other women with a single race group "
             "and to separate Pacific Islander from Asian; Form 2 Hispanic or "
             "Other women without a single Form 41 group stay Other. BDC does "
-            "not apply that refinement, which accounts for the higher BDC "
-            "Other, the zero BDC NHOPI, and the lower BDC counts in the "
-            "specific categories shown above. Form 41 counts race groups, so "
+            "not apply that refinement, which accounts for the size of the BDC "
+            "Unknown category relative to the DCC Other, the zero BDC NHOPI, and "
+            "the lower BDC counts in the specific categories shown above. BDC "
+            "has no Other category in any cohort. Form 41 counts race groups, so "
             "two ticks within one group are one race; the DCC has no Multiple "
             "category for WHI, and BDC Multiple arises only among women with no "
             "Form 2 race. HV #949. This item is under review with the study's "
@@ -563,10 +567,14 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "(demography.yaml) additionally reads race fields the DCC does not, "
             "including RACEGRP in pht012853 (phv00519792; v8: W 11,040, B "
             "3,979, A 31, I 14) and the ECG race fields (pht012821 to "
-            "pht012824). Other is OMOP:8552 (ECG codes UNKNOWN and *********); "
-            "the comparison labels it Other, counts it as answered, and keeps "
-            "the first non-blank race value in file order without first "
-            "blanking unknown race. In v8, DERIVE37 (pht004064, Visit 3) "
+            "pht012824). BDC Unknown is OMOP:8552 (ECG codes UNKNOWN and "
+            "*********); the comparison reports it as Unknown, counts it as "
+            "answered, and keeps the first non-blank race value in file order, "
+            "so an Unknown from the ECG tables is kept over a race in a table "
+            "read later (pht012835, pht012849, pht012853; not quantified). The "
+            "ECG value ********* (5,411 of 14,543 Visit 1 ECG race values in "
+            "v8) is not a documented participant answer; at Visit 1 only 3 "
+            "values are literally UNKNOWN. In v8, DERIVE37 (pht004064, Visit 3) "
             "RACEGRP, which BDC reads and the DCC does not, holds A 25 and I "
             "10, and DERIVE13 holds only W and B. Why no DCC participant falls "
             "in an Asian, American Indian or Multiple category is not "
@@ -883,7 +891,11 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "participants in pht003099 (idtype 1), so at least 2,003 Offspring "
             "participants have no row in the DCC only Offspring race source; "
             "this is consistent with the higher DCC missingness shown above "
-            "(inferred from totals, not matched by participant)."
+            "(inferred from totals, not matched by participant). BDC maps the "
+            "'Other' race checkbox (G3A489/g3a489) and the 'prefer not to "
+            "answer' items to UNKNOWN, which the comparison reports as Unknown; "
+            "an 'Other' tick is a recorded answer that BDC-HM, which has no "
+            "Other race value, cannot express."
         ),
     },
     ("FHS", "height_baseline_1"): {
@@ -1126,6 +1138,21 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "YR10 tables are not mapped (HV #950)."
         ),
     },
+    ("CHS", "race_us_1"): {
+        "code": "DERIVATION_DIFF",
+        "no_override": True,
+        "note": (
+            "Both sides read RACE01 (BASE1 pht001450 phv00099569; YR5NEW "
+            "pht001490 phv00105645; BDC also reads BASEBOTH pht001452 "
+            "phv00100488). Code 5 is OTHER in the phs000287.v7 dictionary (10 "
+            "in BASE1, 18 in BASEBOTH). The DCC maps it to Other; BDC "
+            "demography.yaml maps it to UNKNOWN because BDC-HM has no Other "
+            "race value, and the comparison reports that as Unknown. These "
+            "participants therefore appear as Unknown on the BDC side and Other "
+            "on the DCC side (inferred from the mappings, not matched by "
+            "participant)."
+        ),
+    },
     ("CHS", "ever_smoker_baseline_1"): {
         "code": "SOURCE_VARIABLE_DIFF",
         "no_override": True,
@@ -1296,17 +1323,22 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
     },
     # ── HCHS-SOL ──────────────────────────────────────────────────────────────
     ("HCHS_SOL", "race_us_1"): {
-        "code": "COMPARISON_CONVENTION",
+        "code": "SOURCE_VARIABLE_DIFF",
         "no_override": True,
         "note": (
-            "HCHS-SOL has no OMB race variable; all participants are "
-            "Hispanic/Latino, and the study collected a 7-level heritage "
-            "subgroup (BKGRD1_C7, phv00226254) that is not an OMB race. BDC "
-            "demography.yaml records race as UNKNOWN for every participant. The "
-            "DCC sets race to Other for every participant in pht004713 with "
-            "CONSENT not 0. The comparison reports BDC UNKNOWN as Other, so the "
-            "two sides agree in the table; the underlying statements differ "
-            "(race not recorded, BDC; race recorded as Other, the DCC)."
+            "HCHS/SOL collected self-reported race (Personal Information item "
+            "PIEA6; the study's derived RACE has American Indian/Alaska Native, "
+            "Asian, Native Hawaiian/Pacific Islander, Black, White, "
+            "Multi-racial, Unknown and Refused), but it is not in the dbGaP "
+            "release: the phs000810.v2 subject tables (pht004713, pht004715) "
+            "carry no race item, only the Hispanic/Latino heritage group "
+            "BKGRD1_C7 (phv00226254), which is not an OMB race. BDC "
+            "demography.yaml records race as UNKNOWN for every participant, "
+            "which the comparison reports as Unknown. The DCC sets race to "
+            "Other for every participant in pht004713 with CONSENT not 0; its "
+            "documentation states this was confirmed by study investigators, "
+            "and the value is assigned by the DCC code, not read from a source "
+            "item. Neither side holds the participants' self-reported race."
         ),
     },
     ("HCHS_SOL", "antihypertensive_meds_1"): {
@@ -1771,17 +1803,21 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         ),
     },
     ("MESA", "race_us_1"): {
-        "code": "COMPARISON_CONVENTION",
+        "code": "DERIVATION_DIFF",
         "no_override": True,
         "note": (
-            "BDC demography.yaml maps MESA race code 4 (Hispanic) to UNKNOWN "
-            "(BDC-HM unknown race, OMOP:8552) at every exam block, and codes 1, "
-            "2 and 3 to White, Asian and Black. The DCC documents that when a "
-            "source race variable offers a Hispanic/Latino option, Other is "
-            "assigned unless more specific information exists. The comparison "
-            "reports OMOP:8552 and UNKNOWN as Other, which is why the two sides "
-            "agree in the Other category; BDC itself records these participants "
-            "as unknown race."
+            "Both sides read the same MESA race codes. BDC demography.yaml maps "
+            "code 4 to UNKNOWN in the nine blocks that read race1c or racefc, "
+            "and codes 1, 2 and 3 to White, Asian and Black. Code 4 (Hispanic) "
+            "is a Hispanic/Latino answer on MESA's combined race/ethnicity "
+            "item, with no OMB race given; BDC records it as Hispanic ethnicity "
+            "with race UNKNOWN, and the DCC assigns Other by rule (its "
+            "documentation: when a source race variable offers a "
+            "Hispanic/Latino option, Other is assigned unless more specific "
+            "information exists). The comparison reports UNKNOWN as Unknown, so "
+            "these participants appear as Unknown on the BDC side and Other on "
+            "the DCC side (inferred from the mappings, not matched by "
+            "participant)."
         ),
     },
     ("MESA", "tnfa_r1_1"): {
@@ -2194,7 +2230,9 @@ def run(topmed_path, bdc_path, outfile=None, all_vars=False):
     p('      missing; in a medication list (not a question), no row counts as not taking.')
     p('    - Where a participant has different values at the graded visit and no method rule')
     p('      selects one, the first row in file order is kept.')
-    p('    - OMOP:8552 (unknown race) is reported as Other.')
+    p('    - Unknown race (OMOP:8552) is its own category, Unknown; BDC-HM has no Other race')
+    p('      value. Unknown ethnicity is counted as missing. Categories with fewer than 5')
+    p('      participants are pooled as "Other (n<5)" on each side.')
     p('    - A variable with no BDC row at the graded visit is NOT COMPARABLE but is tiered T5/M5.')
     p()
 

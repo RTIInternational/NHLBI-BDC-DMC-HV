@@ -104,6 +104,7 @@ LABEL_AIAN = "American Indian or Alaska Native"
 LABEL_NHOPI = "Native Hawaiian or Other Pacific Islander"
 LABEL_MULTIPLE = "Multiple Races"
 LABEL_OTHER = "Other"
+LABEL_UNKNOWN_RACE = "Unknown"
 
 LABEL_HISPANIC = "Hispanic or Latino"
 LABEL_NOT_HISPANIC = "Not Hispanic or Latino"
@@ -784,35 +785,27 @@ OMOP_SEX_MAP = {
     "8532": "Female", "8507": "Male",
 }
 
-# NOTE ON "UNKNOWN": BDC-HM declares UNKNOWN as a permissible value name for
-# Demography.race (label "Unknown") alongside the OMOP CURIEs. config accepted
-# only the CURIEs, so it collapsed to UNMAPPED -- 100% of HCHS/SOL (11,831) and
-# 26% of MESA (2,177), which graded both cohorts D on race.
-#
-# Those are the same participants the reference files under "Other": MESA's
-# 2,177 UNKNOWN are exactly its 2,177 TOPMed "Other", and are exactly its 2,177
-# Hispanic participants, with Asian, White and Black agreeing to within 2.
-# Mapped to Other to match the reference convention for comparison purposes
-# (agreed 2026-09-10).
-#
-# This asserts equivalence of CONVENTION, not of meaning: "unknown race" and
-# "other race" are different claims and only the former is what BDC-HM records.
-# It is the right call for scoring against TOPMed and the wrong one to carry
-# into anything that reports race on its own.
+# Unknown race (OMOP:8552, or the BDC-HM permissible value name UNKNOWN) is its
+# own category, "Unknown": the source asked and holds no usable answer. It is
+# not "Other", which is a response the participant selected (curator ruling, HV
+# PR #963). The DCC has no unknown race category, so where BDC records Unknown
+# and the DCC assigns Other the difference is graded, not hidden. BDC-HM has no
+# "Other" race value, so a recorded "Other" answer (CHS code 5, FHS and WHI
+# "Other" items) reaches BDC as UNKNOWN; the per-cohort race notes say which.
 OMOP_RACE_MAP = {
     "OMOP:8527": "White", "OMOP:8515": "Asian",
     "OMOP:8516": "Black or African American",
     "OMOP:8657": "American Indian or Alaska Native",
     "OMOP:8557": "Native Hawaiian or Other Pacific Islander",
-    "OMOP:45880900": "Multiple Races", "OMOP:8552": "Other",
+    "OMOP:45880900": "Multiple Races", "OMOP:8552": LABEL_UNKNOWN_RACE,
     # Bare numeric fallbacks
     "8527": "White", "8515": "Asian",
     "8516": "Black or African American",
     "8657": "American Indian or Alaska Native",
     "8557": "Native Hawaiian or Other Pacific Islander",
-    "45880900": "Multiple Races", "8552": "Other",
-    # Permissible value name rather than a CURIE -- see the note above.
-    "UNKNOWN": "Other",
+    "45880900": "Multiple Races", "8552": LABEL_UNKNOWN_RACE,
+    # Permissible value name rather than a CURIE.
+    "UNKNOWN": LABEL_UNKNOWN_RACE,
 }
 
 # Ethnicity has its own UNKNOWN permissible value in BDC-HM (EthnicityEnum

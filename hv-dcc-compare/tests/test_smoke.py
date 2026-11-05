@@ -970,6 +970,20 @@ class ExtractorAccuracyTests(unittest.TestCase):
         self.assertEqual(s["distribution"]["Yes"]["n"], 12)
         self.assertEqual(s["distribution"]["No"]["n"], 78)
 
+    def test_unknown_race_is_its_own_category_not_other(self) -> None:
+        # Unknown (asked, no usable answer) is not Other (a selected response).
+        rows = ([[f"P{i}", "OMOP:8527"] for i in range(10)]
+                + [[f"P{i}", "OMOP:8552"] for i in range(10, 20)]
+                + [[f"P{i}", "UNKNOWN"] for i in range(20, 30)])
+        _tsv(self.md / "Demography.tsv", ["associated_participant", "race"], rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_demography, [str(self.md)], "MESA", stats)
+        s = stats["race_us_1"]
+        self.assertEqual(s["distribution"]["Unknown"]["n"], 20)
+        self.assertNotIn("Other", s["distribution"])
+        self.assertNotIn("UNMAPPED", s["distribution"])
+        self.assertEqual(s["n_missing"], 0)
+
     def test_ethnicity_unknown_is_missing(self) -> None:
         rows = ([[f"P{i}", "OMOP:38003563"] for i in range(10)]
                 + [[f"P{i}", "OMOP:38003564"] for i in range(10, 30)]
