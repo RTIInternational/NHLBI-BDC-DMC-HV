@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023198}) + ":FHS GENERATION 3 EXAM 1")'
         age_at_observation:
-          expr: '{pht003099.phv00177930} * 365'
+          expr: 'case((is_numeric({phv00023197}), ({pht003099.phv00177930} * 365) + {phv00023197}))'
         observation_type:
           value: OMOP:42872742
           range: string
@@ -32,7 +32,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023204}) + ":FHS OFFSPRING EXAM 7")'
         age_at_observation:
-          expr: '{pht003099.phv00177942} * 365'
+          expr: 'case((is_numeric({phv00023203}), ({pht003099.phv00177930} * 365) + {phv00023203}))'
         observation_type:
           value: OMOP:42872742
           range: string
