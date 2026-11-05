@@ -1683,14 +1683,16 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "BDC hypert_trt.yaml reads the Year 0 medication follow-up rows of "
             "pht001571 where A09MDTYP = HBP (phv00113154) and maps A09MDNOW "
             "(phv00113155) 2 to PRESENT, 1 to ABSENT and M to UNKNOWN. The "
-            "comparison takes attendees as the denominator and counts a "
-            "participant with no HBP row as not taking, so BDC has no missing "
-            "values. The DCC starts from A08BPMED (phv00113012, pht001569; "
-            "codes unlabeled in phs000285.v3: 1 = 3,535, 2 = 84, 8 = 1, and 2 "
-            "other values): 1 becomes 0, 2 is resolved from the A09MDNOW values "
-            "of HBP records, and other codes and unresolved 2s become missing. "
-            "The difference in missing values is consistent with those "
-            "participants; the difference in the Yes count is not established."
+            "comparison takes attendees as the denominator, counts a "
+            "participant with no HBP row as not taking, and counts a "
+            "participant whose only HBP status is UNKNOWN (A09MDNOW M) as "
+            "missing. The DCC starts from A08BPMED (phv00113012, pht001569, "
+            "'EVER TAKEN MEDS FOR HIGH BLOOD PRESSURE'; phs000285.v3: 1 No = "
+            "3,535, 2 Yes = 84, 8 Not sure = 1, M = 2): 1 becomes 0, 2 is "
+            "resolved from the A09MDNOW values of HBP records, and other codes "
+            "and unresolved 2s become missing. Whether the two sides' missing "
+            "participants are the same people, and the cause of the difference "
+            "in the Yes count, are not established."
         ),
     },
     ("CARDIA", "ldl_1"): {
@@ -2185,7 +2187,8 @@ def run(topmed_path, bdc_path, outfile=None, all_vars=False):
     p('    category difference in percentage points (T1 < 0.5, T2 < 1, T3 < 3, T4 < 10).')
     p('  Comparison conventions that can move a result:')
     p('    - A Condition or Procedure row with a blank status counts as answered (not Present).')
-    p('    - A medication (DrugExposure) row with a blank status counts as missing.')
+    p('    - A participant whose medication rows all have a blank or UNKNOWN status counts as')
+    p('      missing; in a medication list (not a question), no row counts as not taking.')
     p('    - Where a participant has different values at the graded visit and no method rule')
     p('      selects one, the first row in file order is kept.')
     p('    - OMOP:8552 (unknown race) is reported as Other.')

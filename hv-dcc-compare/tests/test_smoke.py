@@ -950,6 +950,17 @@ class ExtractorAccuracyTests(unittest.TestCase):
         self.assertEqual(s["distribution"]["Yes"]["n"], 6)
         self.assertEqual(s["distribution"]["No"]["n"], 94)
 
+    def test_medication_list_source_counts_unknown_as_missing(self) -> None:
+        # List-style source (as CARDIA Year 0, where A09MDNOW 'M' maps to
+        # UNKNOWN): UNKNOWN-only participants are missing, not "not taking".
+        rows = ([[f"P{i}", "ATC:C02", "PRESENT", "v1"] for i in range(6)]
+                + [[f"P{i}", "ATC:C02", "ABSENT", "v1"] for i in range(6, 8)]
+                + [[f"P{i}", "ATC:C02", "UNKNOWN", "v1"] for i in range(8, 11)])
+        s = self._drugs(rows)["antihypertensive_meds_1"]
+        self.assertEqual(s["distribution"]["Yes"]["n"], 6)
+        self.assertEqual(s["distribution"]["No"]["n"], 91)
+        self.assertEqual(s["n_missing"], 3)
+
     def test_lipid_meds_match_subclasses_and_mean_current_use(self) -> None:
         rows = ([[f"P{i}", "ATC:C10AA", "PRESENT", "v1"] for i in range(8)]
                 + [[f"P{i}", "ATC:C10AB", "PRESENT", "v1"] for i in range(8, 12)]

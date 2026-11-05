@@ -2768,8 +2768,17 @@ def process_drugs(
             n_on = len(pos_ids)
             basis = "participants who answered"
         else:
-            n_denom = n_pop
-            n_on = len(pos_ids & pop_ids) if pop_ids else len(pos_ids)
+            # Absence from a list means "not taking", but a participant the
+            # source reached with only an UNKNOWN or blank status is missing,
+            # not a No.
+            unanswered_ids = reached_ids - answered_ids
+            if pop_ids:
+                denom_ids = pop_ids - unanswered_ids
+                n_denom = len(denom_ids)
+                n_on = len(pos_ids & denom_ids)
+            else:
+                n_denom = max(n_pop - len(unanswered_ids), 0)
+                n_on = len(pos_ids)
             basis = "attendees (medication list, absence = not taking)"
         n_on = min(n_on, n_denom)
         n_missing = max(n_participants - n_denom, 0)
