@@ -1205,6 +1205,24 @@ class ExtractorAccuracyTests(unittest.TestCase):
         self.assertEqual(stats["cimt_1"]["bdc_method"], mean_method)
         self.assertNotIn("CONFLICTING", out)
 
+    def test_cardia_crp_reads_the_bnii_rerun(self) -> None:
+        vm = self._visits({"y15": "CARDIA YEAR 15"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
+        rows = []
+        for i in range(10):
+            # Original assay first: file order must not decide the result.
+            rows.append([f"P{i}", "OMOP:4208414", "2.0", "Original assay (FL6CRP)", "y15"])
+            rows.append([f"P{i}", "OMOP:4208414", "3.0", "BNII method rerun (FL6CRPBN)",
+                         "y15"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "CARDIA",
+                             set(), 10, stats, visit_mapping=vm)
+        self.assertAlmostEqual(stats["crp_1"]["mean"], 3.0, places=4)
+        self.assertEqual(stats["crp_1"]["bdc_method"], "BNII method rerun (FL6CRPBN)")
+        self.assertNotIn("CONFLICTING", out)
+
 
 if __name__ == "__main__":
     unittest.main()

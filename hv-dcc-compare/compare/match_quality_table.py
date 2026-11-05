@@ -284,16 +284,18 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "CLASSIFICATION_DIFF",
         "no_override": True,
         "note": (
-            "BDC demography.yaml emits two Demography rows per participant, both at "
-            "'WHI SCREENING': Form 2 (pht000998, RACE phv00078450) and Form 41 "
-            "(pht001009, per-race checkboxes). The extractor keeps the first row per "
-            "participant (Form 2). Form 2 has no separate NHOPI code (2 = 'Asian or "
-            "Pacific Islander', mapped to Asian) and BDC maps its Hispanic (4) and "
-            "Other (8) codes to OMOP:8552, so BDC shows NHOPI 0 (T=111) and an inflated "
-            "'Other' (B=7,076 vs T=2,888), with fewer White. TOPMed resolves these "
-            "participants from Form 41. Missingness is comparable (T=0.1%, B=0.0%). "
-            "VERDICT: the category deltas are a row-selection effect in the comparison, "
-            "not a source-coverage gap; Form 41 carries the finer race detail."
+            "BDC demography.yaml emits two Demography rows per participant: Form 2 "
+            "(pht000998, RACE phv00078450, at 'WHI SCREENING') and Form 41 (pht001009, "
+            "per-race checkboxes, no visit: Form 41 is a follow-up form with no "
+            "screening visit type). The extractor takes the first non-null value per "
+            "column, so Form 2 race wins and Form 41 fills in only where Form 2 is "
+            "null. Form 2 has no separate NHOPI code (2 = 'Asian or Pacific "
+            "Islander', mapped to Asian) and maps Hispanic (4) and Other (8) to "
+            "OMOP:8552, so BDC shows NHOPI 0 (T=111) and more 'Other' (B=7,076 vs "
+            "T=2,888). The DCC refines those Form 2 categories from Form 41, following "
+            "WHI investigator guidance; BDC does not combine the forms. Form 41 counts "
+            "race groups, so two ticks within one group (e.g. Chinese and Japanese) are "
+            "one race, not Multiple."
         ),
     },
     # ── ARIC ──────────────────────────────────────────────────────────────────
@@ -379,24 +381,16 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "no_override": True,
         "bdc_only": True,
         "note": (
-            "ARIC angina_prior_1 is absent from the TOPMed reference (not in topmed_aric_summary.json). "
-            "The TOPMed DCC excluded this variable from ARIC harmonization, likely due to the same data "
-            "quality concern described here. BDC maps the variable from pht004063 DERIVE13 (RANGNA01, "
-            "phv00204724 -- Rose Angina questionnaire, Visit 1), applying value_mapping '1'=ABSENT, "
-            "'4'=PRESENT per the DERIVE13 data dictionary (Code 1=Negative, Code 4=Positive). The "
-            "resulting BDC distribution is implausible: 94.5% Prior History (13,687/14,477 respondents "
-            "coded PRESENT). Rose Angina prevalence in a general population is ~3-7%, not 94-95%. "
-            "SUSPICION: An archived version of angina.yaml (_archive/ARIC/angina.yaml) used a different "
-            "value_mapping -- '0'=ABSENT, '1'=PRESENT -- implying the actual DERIVE13 data file may "
-            "encode RANGNA01 with 0/1 values rather than the 1/4 codes documented in the data dictionary. "
-            "If the file stores Code 0=Negative and Code 1=Positive (a common binary encoding), then the "
-            "current mapping ('1'=ABSENT) would misclassify most 'negative' responses as ABSENT while "
-            "silently dropping them, and the small minority of '4'-coded records (if any) would be the "
-            "only PRESENT entries -- producing a near-zero prevalence rather than 94.5%. The actual cause "
-            "of the 94.5% remains unresolved. RECOMMENDATION: Do not use ARIC angina_prior_1 in any "
-            "analysis until the RANGNA01 value encoding is verified against the actual DERIVE13 data file. "
-            "The archive/current YAML coding divergence is a strong signal of a value_mapping error that "
-            "requires investigation before this variable can be trusted."
+            "Not in the TOPMed reference (no ARIC unit in angina_prior_1.json), so BDC-only. "
+            "angina.yaml maps RANGNA01 (phv00204724, pht004063 DERIVE13, Rose angina, Visit "
+            "1) as the v8 dictionary documents it ('1' = Negative -> ABSENT, '4' = Positive "
+            "-> PRESENT), which gives 94.8% Prior History (13,687 of 14,440 respondents). "
+            "That is not plausible for adults aged 45-64: the Rose item MHXA05 "
+            "(phv00207748, chest pain walking uphill) has 1,280 Yes, which caps Rose "
+            "positives at 1,280 or fewer; code 4 (13,687) exceeds that, code 1 (753) "
+            "does not. The coding is likely inverted "
+            "in the dictionary; the spec follows the documentation until ARIC confirms "
+            "(HV issue #945, awaiting external). Do not use ARIC prior angina until then."
         ),
     },
     ("ARIC", "bmi_baseline_1"): {
@@ -636,30 +630,35 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "DATA_QUALITY_FLAG",
         "no_override": True,
         "note": (
-            "Known BDC YAML defect pending a fix. A05PLATL (phv00112690, pht001563, "
-            "Year 0) is in units of 10^5/uL (var_report mean 2.713); platelet_ct.yaml "
-            "emits it unscaled as 10*3/uL, so BDC mean is 2.71 vs DCC 271.31. The DCC "
-            "multiplies by 100."
+            "A05PLATL (phv00112690, pht001563, Year 0) is recorded in 10^5/uL "
+            "(dictionary range 0..7.54); platelet_ct.yaml scales it by 100 to 10*3/uL "
+            "and passes the source value through otherwise. One participant has a "
+            "recorded 0, which BDC keeps as recorded (the documentation does not mark "
+            "0 as a missing code); the DCC also keeps it."
         ),
     },
     ("CARDIA", "crp_1"): {
-        "code": "DATA_QUALITY_FLAG",
+        "code": "DERIVATION_DIFF",
         "no_override": True,
         "note": (
-            "Known BDC YAML defect pending a fix. crp.yaml has two Year 15 blocks with "
-            "the same code (OMOP:4208414) and method ('blood assay'): FL6CRP "
-            "(phv00120758) and FL6CRPBN (phv00120759, 'RERUN CRP - BNII METHOD'). FL6CRP "
-            "wins on file order (BDC mean 2.05 = FL6CRP var_report mean); the DCC uses "
-            "FL6CRPBN (mean 3.30)."
+            "crp.yaml emits both Year 15 assays under OMOP:4208414 with distinct "
+            "method_type labels: FL6CRP (phv00120758, 'Original assay (FL6CRP)') and "
+            "FL6CRPBN (phv00120759, 'RERUN CRP (uG/ml - BNII METHOD)', 'BNII method "
+            "rerun (FL6CRPBN)'). The extractor grades the BNII rerun (config.py "
+            "preferred_method_override), the assay the DCC reads. Participants with "
+            "only the original assay are not graded."
         ),
     },
     ("CARDIA", "sleep_duration_1"): {
         "code": "DATA_QUALITY_FLAG",
         "no_override": True,
         "note": (
-            "Known BDC YAML defect pending a fix. F67SLPHR (phv00120534, pht001839, "
-            "Year 15) is mapped unguarded (var_report max 280 hours), giving BDC SD 8.29 "
-            "vs 1.29 and 8 implausible values. The DCC keeps values < 24."
+            "Source pass-through versus a plausibility filter. F67SLPHR (phv00120534, "
+            "pht001839, Year 15, 'past month average sleeping hours') has a dictionary "
+            "range of 1..280; BDC emits the recorded values, including 8 that exceed 24 "
+            "hours, which the extractor flags as implausible. The DCC keeps only values "
+            "< 24. The 8 values drive the SD gap (BDC 8.29 vs 1.29); BDC does not apply "
+            "cleaning rules the study documentation does not state."
         ),
     },
     # ── MESA ──────────────────────────────────────────────────────────────────
@@ -824,21 +823,20 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         ),
     },
     ("FHS", "height_baseline_1"): {
-        "code": "VISIT_SCOPE_DIFF",
+        "code": "DERIVATION_DIFF",
         "no_override": True,
         "note": (
-            "BDC bdy_hgt.yaml maps FHS Original height to EXAM 4 per BASELINE_VISIT_CONFIG "
-            "(FHS ORIGINAL EXAM 4), while the reference extract uses EXAM 1 height for the "
-            "Original cohort. Result: BDC N=14,409 (4.5% missing) vs reference N=15,141 "
-            "(0.2% missing). BDC mean 167.33 cm vs reference 167.45 cm (delta +0.12 cm). "
-            "The 732-participant gap is primarily a survivor bias effect: participants "
-            "present at Exam 1 (1948) who died before Exam 4 (~1957) are excluded from "
-            "BDC but included in the reference. Some sub-cohort coverage differences also "
-            "contribute. The small +0.12 cm mean delta is consistent with secular height "
-            "trends and survivor selection. The YAML correctly maps height with a 2.54 cm "
-            "conversion factor (inches to cm) and EXAM 4 visit assignment per "
-            "BASELINE_VISIT_CONFIG. The N gap is a baseline visit definition difference, "
-            "not a YAML error."
+            "At the graded baseline exams (Original 1, Offspring 1) bdy_hgt.yaml emits "
+            "height from the FHS workthru tables (pht007777 Original, pht009761 "
+            "Offspring/Omni: inches to the next lower 1/4 inch). The per-exam blocks "
+            "that duplicated them at Original Exams 1/4/5 and Offspring Exams 1/2 "
+            "(MF67, MF217, MF290, A51 and B16 in whole inches, and B14 in cm) were "
+            "removed; Original Exams 10-32 still carry both. "
+            "On specs that still emit both at baseline, the extractor reports same-visit "
+            "CONFLICTING values and can keep the whole-inch row (about 0.6 cm low). The "
+            "DCC uses MF67 + 0.01 x MF68 for the Original cohort and HGT1 for the "
+            "workthru cohorts, so small Original-cohort differences come from the "
+            "source variable, not a mapping error."
         ),
     },
     ("FHS", "antihypertensive_meds_1"): {
@@ -919,23 +917,27 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         ),
     },
     ("FHS", "basophil_ncnc_bld_1"): {
-        "code": "DATA_QUALITY_FLAG",
+        "code": "DERIVED_VS_STORED",
         "no_override": True,
         "note": (
-            "Known BDC YAML defect pending a fix. basophil_ncnc_bld.yaml reads the "
-            "lab-reported BA_NUM counts (phv00172197 pht002889, phv00227044 pht004802), "
-            "which are recorded at 0.1 x10^3/uL resolution (mostly 0.0 or 0.1). The DCC "
-            "derives WBC x BA_PER / 100. Result: BDC mean 0.031 vs 0.042."
+            "Reported count versus derived count. basophil_ncnc_bld.yaml emits the "
+            "lab-reported BA_NUM (phv00172197 pht002889, phv00227044 pht004802), which "
+            "the study records at 0.1 x10^3/uL resolution, so most values are 0.0 or "
+            "0.1. The DCC derives WBC x BA_PER / 100, a finer-grained estimate of the "
+            "same quantity. BDC keeps the value the study reports. Result: BDC mean "
+            "0.031 vs 0.042."
         ),
     },
     ("FHS", "cac_score_1"): {
         "code": "DATA_QUALITY_FLAG",
         "no_override": True,
         "note": (
-            "Known BDC YAML defect pending a fix. cac_score.yaml emits AA (aortic "
-            "artery calcium, phv00023196) under the coronary CAC code OMOP:42872742, and "
-            "emits CA1 and CA2 (coronary scans 1 and 2) as separate rows. The DCC uses "
-            "rowMeans(CA1, CA2). Result: BDC mean 281.6 vs 133.4 Agatston."
+            "cac_score.yaml emits the coronary score as the mean of scans CA1 and CA2 "
+            "(the DCC's rowMeans) and no longer emits AA (aortic calcium) under the "
+            "coronary code. Age at observation is the Exam 1 age plus studydat (days "
+            "from Exam 1 to the scan) for the Offspring (pht000145) and Gen 3 "
+            "(pht000144) scans. On specs without these changes, BDC mean was 281.6 vs "
+            "133.4 Agatston."
         ),
     },
     # ── CHS ───────────────────────────────────────────────────────────────────
@@ -1037,18 +1039,11 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         "code": "AGGREGATION_DIFF",
         "no_override": True,
         "note": (
-            "Known BDC YAML defect pending a fix. CHS-ingest/bdy_wgt.yaml maps three "
-            "'usual weight at age 50' recalls as anthropometry body weight: WGT5008 "
-            "(phv00099153, BASE1, visit 'CHS BASELINE 2'), WGT50 (phv00100355, "
-            "BASEBOTH, visit 'CHS BASELINE BOTH') and WGT5058 (phv00106140, YR5NEW, "
-            "visit 'CHS YEAR 5 NEW'), alongside the measured WEIGHT13 (phv00100383, "
-            "BASEBOTH). CHS YEAR 5 NEW is not a graded baseline visit for weight, so "
-            "only WGT5008 and WGT50 compete with WEIGHT13. The blocks carry "
-            "method_type 'anthropometry', "
-            "so the 'Current measured' preferred_method matches no CHS rows and does not "
-            "separate them. Result: BDC mean 70.66 vs reference 72.79 kg (-2.13 kg), "
-            "N=5,531 vs 5,514. The reference uses BASEBOTH WEIGHT13 only. "
-            "dbGaP ground truth: pht001452 BASEBOTH phv00100383 WEIGHT13 (n=5,514, nulls=17)."
+            "Graded on measured WEIGHT13 (phv00100383, pht001452 BASEBOTH, n=5,514), "
+            "the DCC's variable. bdy_wgt.yaml no longer emits the 'usual weight at age "
+            "50' recalls (WGT5008, WGT50, WGT5058, AG50WT59) as body weight; on specs "
+            "that still do, they compete with WEIGHT13 at the baseline visits and pull "
+            "the BDC mean about 2 kg low."
         ),
     },
     ("CHS", "antihypertensive_meds_1"): {
@@ -1078,7 +1073,23 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "the different definitions. "
             "Source: UW-GAC/topmed-dcc-harmonized-phenotypes, "
             "harmonized-variable-documentation/baseline_common_covariates/"
-            "ever_smoker_baseline_1.json, CHS harmonization unit, v4."
+            "ever_smoker_baseline_1.json, CHS harmonization unit, v4. BDC keeps the "
+            "study's derived status. The reference's extra ever-smokers most likely "
+            "come from internally inconsistent answers (SMOKE101 = no with SMKAGE or "
+            "AMOUNT > 0) that the study's derivation reconciles; not verified at "
+            "participant level."
+        ),
+    },
+    ("CHS", "carotid_plaque_1"): {
+        "code": "STRUCTURAL_GAP",
+        "no_override": True,
+        "note": (
+            "BDC has no CHS carotid_plaque.yaml, so the variable is NOT COMPARABLE. "
+            "Sources exist in ULTRAYR5 (pht001473): LMRPH155/LMRPH255 (phv00101317/"
+            "phv00101318, original-cohort baseline reread) and LMRPH141/LMRPH241 "
+            "(phv00101306/phv00101307, African American cohort Year 5). Their 0/1/2 "
+            "codes are unlabeled in dbGaP; a spec waits on the CHS reading protocol and "
+            "a curated concept code (HV issue #946, awaiting external)."
         ),
     },
     # ── JHS ───────────────────────────────────────────────────────────────────
@@ -1092,10 +1103,10 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
     #       population (4 consent groups: c1=878, c2=201, c3=2,289, c4=515).
     #   (3) HARMONIZATION DATE: TOPMed frozen 2020-05-21; BDC April 2026.
     #
-    # 13 variables have NO additional explanation beyond the universe diff --
-    # these are handled by _JHS_UNIVERSE_DIFF_ONLY (loop after dict).
-    # 4 variables below have variable-specific explanations (different source
-    # methodology, closed-world artifacts, B/C-grade mean shifts).
+    # Most JHS variables have no additional explanation beyond the universe diff.
+    # Those rely on the cohort-level note alone (see the comment after this dict).
+    # The variables below have variable-specific explanations (different source
+    # methodology, missing Exam 1 sources, B/C-grade mean shifts).
     # ──────────────────────────────────────────────────────────────────────────
     ("JHS", "pad_prior_1"): {
         "code": "PARTICIPANT_UNIVERSE_DIFF",
@@ -1105,7 +1116,45 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "AFU', MONDO:0005294). The DCC derives prevalent PAD from ABI < 0.9 at Exam 1 "
             "(pht001921 ankle and arm pressures). The comparison grades JHS at Exam 1 "
             "with no fallback to other visits, so BDC has no answer and pad_prior_1 is "
-            "NOT COMPARABLE (all missing). TOPMed: 83 Prior History of 3,126."
+            "NOT COMPARABLE (all missing). TOPMed: 83 Prior History of 3,126. BDC does "
+            "not derive a PAD condition from an ABI cutoff: JHS records no PAD "
+            "diagnosis at Exam 1, and ABI < 0.9 is a research convention, not a "
+            "recorded finding (analysis1 abi phv00401122 is available as a measurement)."
+        ),
+    },
+    ("JHS", "cabg_prior_1"): {
+        "code": "STRUCTURAL_GAP",
+        "no_override": True,
+        "note": (
+            "BDC hist_cor_bypg.yaml maps CABG at Exam 2, Exam 3 and the AFU, not at "
+            "Exam 1, so cabg_prior_1 is NOT COMPARABLE (all missing; 66 positives at "
+            "other visits not used). An Exam 1 source exists: MHXA52A (pht001963 "
+            "phv00127728, 'Did you have a coronary bypass?', 53 Yes / 95 No), gated by "
+            "MHXA51 (heart or artery surgery ever). The DCC reads MHXA52A and recodes a "
+            "missing answer to 0 when the participant has other data; treating the "
+            "gate's 'No' as an implied CABG 'No' is a curation ruling not yet made."
+        ),
+    },
+    ("JHS", "carotid_plaque_1"): {
+        "code": "STRUCTURAL_GAP",
+        "no_override": True,
+        "note": (
+            "BDC has no JHS carotid_plaque.yaml, so the variable is NOT COMPARABLE. "
+            "The source is plq01 (pht008791 phv00404237, 0 = 2,288 / 1 = 1,414). Its "
+            "table has no VISIT variable and visit.yaml labels it 'JHS LAB DATA'; the "
+            "DCC pairs it with the Exam 1 age. A new spec needs a documented Exam 1 "
+            "link and a curated concept code (HV issue #224, awaiting external)."
+        ),
+    },
+    ("JHS", "cimt_1"): {
+        "code": "AGGREGATION_DIFF",
+        "no_override": True,
+        "note": (
+            "Not aligned on purpose (config.py _OTHER_COHORT_MEASUREMENT_VISITS). JHS "
+            "carotid_imt.yaml emits each of six common-carotid far-wall segments as its "
+            "own row; the DCC averages the three left and three right segments. One "
+            "segment row is not the same quantity as the mean, and BDC does not "
+            "compute a study-unpublished mean."
         ),
     },
     ("JHS", "antihypertensive_meds_1"): {
@@ -1196,23 +1245,37 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         ),
     },
     ("HCHS_SOL", "basophil_ncnc_bld_1"): {
-        "code": "DATA_QUALITY_FLAG",
+        "code": "DERIVED_VS_STORED",
         "no_override": True,
         "note": (
-            "Known BDC YAML defect pending a fix. basophil_ncnc_bld.yaml reads the "
-            "lab-reported count LABA27 (phv00226301, pht004715), recorded at 0.1 x10^9/L "
-            "resolution (mostly 0 or 0.1). The DCC derives WBC (LABA1) x % basophils "
-            "(LABA14) / 100. Result: BDC mean 0.023 vs 0.034."
+            "Reported count versus derived count. basophil_ncnc_bld.yaml emits the "
+            "lab-reported LABA27 (phv00226301, pht004715), recorded at 0.1 x10^9/L "
+            "resolution (about 78% exactly 0). The DCC derives WBC (LABA1) x % "
+            "basophils (LABA14) / 100. BDC keeps the value the study reports. Result: "
+            "BDC mean 0.023 vs 0.034."
         ),
     },
     ("HCHS_SOL", "eosinophil_ncnc_bld_1"): {
-        "code": "DATA_QUALITY_FLAG",
+        "code": "DERIVED_VS_STORED",
         "no_override": True,
         "note": (
-            "Known BDC YAML defect pending a fix. eosinophil_ncnc_bld.yaml reads the "
-            "lab-reported count LABA26 (phv00226300, pht004715), recorded at 0.1 x10^9/L "
-            "resolution, and LABA26 has a 230 outlier (var_report max 230; BDC SD 2.19 vs "
-            "0.19). The DCC derives WBC (LABA1) x % eosinophils (LABA13) / 100."
+            "Reported count versus derived count. eosinophil_ncnc_bld.yaml emits the "
+            "lab-reported LABA26 (phv00226300, pht004715), recorded at 0.1 x10^9/L "
+            "resolution. LABA26 also holds one recorded 230 (var_report max; eosinophil "
+            "% tops out at 36 and WBC at 31.8, so it is not a valid count), which BDC "
+            "passes through and the extractor flags; it drives the SD gap (2.19 vs "
+            "0.19). The DCC derives WBC (LABA1) x % eosinophils (LABA13) / 100, which "
+            "never sees LABA26."
+        ),
+    },
+    ("HCHS_SOL", "monocyte_ncnc_bld_1"): {
+        "code": "DERIVED_VS_STORED",
+        "no_override": True,
+        "note": (
+            "Reported count versus derived count. BDC emits the lab-reported LABA25 "
+            "(phv00226299, pht004715), recorded at 0.1 x10^9/L resolution; the DCC "
+            "derives WBC (LABA1) x % monocytes (LABA12) / 100. The small mean "
+            "difference (0.025 SD) is consistent with that rounding."
         ),
     },
     # ── COPDGene ──────────────────────────────────────────────────────────────
@@ -1241,13 +1304,10 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
     },
 }
 
-# JHS: 13 A/A+ variables (Sex, Race, Height, Body weight, BMI, SBP, DBP,
-# Current smoker, Ever smoker, Platelet count, MCH, History of MI, CABG)
-# have no variable-specific notes -- the cohort-level PARTICIPANT_UNIVERSE_DIFF
-# note fully explains their comparison differences. Only 5 JHS variables
-# (antihypertensive_meds_1, total_cholesterol_1, triglycerides_1, pad_prior_1,
-# cac_score_1) retain per-variable notes because they have additional explanations beyond
-# the participant universe difference.
+# JHS: variables without a per-variable entry above (Sex, Race, Height, Body
+# weight, BMI, SBP, DBP, Current smoker, Ever smoker, Platelet count, MCH,
+# History of MI) are explained by the cohort-level PARTICIPANT_UNIVERSE_DIFF
+# note alone.
 
 
 # Cohort-level methodological notes (version mismatches, study design differences)

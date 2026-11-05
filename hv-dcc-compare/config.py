@@ -1134,6 +1134,10 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         "unit": "mg/L",
         "plausible_lo": 0.0,
         "plausible_hi": 200.0,
+        # crp_1.json CARDIA unit reads the Year 15 BNII rerun FL6CRPBN
+        # (phv00120759); CARDIA-ingest/crp.yaml also emits the original assay
+        # FL6CRP at the same visit under the same code, told apart only by method.
+        "preferred_method_override": {"CARDIA": "BNII method rerun (FL6CRPBN)"},
     },
     # ── Other labs ───────────────────────────────────────────────────────────
     "OBA:VT0000188": {
