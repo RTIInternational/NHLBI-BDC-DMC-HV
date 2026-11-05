@@ -112,12 +112,14 @@ from config import (  # noqa: E402
     BASELINE_VISIT_CONFIG,
     SMOKING_VISIT_OVERRIDE,
     CONDITION_PROCEDURE_VISIT_OVERRIDE,
+    DRUG_VISIT_OVERRIDE,
     BDC_MEASUREMENT_MAP,
     BDC_CONDITION_MAP,
     BDC_PROCEDURE_MAP,
     OMOP_SEX_MAP,
     OMOP_RACE_MAP,
     OMOP_ETHNICITY_MAP,
+    ETHNICITY_UNKNOWN_CODES,
     SMOKING_OBSERVATION_TYPE,
     OMOP_SMOKING_MAP,
     find_dmc_run_dirs,
@@ -259,6 +261,62 @@ CODED_VALUE_COLUMNS = (
 # individually disclosive and must never become a distribution key. A variable
 # whose only populated value column is value_string still falls through to a
 # presence-only count, by design.
+
+# Condition / procedure / drug-exposure status vocabulary. An explicit
+# UNKNOWN is a non-answer and counts as missing, never as "No" (the reference
+# sets unknowns to NA). A BLANK status is NOT treated the same way: dm-bip
+# writes a blank-status row for skip-pattern follow-ups that were not asked
+# because the gate question was answered "no" (ARIC PHEA07A/PHEA09A, JHS
+# MHXA54A) and for event tables that emit PRESENT or nothing (FHS angina), so
+# a blank row stays a respondent.
+POSITIVE_STATUSES = ("PRESENT", "HISTORICAL", "HISTORY")
+UNKNOWN_STATUSES = ("UNKNOWN",)
+
+
+# Spellings a blank status takes after astype(str) on a missing value.
+BLANK_STATUSES = ("", "NAN", "NONE", "<NA>")
+
+
+def answered_rows(df: pd.DataFrame, status_col: str,
+                  blank_is_answer: bool = True) -> pd.DataFrame:
+    """Rows that are not an explicit UNKNOWN (and, unless blank_is_answer, not
+    blank). Conditions keep blanks (skip-pattern follow-ups, see above);
+    medications do not: a blank drug status is a missing answer (JHS
+    statinMedsSelf: 81 nulls that would otherwise read as "No")."""
+    status = df[status_col]
+    if blank_is_answer:
+        return df[~status.isin(UNKNOWN_STATUSES)]
+    # String dtypes keep a missing value as NA through astype(str), so test
+    # isna() as well as the spelled-out blanks.
+    return df[~(status.isna() | status.isin(UNKNOWN_STATUSES + BLANK_STATUSES))]
+
+# Medication groupings, matched by ATC prefix so subclasses (C10AA statins,
+# C10AB fibrates, ...) are not silently dropped by an exact-code lookup.
+ANTIHYPERTENSIVE_CLASS_PREFIXES = ("ATC:C02", "ATC:C03", "ATC:C07", "ATC:C08", "ATC:C09")
+LIPID_LOWERING_PREFIX = "ATC:C10"
+# A medication source counts as a question asked of the cohort, rather than a
+# list of drugs taken, when its answered participants reach this share of the
+# baseline attendees. Observed sources sit far from the line: answered-question
+# sources reach 90%+ of attendees (HCHS, JHS, ARIC), medication lists a few
+# percent (CARDIA Year 0 ~3%), so the exact value is not sensitive.
+QUESTION_COVERAGE = 0.5
+
+
+def keep_first_listed_visit(df: pd.DataFrame, label_col: str, labels: list[str],
+                            id_col: str = "associated_participant") -> pd.DataFrame:
+    """Rows at each participant's highest-priority visit in `labels`.
+
+    `labels` is an ordered preference list; a participant contributes only the
+    rows of the first listed visit they have. Matching is case-insensitive.
+    """
+    upper_rank = {label.upper(): i for i, label in enumerate(labels)}
+    ranks = df[label_col].map(lambda v: upper_rank.get(str(v).upper()) if pd.notna(v) else None)
+    keep = ranks.notna()
+    ranked = df[keep].assign(_visit_rank=ranks[keep].astype(int))
+    if ranked.empty or id_col not in ranked.columns:
+        return ranked
+    best = ranked.groupby(id_col)["_visit_rank"].transform("min")
+    return ranked[ranked["_visit_rank"] == best]
 
 
 # A numeric column must be at least this parseable to be treated as a
@@ -661,6 +719,13 @@ def process_demography(
     # groupby should be a no-op for most cohorts. It is retained as a safety
     # net in case future YAML changes introduce sparse multi-block rows.
     #
+    # Unknown ethnicity is a missing answer: blank it before the coalesce so an
+    # UNKNOWN row cannot win "first" over a real answer in another row.
+    if "ethnicity" in df.columns:
+        eth = clean_concept(df["ethnicity"]).astype("string").str.upper()
+        df.loc[eth.isin({c.upper() for c in ETHNICITY_UNKNOWN_CODES}).fillna(False),
+               "ethnicity"] = None
+
     # Save raw_df BEFORE coalesce so we can inspect per-row visit labels below.
     raw_df = df.copy()
     n_before = len(df)
@@ -877,6 +942,8 @@ def _select_baseline_visit(
     visit_col: str = "associated_visit",
     visit_mapping: dict[str, str] | None = None,
     override_visits: list[str] | None = None,
+    override_mode: str | None = None,
+    one_row_per_participant: bool = True,
 ) -> tuple[pd.DataFrame, str]:
     """
     Filter measurement rows to the configured baseline visit(s).
@@ -926,9 +993,61 @@ def _select_baseline_visit(
                 f"[_select_baseline_visit] override_visits {override_visits} matched "
                 f"none of the available labels: {sorted(available)}"
             )
-        filtered = df[df[label_col].isin(matched_prefs)]
-        label_str = " + ".join(matched_prefs) if len(matched_prefs) > 1 else matched_prefs[0]
-        return filtered, f"{label_str} [override]"
+        # The list is a PRIORITY order (the reference's documented exam
+        # preference, e.g. "most recent exam available"): sort so the caller's
+        # first-non-null-per-participant dedup takes the highest-priority visit.
+        # Rows with no value are dropped first so an empty row at a preferred
+        # visit cannot shadow a real value at the next one ("first exam with a
+        # non-missing value", as the reference selects).
+        value_cols = [c for c in (*NUMERIC_VALUE_COLUMNS, *CODED_VALUE_COLUMNS)
+                      if c in df.columns]
+        pool = df[df[label_col].isin(matched_prefs)]
+        if value_cols:
+            pool = pool[pool[value_cols].notna().any(axis=1)]
+        if pool.empty:
+            raise ValueError(
+                f"[_select_baseline_visit] override_visits {override_visits} have no "
+                f"valued rows.\n  Available labels:   {sorted(available)}"
+            )
+        id_col = "associated_participant"
+        mode_tag = ""
+        if override_mode == "most_nonmissing_first" and id_col in pool.columns:
+            # The reference's greedy rule: take the visit with the most
+            # participants, drop them, repeat over what remains.
+            order: list[str] = []
+            rest = pool
+            while not rest.empty:
+                counts = rest.groupby(label_col)[id_col].nunique()
+                best = max(matched_prefs,
+                           key=lambda v: (counts.get(v, 0), -matched_prefs.index(v)))
+                if counts.get(best, 0) == 0:
+                    break
+                order.append(best)
+                taken = set(rest.loc[rest[label_col] == best, id_col])
+                rest = rest[(rest[label_col] != best) & ~rest[id_col].isin(taken)]
+            matched_prefs = order + [v for v in matched_prefs if v not in order]
+            mode_tag = ", most non-missing first"
+        rank = {label: i for i, label in enumerate(matched_prefs)}
+        filtered = (pool.assign(_visit_rank=pool[label_col].map(rank))
+                    .sort_values("_visit_rank", kind="stable"))
+        if id_col in filtered.columns:
+            best_rank = filtered.groupby(id_col)["_visit_rank"].transform("min")
+            # Ties at the winning visit (two blocks, one code, one visit) are
+            # decided by file order; count them here, before the dedup below
+            # removes the evidence.
+            n_ties = count_dedup_conflicts(filtered[filtered["_visit_rank"] == best_rank])
+            if one_row_per_participant:
+                # One whole row per participant. A column-wise "first"
+                # downstream could otherwise mix value columns across visits.
+                filtered = filtered.drop_duplicates(subset=[id_col], keep="first")
+            else:
+                # Every row at the participant's best visit (e.g. both sides
+                # of a bilateral measurement).
+                filtered = filtered[filtered["_visit_rank"] == best_rank]
+        used = [v for v in matched_prefs if v in set(filtered[label_col])]
+        if id_col in filtered.columns:
+            filtered.attrs["n_same_visit_conflicts"] = n_ties
+        return filtered, f"{' > '.join(used)} [override{mode_tag}]"
 
     # Collect ALL matching baseline visits (case-insensitive + pattern fallback)
     matched_prefs = resolve_baseline_visits(cohort, available)
@@ -1190,8 +1309,9 @@ def process_measurements(
         # current measured weights (age~16000+) in the earliest-first dedup, making
         # the post-dedup preferred_method filter silently empty.
         # Per-cohort overrides take precedence over the global preferred_method.
-        preferred = spec.get("preferred_method_override", {}).get(cohort,
-                             spec.get("preferred_method"))
+        preferred = cohort_lookup(spec.get("preferred_method_override", {}), cohort,
+                                  spec.get("preferred_method"))
+        method_applied = None
         if preferred and "method_type" in subset.columns:
             method_filtered = subset[subset["method_type"] == preferred]
             if not method_filtered.empty:
@@ -1199,15 +1319,25 @@ def process_measurements(
                       f"{len(subset):,} → {len(method_filtered):,} rows "
                       f"(preferred: {preferred!r})")
                 subset = method_filtered
+                method_applied = preferred
+            else:
+                # A filter that matches nothing must say so: the report would
+                # otherwise claim a method restriction that never happened.
+                methods = sorted(subset["method_type"].dropna().astype(str).unique())
+                print(f"      WARNING [method filter] {spec['bdc_label']}: preferred "
+                      f"method {preferred!r} matched no rows; using all methods "
+                      f"{methods[:6]}")
 
         # Select baseline visit — skip this variable if no baseline rows exist.
         # A per-variable visit_override (e.g., ARIC MCH at Exams 3-5) bypasses
         # BASELINE_VISIT_CONFIG and uses the specified visits instead.
-        visit_override = spec.get("visit_override", {}).get(cohort)
+        visit_override = cohort_lookup(spec.get("visit_override", {}), cohort)
         try:
-            baseline, visit_used = _select_baseline_visit(subset, cohort,
-                                                           visit_mapping=visit_mapping,
-                                                           override_visits=visit_override)
+            baseline, visit_used = _select_baseline_visit(
+                subset, cohort, visit_mapping=visit_mapping,
+                override_visits=visit_override,
+                override_mode=cohort_lookup(spec.get("visit_override_mode", {}), cohort),
+                one_row_per_participant=not spec.get("bdc_grade_map"))
         except ValueError as exc:
             # Pull the visits this variable DOES have out of the exception --
             # that is the actionable part. "Only at Exam 5" is a fact about the
@@ -1231,11 +1361,47 @@ def process_measurements(
         # matter more here than the discovered ones. The counter was originally
         # added only to the discovery loop, which is why the 43 conflicts on the
         # 2026-09-10 run all sat outside the comparison.
-        _n_conflicts_mapped = count_dedup_conflicts(baseline)
+        _n_conflicts_mapped = baseline.attrs.get("n_same_visit_conflicts")
+        if spec.get("bdc_grade_map") and "_obs_type" in baseline.columns:
+            # Left and right differ by design; only a tie WITHIN one side is a conflict.
+            _n_conflicts_mapped = sum(count_dedup_conflicts(g)
+                                      for _, g in baseline.groupby("_obs_type"))
+        elif _n_conflicts_mapped is None:
+            _n_conflicts_mapped = count_dedup_conflicts(baseline)
         if _n_conflicts_mapped:
             print(f"      {spec['bdc_label']}: WARNING {_n_conflicts_mapped:,} "
                   f"participant(s) had CONFLICTING values before dedup -- 'first' "
                   f"picks by row order, so this variable depends on file ordering")
+
+        # Ordinal coded measurement (carotid stenosis): BDC writes the band
+        # label to a coded column, so the numeric path below would read nothing.
+        # Each band maps to the reference's grade code, and a participant's
+        # grade is the WORST across the codes matched (left and right sides),
+        # as the reference computes max(rsten1, lsten1).
+        grade_map = spec.get("bdc_grade_map")
+        coded_cols = [c for c in ("value_enum", "value_quantity__value_concept")
+                      if c in baseline.columns and baseline[c].notna().any()]
+        if grade_map and coded_cols and "associated_participant" in baseline.columns:
+            raw = baseline[coded_cols[0]].map(
+                lambda x: grade_map.get(str(x).strip()) if pd.notna(x) else None)
+            graded = baseline.assign(_grade=pd.to_numeric(raw, errors="coerce"))
+            n_unmapped = int((raw.isna() & baseline[coded_cols[0]].notna()).sum())
+            per_pid = graded.groupby("associated_participant")["_grade"].max().dropna()
+            labels = [str(int(g)) for g in per_pid]
+            labels += [None] * max(n_participants - len(labels), 0)
+            stats = categorical_stats(pd.Series(labels, dtype=object))
+            stats["bdc_label"] = spec["bdc_label"]
+            stats["topmed_variable"] = topmed_var
+            stats["dataset"] = "baseline_covariates"
+            stats["n_total"] = n_participants
+            stats["visit_label"] = visit_used
+            variable_stats[topmed_var] = stats
+            if visit_override is None:
+                baseline_meas_ids.update(per_pid.index)
+            print(f"    {spec['bdc_label']} ({bdc_code}): {len(per_pid):,} participants "
+                  f"graded from {coded_cols[0]} (max across {len(codes_to_match)} code(s)); "
+                  f"{n_unmapped:,} row(s) with an unmapped band [visit: {visit_used}]")
+            continue
 
         # DEFENSIVE: Deduplicate to one value per participant.
         # In practice, each measurement block produces complete rows (value,
@@ -1258,7 +1424,7 @@ def process_measurements(
               f"(from {n_pre_dedup:,} baseline rows) [visit: {visit_used}]")
 
         # Accumulate baseline participant IDs for medication denominator
-        if "associated_participant" in baseline.columns:
+        if "associated_participant" in baseline.columns and visit_override is None:
             baseline_meas_ids.update(baseline["associated_participant"].dropna().unique())
 
         if any(c in baseline.columns for c in NUMERIC_VALUE_COLUMNS):
@@ -1298,10 +1464,10 @@ def process_measurements(
         # Record the method actually filtered on and, where documented, what the
         # reference pipeline used. The BDC filter can drop 90%+ of rows, so a
         # reader needs both to judge whether the sides are comparable.
-        _pref = (spec.get("preferred_method_override", {}).get(cohort)
-                 or spec.get("preferred_method"))
-        if _pref:
-            stats["bdc_method"] = _pref
+        # Only the method actually applied; an unmatched preferred method is
+        # not a restriction and must not be reported as one.
+        if method_applied:
+            stats["bdc_method"] = method_applied
         _ref = spec.get("reference_method")
         if isinstance(_ref, dict):
             _ref = _ref.get(cohort)
@@ -1537,13 +1703,11 @@ def process_conditions(
     # IMPORTANT: We create BOTH a baseline-filtered DF and keep the full DF.
     # - baseline_df: used for mapped conditions compared against TOPMed
     #   reference (which measures pre-enrollment prior history only)
-    # - df (full): used for discovery of unmapped conditions (where
-    #   all-visits prevalence is more informative)
+    # - df (full): all-visits counts, logged for diagnosis only
     #
-    # If baseline filtering yields no rows for a concept (e.g., the condition
-    # was only asked at follow-up visits, or BASELINE_VISIT_CONFIG doesn't
-    # match the visit labels), we fall back to all-visits to avoid losing
-    # data entirely. This fallback is logged clearly so it can be diagnosed.
+    # A concept with no baseline rows is NOT read from other visits: prior
+    # history cannot come from follow-up or event tables. Such a variable is
+    # emitted as all-missing and marked not comparable.
     visit_col = "associated_visit"
     has_visit = visit_col in df.columns
 
@@ -1581,9 +1745,12 @@ def process_conditions(
             print("    [baseline filter] WARNING: No baseline visit matched for conditions.")
             print(f"      Expected: {config.get('exact', [])}")
             print(f"      Available: {sorted(available_visits)}")
-            print("      Falling back to all condition rows.")
-            baseline_df = df
-            baseline_label = "all rows (no baseline match)"
+            # Prior history cannot be read from follow-up rows, so nothing is
+            # graded rather than everything being graded on all visits.
+            print("      No condition row is at a baseline visit -- mapped conditions "
+                  "are NOT COMPARABLE and none are discovered for this cohort.")
+            baseline_df = df.iloc[0:0]
+            baseline_label = "no baseline visit"
     else:
         # No visit column — can't filter; use all rows
         baseline_df = df
@@ -1604,7 +1771,7 @@ def process_conditions(
     for topmed_var, bdc_codes in topmed_var_groups.items():
         spec = BDC_CONDITION_MAP[bdc_codes[0]]  # use first for labels
         all_affected_ids: set[str] = set()
-        all_respondent_ids: set[str] = set()  # all IDs with ANY record (any status)
+        all_respondent_ids: set[str] = set()  # IDs with a row that is not UNKNOWN
         all_visits_affected_ids: set[str] = set()  # diagnostic: all-visits count
         code_details: list[str] = []
 
@@ -1631,8 +1798,7 @@ def process_conditions(
             # stats — it's purely informational.
             subset_all = df[df["_cond_concept"] == bdc_code]
             if has_status and not subset_all.empty:
-                positive_all = subset_all[subset_all["_cond_status"].isin(
-                    ["PRESENT", "HISTORICAL", "HISTORY"])]
+                positive_all = subset_all[subset_all["_cond_status"].isin(POSITIVE_STATUSES)]
             else:
                 positive_all = subset_all
             if not positive_all.empty and id_col in positive_all.columns:
@@ -1645,8 +1811,7 @@ def process_conditions(
             subset = var_baseline_df[var_baseline_df["_cond_concept"] == bdc_code]
 
             if has_status and not subset.empty:
-                positive_mask = subset["_cond_status"].isin(["PRESENT", "HISTORICAL", "HISTORY"])
-                subset_positive = subset[positive_mask]
+                subset_positive = subset[subset["_cond_status"].isin(POSITIVE_STATUSES)]
             else:
                 subset_positive = subset
 
@@ -1654,17 +1819,10 @@ def process_conditions(
             n_baseline_rows = len(subset)
             n_positive = len(subset_positive)
 
-            # ── Fallback: if baseline filter yields zero positive rows but
-            # all-visits has positives, fall back to all-visits for this
-            # concept.  This prevents losing data for conditions only asked
-            # at non-baseline visits (e.g., a condition captured exclusively
-            # in an AFU or event table with no baseline equivalent).
-            if n_positive == 0 and len(positive_all) > 0:
-                print(f"    {cur_spec['bdc_label']} ({bdc_code}): "
-                      f"0 positive at baseline, {len(positive_all):,} across all visits "
-                      f"-- FALLING BACK to all-visits")
-                subset_positive = positive_all
-
+            # Never fall back to other visits here: every mapped condition is
+            # graded as PRIOR history, and rows from follow-up or event tables
+            # are incident events (e.g. ARIC hospital-abstraction PVD under the
+            # PAD alias). A concept with no baseline rows contributes nothing.
             print(f"    {cur_spec['bdc_label']} ({bdc_code}): "
                   f"{n_total_concept:,} total rows, {n_baseline_rows:,} at baseline, "
                   f"{n_positive:,} positive [visit: {var_baseline_label}]")
@@ -1681,14 +1839,30 @@ def process_conditions(
             code_details.append(f"{bdc_code}={n_code}")
             all_affected_ids |= code_affected
 
-            # Collect ALL respondent IDs (any status) from the same scope
-            # If fallback was triggered for this code, use all-visits; otherwise baseline
-            if n_positive == 0 and len(positive_all) > 0:
-                respondent_src = subset_all  # fallback scope
-            else:
-                respondent_src = subset  # baseline scope
+            # Respondents: baseline rows carrying a definite answer.
+            respondent_src = answered_rows(subset, "_cond_status") if has_status else subset
             if not respondent_src.empty and id_col in respondent_src.columns:
                 all_respondent_ids |= set(respondent_src[id_col].dropna().unique())
+
+        if not all_respondent_ids and not all_affected_ids:
+            # No baseline source at all: a coverage fact, not a 0% prevalence.
+            # It is emitted as all-missing so the gap stays visible in the
+            # report instead of the variable silently becoming TOPMed-only.
+            n_elsewhere = len(all_visits_affected_ids)
+            print(f"    NOTE: {spec['bdc_label']} ({topmed_var}): no answer at "
+                  f"{var_baseline_label}; {n_elsewhere:,} positive participant(s) at "
+                  f"other visits not used -- NOT COMPARABLE (shown as all missing)")
+            stats = categorical_stats(pd.Series([None] * n_participants, dtype=object))
+            stats["bdc_label"] = spec["bdc_label"]
+            stats["topmed_variable"] = topmed_var
+            stats["dataset"] = "atherosclerosis_events_prior"
+            stats["bdc_concept_code"] = " | ".join(bdc_codes)
+            stats["n_total"] = n_participants
+            stats["visit_label"] = var_baseline_label
+            stats["not_comparable"] = "no answer at the graded visit(s)"
+            variable_stats[topmed_var] = stats
+            found_vars.append(topmed_var)
+            continue
 
         n_affected = len(all_affected_ids & participant_ids) if participant_ids else len(all_affected_ids)
         if n_affected == 0 and all_affected_ids:
@@ -1774,8 +1948,7 @@ def process_conditions(
 
             # "Ever positive" strategy (same as mapped conditions above)
             if has_status:
-                positive_mask = subset["_cond_status"].isin(
-                    ["PRESENT", "HISTORICAL", "HISTORY"])
+                positive_mask = subset["_cond_status"].isin(POSITIVE_STATUSES)
                 subset_positive = subset[positive_mask]
             else:
                 subset_positive = subset
@@ -1786,8 +1959,9 @@ def process_conditions(
                 affected_ids = set()
 
             # Respondent-based denominator (avoid closed-world imputation)
-            if id_col in subset.columns:
-                respondent_ids = set(subset[id_col].dropna().unique())
+            answered = answered_rows(subset, "_cond_status") if has_status else subset
+            if id_col in answered.columns:
+                respondent_ids = set(answered[id_col].dropna().unique())
             else:
                 respondent_ids = set()
 
@@ -1925,9 +2099,12 @@ def process_procedures(
             print("    [baseline filter] WARNING: No baseline visit matched for procedures.")
             print(f"      Expected: {config.get('exact', [])}")
             print(f"      Available: {sorted(available_visits)}")
-            print("      Falling back to all procedure rows.")
-            baseline_df = df
-            baseline_label = "all rows (no baseline match)"
+            # Prior history cannot be read from follow-up rows, so nothing is
+            # graded rather than everything being graded on all visits.
+            print("      No procedure row is at a baseline visit -- mapped procedures "
+                  "are NOT COMPARABLE and none are discovered for this cohort.")
+            baseline_df = df.iloc[0:0]
+            baseline_label = "no baseline visit"
     else:
         baseline_df = df
         baseline_label = "all rows (no visit column)"
@@ -1976,8 +2153,7 @@ def process_procedures(
             # ── All-visits count (diagnostic) ────────────────────────────────
             subset_all = df[df["_proc_concept"] == bdc_code]
             if has_proc_status and not subset_all.empty:
-                positive_all = subset_all[subset_all["_proc_status"].isin(
-                    ["PRESENT", "HISTORICAL", "HISTORY"])]
+                positive_all = subset_all[subset_all["_proc_status"].isin(POSITIVE_STATUSES)]
             else:
                 positive_all = subset_all
             if not positive_all.empty and id_col in positive_all.columns:
@@ -1987,8 +2163,7 @@ def process_procedures(
             subset = var_baseline_df[var_baseline_df["_proc_concept"] == bdc_code]
 
             if has_proc_status and not subset.empty:
-                positive_mask = subset["_proc_status"].isin(["PRESENT", "HISTORICAL", "HISTORY"])
-                subset_positive = subset[positive_mask]
+                subset_positive = subset[subset["_proc_status"].isin(POSITIVE_STATUSES)]
             else:
                 subset_positive = subset
 
@@ -1996,13 +2171,7 @@ def process_procedures(
             n_baseline_rows = len(subset)
             n_positive = len(subset_positive)
 
-            # Fallback: if baseline yields nothing but all-visits has data
-            if n_positive == 0 and len(positive_all) > 0:
-                print(f"    {cur_spec['bdc_label']} ({bdc_code}): "
-                      f"0 positive at baseline, {len(positive_all):,} across all visits "
-                      f"-- FALLING BACK to all-visits")
-                subset_positive = positive_all
-
+            # No all-visits fallback: see process_conditions.
             print(f"    {cur_spec['bdc_label']} ({bdc_code}): "
                   f"{n_total_concept:,} total rows, {n_baseline_rows:,} at baseline, "
                   f"{n_positive:,} positive [visit: {var_baseline_label}]")
@@ -2010,13 +2179,25 @@ def process_procedures(
             if not subset_positive.empty and id_col in subset_positive.columns:
                 all_affected_ids |= set(subset_positive[id_col].dropna().unique())
 
-            # Collect ALL respondent IDs (any status) from same scope
-            if n_positive == 0 and len(positive_all) > 0:
-                respondent_src = subset_all
-            else:
-                respondent_src = subset
+            respondent_src = answered_rows(subset, "_proc_status") if has_proc_status else subset
             if not respondent_src.empty and id_col in respondent_src.columns:
                 all_respondent_ids |= set(respondent_src[id_col].dropna().unique())
+
+        if not all_respondent_ids and not all_affected_ids:
+            print(f"    NOTE: {spec['bdc_label']} ({topmed_var}): no answer at "
+                  f"{var_baseline_label}; {len(all_visits_affected_ids):,} positive "
+                  f"participant(s) at other visits not used -- NOT COMPARABLE (shown as all missing)")
+            stats = categorical_stats(pd.Series([None] * n_participants, dtype=object))
+            stats["bdc_label"] = spec["bdc_label"]
+            stats["topmed_variable"] = topmed_var
+            stats["dataset"] = "atherosclerosis_events_prior"
+            stats["bdc_concept_code"] = " | ".join(bdc_codes)
+            stats["n_total"] = n_participants
+            stats["visit_label"] = var_baseline_label
+            stats["not_comparable"] = "no answer at the graded visit(s)"
+            variable_stats[topmed_var] = stats
+            found_vars.append(topmed_var)
+            continue
 
         # ── Compute stats from UNION of all codes in this group ──────────
         affected_ids = all_affected_ids
@@ -2103,8 +2284,7 @@ def process_procedures(
 
             # "Ever positive" strategy (same as mapped procedures above)
             if has_proc_status:
-                positive_mask = subset["_proc_status"].isin(
-                    ["PRESENT", "HISTORICAL", "HISTORY"])
+                positive_mask = subset["_proc_status"].isin(POSITIVE_STATUSES)
                 subset_positive = subset[positive_mask]
             else:
                 subset_positive = subset
@@ -2115,8 +2295,9 @@ def process_procedures(
                 affected_ids = set()
 
             # Respondent-based denominator (avoid closed-world imputation)
-            if id_col in subset.columns:
-                respondent_ids = set(subset[id_col].dropna().unique())
+            answered = answered_rows(subset, "_proc_status") if has_proc_status else subset
+            if id_col in answered.columns:
+                respondent_ids = set(answered[id_col].dropna().unique())
             else:
                 respondent_ids = set()
 
@@ -2490,9 +2671,8 @@ def process_drugs(
     drug_types = df["_drug_concept"].value_counts()
     print(f"    Drug concepts found ({len(drug_types)}):")
 
-    # Antihypertensive drug ATC classes
+    # Codes the per-concept discovery below treats as already summarised.
     antihypertensive_atcs = {"ATC:C09A", "ATC:C09C", "ATC:C07A", "ATC:C03", "ATC:C02"}
-    # Lipid-lowering drug ATC classes
     lipid_lowering_atcs = {"ATC:C10A", "ATC:C10B"}
 
     id_col = "associated_participant"
@@ -2501,40 +2681,9 @@ def process_drugs(
     for dt, cnt in drug_types.items():
         print(f"      {dt}: {cnt:,} rows")
 
-    # ── Clean exposure_status (filter ABSENT rows, like Conditions) ──────
     has_exposure_status = "exposure_status" in df.columns
     if has_exposure_status:
         df["_exp_status"] = df["exposure_status"].astype(str).str.strip().str.upper()
-        n_before = len(df)
-        df = df[df["_exp_status"].isin(["PRESENT", "HISTORICAL", "HISTORY"])]
-        n_dropped = n_before - len(df)
-        if n_dropped > 0:
-            print(f"    [exposure_status filter] {n_before:,} → {len(df):,} rows "
-                  f"(dropped {n_dropped:,} ABSENT/other)")
-        if df.empty:
-            print("    No active drug exposures after status filter — skipping.")
-            return []
-
-    # ── Baseline visit filter ────────────────────────────────────────────
-    # Filter drug rows to baseline visit only for fair comparison with
-    # TOPMed DCC (which only reports baseline medication status).
-    #
-    # IMPORTANT: DrugExposure differs from MeasurementObservation — each
-    # participant has MULTIPLE rows (one per drug class). Using the generic
-    # _select_baseline_visit() would work for visit filtering, but the
-    # downstream dedup logic in process_measurements (one row per participant)
-    # would reduce each participant to exactly 1 drug row, destroying most
-    # of the drug data.
-    #
-    # Strategy:
-    #   A) If baseline visits can be identified by label (normal path for all
-    #      cohorts with named visits), filter to those visits keeping ALL rows.
-    #   B) If no visit label match (e.g. all visits = "HEALTH_EXAMINATION"),
-    #      use age_at_observation to identify each participant's minimum age
-    #      (= their Exam 1 / baseline), then keep ALL drug rows for those
-    #      participants at that age. Falls back to keeping all rows if age
-    #      is unavailable.
-    n_pre_filter = len(df)
 
     # Translate visit UUIDs to labels if mapping is available
     visit_col = "associated_visit"
@@ -2548,13 +2697,18 @@ def process_drugs(
     else:
         label_col = visit_col if visit_col in df.columns else None
 
+    # ── Baseline visit filter ────────────────────────────────────────────
+    # Keep ALL drug rows at the baseline visits: a participant has one row per
+    # drug class, so the one-row-per-participant dedup used for measurements
+    # would destroy the data.
+    df_all = df
+    n_pre_filter = len(df)
     visit_used = "all-visits (no filter)"
     if label_col and label_col in df.columns:
         available = set(df[label_col].dropna().unique())
         matched_prefs = resolve_baseline_visits(cohort, available)
 
         if matched_prefs:
-            # Path A: named baseline visits found — keep ALL rows for those visits
             df = df[df[label_col].isin(matched_prefs)]
             visit_used = " + ".join(matched_prefs) if len(matched_prefs) > 1 else matched_prefs[0]
         else:
@@ -2562,73 +2716,140 @@ def process_drugs(
             print("    [baseline filter] WARNING: No baseline visit matched for drugs.")
             print(f"      Expected: {config.get('exact', [])}")
             print(f"      Available: {sorted(available)}")
-            print("      Falling back to all drug rows.")
-            # Don't filter — use all rows
-            visit_used = "all rows (no baseline match)"
+            print("      No drug row is at a baseline visit -- medication variables "
+                  "are NOT COMPARABLE for this cohort.")
+            df = df.iloc[0:0]
+            visit_used = "no baseline visit"
 
-    print(f"    Antihypertensive meds (aggregated): {n_pre_filter:,} -> {len(df):,} rows "
-          f"after baseline filter [visit: {visit_used}]")
+    print(f"    Drug rows: {n_pre_filter:,} -> {len(df):,} after baseline filter "
+          f"[visit: {visit_used}]")
 
-    # Aggregate antihypertensive medication (binary: any antihypertensive → Yes)
-    # Denominator: participants present in any baseline measurement (baseline_meas_ids).
-    # Participants NOT in baseline_meas_ids never attended the baseline visit and
-    # are treated as missing rather than "No" (closed-world assumption avoided).
+    # Baseline attendees: the denominator ONLY for a source that records
+    # positives alone, where absence of a row can mean "not taking".
+    med_denom_ids = baseline_meas_ids if baseline_meas_ids else participant_ids
+    n_med_denom = len(med_denom_ids) or n_participants
+
+    def _medication_stat(rows: pd.DataFrame, rows_label: str, topmed_var: str,
+                         bdc_label: str, dataset: str,
+                         attendee_ids: set | None = None) -> None:
+        """Binary current-use flag from DrugExposure rows.
+
+        Yes = PRESENT. The reference variables mean use AT the exam, so
+        HISTORICAL ("yes, not now") is a No, and an explicit UNKNOWN is missing.
+
+        Denominator: when the source is a QUESTION put to the cohort (explicit
+        negatives covering at least QUESTION_COVERAGE of baseline attendees),
+        the participants who answered. Otherwise the source is a LIST of
+        medications taken (CARDIA's Year 0 list reaches ~3% of attendees) and
+        absence from it means "not taking", so baseline attendees are used.
+        """
+        if rows.empty or id_col not in rows.columns:
+            return
+        if has_exposure_status:
+            pos_ids = set(rows.loc[rows["_exp_status"] == "PRESENT", id_col].dropna())
+            answered_ids = (set(answered_rows(rows, "_exp_status", blank_is_answer=False)
+                                [id_col].dropna()) | pos_ids)
+            # Whether the source is a question is decided on everyone it
+            # reached, blanks included: a heavily skipped question is still a
+            # question, and must not fall to the list-style denominator.
+            reached_ids = set(rows[id_col].dropna())
+            has_negatives = bool((rows["_exp_status"] == "ABSENT").any())
+        else:
+            pos_ids = set(rows[id_col].dropna())
+            answered_ids = reached_ids = pos_ids
+            has_negatives = False
+
+        pop_ids = attendee_ids if attendee_ids is not None else med_denom_ids
+        n_pop = len(pop_ids) if pop_ids else n_med_denom
+        is_question = (has_negatives and n_pop > 0
+                       and len(reached_ids) >= QUESTION_COVERAGE * n_pop)
+        if is_question:
+            n_denom = len(answered_ids)
+            n_on = len(pos_ids)
+            basis = "participants who answered"
+        else:
+            # Absence from a list means "not taking", but a participant the
+            # source reached with only an UNKNOWN or blank status is missing,
+            # not a No.
+            unanswered_ids = reached_ids - answered_ids
+            if pop_ids:
+                denom_ids = pop_ids - unanswered_ids
+                n_denom = len(denom_ids)
+                n_on = len(pos_ids & denom_ids)
+            else:
+                n_denom = max(n_pop - len(unanswered_ids), 0)
+                n_on = len(pos_ids)
+            basis = "attendees (medication list, absence = not taking)"
+        n_on = min(n_on, n_denom)
+        n_missing = max(n_participants - n_denom, 0)
+
+        labels = ["Yes"] * n_on + ["No"] * (n_denom - n_on)
+        stats = categorical_stats(pd.Series(labels))
+        stats["bdc_label"] = bdc_label
+        stats["topmed_variable"] = topmed_var
+        stats["dataset"] = dataset
+        stats["n_total"] = n_participants
+        stats["n_missing"] = n_missing
+        stats["pct_missing"] = round(n_missing / n_participants * 100, 1) if n_participants > 0 else 0.0
+        stats["visit_label"] = rows_label
+        variable_stats[topmed_var] = stats
+        found_vars.append(topmed_var)
+        pct = n_on / n_denom * 100 if n_denom else 0.0
+        print(f"    {bdc_label} (aggregated): {n_on:,} / {n_denom:,} ({pct:.1f}%), "
+              f"denominator = {basis}; {n_missing:,} missing [visit: {rows_label}]")
+
+    def _rows_for(topmed_var: str, prefixes: tuple[str, ...]
+                  ) -> tuple[pd.DataFrame, str, set | None]:
+        """The variable's drug rows at baseline, or at the DCC-aligned visits
+        from DRUG_VISIT_OVERRIDE (ranked within the variable's own codes).
+        The third value is the attendee population for an override (anyone
+        with a drug row at the listed visits); None means baseline attendees."""
+        override = cohort_lookup(DRUG_VISIT_OVERRIDE.get(topmed_var, {}), cohort)
+        if override and label_col and label_col in df_all.columns:
+            at_visits = df_all[df_all[label_col].astype(str).str.upper()
+                               .isin({v.upper() for v in override})]
+            own = df_all[df_all["_drug_concept"].str.startswith(prefixes, na=False)]
+            return (keep_first_listed_visit(own, label_col, override, id_col),
+                    " > ".join(override) + " [override]",
+                    set(at_visits[id_col].dropna()))
+        return (df[df["_drug_concept"].str.startswith(prefixes, na=False)],
+                visit_used, None)
+
     if id_col in df.columns:
-        # Effective denominator: participants at baseline with any measurement
-        med_denom_ids = baseline_meas_ids if baseline_meas_ids else participant_ids
-        n_med_denom = len(med_denom_ids)
-        if n_med_denom == 0:
-            n_med_denom = n_participants
+        # Antihypertensive: the reference uses the study's own "on
+        # antihypertensive medication" indicator when one exists, and drug
+        # classes only otherwise (antihypertensive_meds_1.json). BDC codes such
+        # indicators as ATC:C02 -- in some cohorts several at one exam (ARIC
+        # HYPTMD01 + HYPTMDCODE01 + MSRA08A; MESA htnmed1c + bpmed1), which are
+        # unioned. Class flags are taken for other indications too, so they are
+        # used only where a cohort has no indicator at all.
+        rows, rows_label, pop = _rows_for("antihypertensive_meds_1",
+                                          ANTIHYPERTENSIVE_CLASS_PREFIXES)
+        is_indicator = rows["_drug_concept"] == "ATC:C02"
+        if is_indicator.any():
+            # A participant whose sub-cohort has no indicator at the graded exam
+            # (FHS Offspring Exam 1 has only a diuretic flag) is a gap: one drug
+            # class is not the "treated for hypertension" question the
+            # reference read, so it is not substituted.
+            n_class_only = rows.loc[~rows[id_col].isin(set(rows.loc[is_indicator, id_col])),
+                                    id_col].nunique()
+            if n_class_only:
+                print(f"    Hypertension treatment: {n_class_only:,} participant(s) have only "
+                      f"drug-class rows at the graded visit -- missing, not substituted")
+            rows = rows[is_indicator]
+        else:
+            rows_label += " (drug-class fallback: no indicator in this cohort)"
+        _medication_stat(rows, rows_label, "antihypertensive_meds_1",
+                         "Hypertension treatment", "blood_pressure", pop)
 
-        antihyp_df = df[df["_drug_concept"].isin(antihypertensive_atcs)]
-        if not antihyp_df.empty:
-            antihyp_ids = set(antihyp_df[id_col].dropna().unique())
-            n_on_med = len(antihyp_ids & med_denom_ids) if med_denom_ids else len(antihyp_ids)
-            n_off_med = n_med_denom - n_on_med
-            n_missing_med = n_participants - n_med_denom
+        rows, rows_label, pop = _rows_for("lipid_lowering_medication_1",
+                                          (LIPID_LOWERING_PREFIX,))
+        _medication_stat(rows, rows_label, "lipid_lowering_medication_1",
+                         "Lipid-lowering medication", "lipids", pop)
 
-            labels = ["Yes"] * n_on_med + ["No"] * n_off_med
-            stats = categorical_stats(pd.Series(labels))
-            stats["bdc_label"] = "Hypertension treatment"
-            stats["topmed_variable"] = "antihypertensive_meds_1"
-            stats["dataset"] = "blood_pressure"
-            stats["n_total"] = n_participants
-            # Override missingness to reflect participants outside baseline
-            stats["n_missing"] = n_missing_med
-            stats["pct_missing"] = round(n_missing_med / n_participants * 100, 1) if n_participants > 0 else 0.0
-            variable_stats["antihypertensive_meds_1"] = stats
-            found_vars.append("antihypertensive_meds_1")
-
-            print(f"    Antihypertensive meds (aggregated): {n_on_med:,} / "
-                  f"{n_med_denom:,} baseline participants "
-                  f"({n_on_med/n_med_denom*100:.1f}%); "
-                  f"{n_missing_med:,} outside baseline → missing"
-                  if n_med_denom > 0 else "")
-
-        # Aggregate lipid-lowering medication
-        lipid_df = df[df["_drug_concept"].isin(lipid_lowering_atcs)]
-        if not lipid_df.empty:
-            lipid_ids = set(lipid_df[id_col].dropna().unique())
-            n_on_lipid = len(lipid_ids & med_denom_ids) if med_denom_ids else len(lipid_ids)
-            n_off_lipid = n_med_denom - n_on_lipid
-            n_missing_lipid = n_participants - n_med_denom
-
-            labels = ["Yes"] * n_on_lipid + ["No"] * n_off_lipid
-            stats = categorical_stats(pd.Series(labels))
-            stats["bdc_label"] = "Lipid-lowering medication"
-            stats["topmed_variable"] = "lipid_lowering_medication_1"
-            stats["dataset"] = "lipids"
-            stats["n_total"] = n_participants
-            stats["n_missing"] = n_missing_lipid
-            stats["pct_missing"] = round(n_missing_lipid / n_participants * 100, 1) if n_participants > 0 else 0.0
-            variable_stats["lipid_lowering_medication_1"] = stats
-            found_vars.append("lipid_lowering_medication_1")
-
-            print(f"    Lipid-lowering meds (aggregated): {n_on_lipid:,} / "
-                  f"{n_med_denom:,} baseline participants "
-                  f"({n_on_lipid/n_med_denom*100:.1f}%); "
-                  f"{n_missing_lipid:,} outside baseline → missing"
-                  if n_med_denom > 0 else "")
+    # Per-concept discovery counts current or past exposure, as before.
+    if has_exposure_status:
+        df = df[df["_exp_status"].isin(POSITIVE_STATUSES)]
 
     # ── Per-concept drug exposure stats (all individual drug concepts) ──
     # Use n_med_denom (baseline measurement participants) as denominator,

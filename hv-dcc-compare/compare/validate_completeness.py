@@ -187,7 +187,7 @@ def load_bdc_wide(dirs: list[str], verbose: bool = False) -> pd.DataFrame:
         sex_map = demo.set_index(id_col)["sex"].to_dict()
         result["annotated_sex_1"] = result["SUBJECT_ID"].map(sex_map)
 
-    # Race → always "Other" for HCHS (study-level coding)
+    # Race is passed through as reported.
     if "race" in demo.columns:
         race_map = demo.set_index(id_col)["race"].to_dict()
         result["race_us_1"] = result["SUBJECT_ID"].map(race_map)
