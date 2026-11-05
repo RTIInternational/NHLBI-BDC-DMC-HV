@@ -53,3 +53,63 @@
           range: string
         qualifier:
           value: AVERAGE
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        age_at_observation:
+          expr: '{phv00087071} * 365'
+        observation_type:
+          value: OMOP:4138462
+          range: string
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00128698
+                unit:
+                  value: mm
+                  range: string
+        method_type:
+          value: RIGHT COMMON CAROTID FAR WALL MEAN
+          range: string
+        qualifier:
+          value: AVERAGE
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001528
+      joins:
+        pht001111:
+          source_key: phv00111955
+          lookup_key: phv00082638
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00111955}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00111955}) + ":MESA AIR EXAM")'
+        age_at_observation:
+          expr: '{pht001111.phv00082639} * 365'
+        observation_type:
+          value: OMOP:4138462
+          range: string
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht001528
+              slot_derivations:
+                value_decimal:
+                  expr: 'case((len(float([x for x in [{phv00111973}, {phv00112049}] if is_numeric(x)])) > 0, sum(float([x for x in [{phv00111973}, {phv00112049}] if is_numeric(x)]))/max([len(float([x for x in [{phv00111973}, {phv00112049}] if is_numeric(x)])), 1])))'
+                unit:
+                  value: mm
+                  range: string
+        method_type:
+          value: MEAN OF RIGHT AND LEFT COMMON CAROTID FAR WALL MEAN
+          range: string
+        qualifier:
+          value: AVERAGE
