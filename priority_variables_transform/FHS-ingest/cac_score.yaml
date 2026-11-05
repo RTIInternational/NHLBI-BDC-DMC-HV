@@ -19,7 +19,7 @@
               populated_from: pht000144
               slot_derivations:
                 value_decimal:
-                  expr: 'case(({phv00023194} is not None and {phv00023195} is not None, (0.0 + {phv00023194} + {phv00023195}) / 2), ({phv00023194} is not None, 0.0 + {phv00023194}), ({phv00023195} is not None, 0.0 + {phv00023195}))'
+                  expr: 'case((is_numeric({phv00023194}) and is_numeric({phv00023195}), (0.0 + {phv00023194} + {phv00023195}) / 2), (is_numeric({phv00023194}), 0.0 + {phv00023194}), (is_numeric({phv00023195}), 0.0 + {phv00023195}))'
                 unit:
                   value: '{score}'
                   range: string
@@ -44,7 +44,7 @@
               populated_from: pht000145
               slot_derivations:
                 value_decimal:
-                  expr: 'case(({phv00023200} is not None and {phv00023201} is not None, (0.0 + {phv00023200} + {phv00023201}) / 2), ({phv00023200} is not None, 0.0 + {phv00023200}), ({phv00023201} is not None, 0.0 + {phv00023201}))'
+                  expr: 'case((is_numeric({phv00023200}) and is_numeric({phv00023201}), (0.0 + {phv00023200} + {phv00023201}) / 2), (is_numeric({phv00023200}), 0.0 + {phv00023200}), (is_numeric({phv00023201}), 0.0 + {phv00023201}))'
                 unit:
                   value: '{score}'
                   range: string
