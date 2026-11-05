@@ -1184,6 +1184,27 @@ class ExtractorAccuracyTests(unittest.TestCase):
         self.assertNotIn("bdc_method", stats["weight_baseline_1"])
         self.assertIn("matched no rows", out)
 
+    def test_aric_cimt_reads_the_mean_far_wall_not_the_maximum(self) -> None:
+        mean_method = ("Mean of the average common carotid IMT far wall both sides "
+                       "from optimal, anterior, and posterior angle")
+        max_method = ("Mean of the maximum common carotid IMT far and near walls both "
+                      "sides from optimal, posterior, and anterior angles")
+        vm = self._visits({"v1": "ARIC EXAM 1"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
+        rows = []
+        for i in range(10):
+            # Maximum row first: file order must not decide the result.
+            rows.append([f"P{i}", "OMOP:4138462", "0.95", max_method, "v1"])
+            rows.append([f"P{i}", "OMOP:4138462", "0.70", mean_method, "v1"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "ARIC",
+                             set(), 10, stats, visit_mapping=vm)
+        self.assertAlmostEqual(stats["cimt_1"]["mean"], 0.70, places=4)
+        self.assertEqual(stats["cimt_1"]["bdc_method"], mean_method)
+        self.assertNotIn("CONFLICTING", out)
+
 
 if __name__ == "__main__":
     unittest.main()

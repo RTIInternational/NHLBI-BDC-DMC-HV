@@ -1301,8 +1301,15 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         # cimt_1.json CHS unit reads CCA_FWME (common carotid, phv00100864);
         # CHS-ingest/carotid_imt.yaml also emits ICA_FWME (internal carotid)
         # under the same code at the same visit, told apart only by method.
+        # cimt_1.json ARIC unit averages the far-wall means (pht004207);
+        # ARIC-ingest/carotid_imt.yaml also emits the mean of maximum IMT under
+        # the same code, told apart only by method. The string matches the
+        # Exam 1 and Exam 2 mean blocks; Exam 4 rows (shorter strings) drop out,
+        # which is safe while the ARIC baseline is Exam 1.
         "preferred_method_override": {
-            "CHS": "Mean of the mean far wall intima media t (var=CCA_FWME)"},
+            "CHS": "Mean of the mean far wall intima media t (var=CCA_FWME)",
+            "ARIC": ("Mean of the average common carotid IMT far wall both sides "
+                     "from optimal, anterior, and posterior angle")},
     },
     # Carotid stenosis, one code per side (left OMOP:43020498, right
     # OMOP:43021859). BDC stores the band label in value_concept; the extractor

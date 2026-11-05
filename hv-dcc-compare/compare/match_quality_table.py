@@ -130,18 +130,23 @@ for _gi, (_gname, _gvars) in enumerate(CORE_VARIABLE_GROUPS):
 
 KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
     ("WHI", "antihypertensive_meds_1"): {
-        "code": "UNION_OF_FORMS",
+        "code": "DERIVATION_DIFF",
         "no_override": True,
         "note": (
-            "Known BDC YAML defect pending a fix, not a methodological difference. "
-            "The drug-class files (tak_diuret, tak_betablk, tak_aceinhib, "
-            "tak_angiorecepblk) carry visit 'WHI UNC HEART FAILURE DETAILS', so the "
-            "baseline filter excludes them. In hypert_trt.yaml the pht002769, pht003413 "
-            "and pht003414 blocks have no associated_visit and are dropped. The "
-            "inflation (BDC 61.2% Yes vs TOPMed 29.9%) comes from the pht002770 block: "
-            "Form 33 F33PILLSHYP (phv00170689) is a follow-up item (mean days from "
-            "enrollment ~1,619) but is linked to the 'WHI SCREENING' visit. TOPMed uses "
-            "Form 44 medications (pht002754 TCCODE) at the baseline visit (F44VTYP == 1)."
+            "Self-report versus medication inventory. With the Form 33 follow-up blocks "
+            "unlinked from 'WHI SCREENING' (HV branch fix/hv-alignment-testfixes-20261105; "
+            "on specs that still link pht002770 there, BDC reads about 61% Yes from a "
+            "follow-up item), BDC's only baseline source is Form 30 HYPTPILN (pht000999 "
+            "phv00078559, 'Do you now take pills for high blood pressure?'). It is a "
+            "sub-question of the hypertension item, skipped by women not reporting "
+            "hypertension and absent from some Form 30 versions: dbGaP has 35,517 Yes / "
+            "10,071 No / 97,535 null, so BDC Yes is computed among about a third of "
+            "participants. TOPMed derives the variable from the Form 44 medication "
+            "inventory (pht002754 TCCODE classes at F44VTYP == 1, restricted to women "
+            "with a baseline blood pressure reading and a medication-start window). "
+            "Inferring 'No' for women never told of hypertension was rejected "
+            "(antihypertensive classes are also prescribed for heart failure, angina "
+            "and post-MI care)."
         ),
     },
     ("WHI", "angina_prior_1"): {
