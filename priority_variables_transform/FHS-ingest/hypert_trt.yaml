@@ -772,17 +772,14 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00423868}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
           value: ATC:C02
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
-          populated_from: phv00423953
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+          expr: 'case(({phv00423869} == 1 and {phv00423953} == 1, "PRESENT"), ({phv00423869} == 1 and {phv00423953} == 0, "ABSENT"))'
 - class_derivations:
     DrugExposure:
       populated_from: pht000032
