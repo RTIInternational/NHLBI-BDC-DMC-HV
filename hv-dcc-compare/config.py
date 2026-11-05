@@ -891,10 +891,11 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         # silently falls through and the extractor mixes supine ABI readings (pht004041
         # Dinamap supine, pht004027/28/29/6414 ABI, pht004079 echocardiogram context)
         # with seated clinical BP, inflating the mean by ~12 mmHg (+12.45 in testing).
-        # TOPMed DCC used pht004192 SBPA21 (phv00210290) — the ARIC-team pre-computed
-        # zero-corrected average of seated readings 2 and 3. This maps to method_type
-        # "Seated random-zero average" in our YAML. See bp_systolic_1.json in the
-        # UW-GAC/topmed-dcc-harmonized-phenotypes repo, ARIC harmonization unit.
+        # TOPMed DCC recomputes from the raw pht004192 readings: (SBPA15 - SBPA17) and
+        # (SBPA18 - SBPA20), random-zero corrected readings 2 and 3, each kept only
+        # when SBP >= DBP, then averaged. BDC grades the study's stored average SBPA21
+        # (phv00210290), method_type "Seated random-zero average". See bp_systolic_1.json
+        # in the UW-GAC/topmed-dcc-harmonized-phenotypes repo, ARIC harmonization unit.
         #
         # JHS bp_systolic.yaml has analysis-derived blocks from the Omron automated
         # device (pht008729/8730/8731) which reads systematically higher than the
@@ -906,8 +907,8 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         # two sides measured the same thing. Transcribed from the comments
         # above; absent for any cohort where it was never documented.
         "reference_method": {
-            "ARIC": "pht004192 SBPA21 (phv00210290) -- ARIC-team pre-computed "
-                    "zero-corrected average of seated readings 2 and 3",
+            "ARIC": "pht004192 SBPA15-SBPA20 -- mean of random-zero corrected "
+                    "seated readings 2 and 3, recomputed (SBP >= DBP per reading)",
             "JHS": "pht001974 SBPA19 (phv00128376) -- seated sphygmomanometer "
                    "net average",
         },
@@ -925,14 +926,15 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         # TOPMed used pht001974 SBPA20 (random-zero sphygmomanometer).  Use the
         # sphygmomanometer average for JHS to match the cross-cohort device standard.
         # Full domain science discussion deferred; see CHANGELOG.md session 6.
-        # Same ARIC fallthrough issue as SBP (see OMOP:4152194 above). ARIC DBP
-        # preferred source is pht004192 SBPA22 (phv00210291), method_type
-        # "Seated random-zero average". Without the override, 7.1% BDC missing vs
+        # Same ARIC fallthrough issue as SBP (see OMOP:4152194 above). BDC grades the
+        # stored average SBPA22 (phv00210291), method_type "Seated random-zero average";
+        # the DCC recomputes it from SBPA16/SBPA19 minus the zero readings SBPA17/SBPA20. Without the override, 7.1% BDC missing vs
         # 0.8% TOPMed and +1.7 mmHg mean elevation from mixed positional readings.
         "preferred_method_override": {"JHS": "Sphygmomanometer average", "ARIC": "Seated random-zero average"},
         # See the note on reference_method for bp_systolic_1.
         "reference_method": {
-            "ARIC": "pht004192 SBPA22 (phv00210291) -- seated random-zero average",
+            "ARIC": "pht004192 SBPA15-SBPA20 -- mean of random-zero corrected "
+                    "seated readings 2 and 3, recomputed (SBP >= DBP per reading)",
             "JHS": "pht001974 SBPA20 -- random-zero sphygmomanometer",
         },
     },

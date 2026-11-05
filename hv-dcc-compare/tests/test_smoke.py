@@ -1223,6 +1223,29 @@ class ExtractorAccuracyTests(unittest.TestCase):
         self.assertEqual(stats["crp_1"]["bdc_method"], "BNII method rerun (FL6CRPBN)")
         self.assertNotIn("CONFLICTING", out)
 
+    def test_match_quality_mean_delta_keeps_its_sign(self) -> None:
+        """MeanDelta prints BDC minus reference; the tier uses the magnitude."""
+        for extra in (str(ROOT), str(ROOT / "compare")):
+            if extra not in sys.path:
+                sys.path.insert(0, extra)
+        import match_quality_table as mqt  # noqa: PLC0415
+
+        def summary(mean: float) -> dict:
+            return {"metadata": {"cohort": "ARIC"}, "total_participants": 100,
+                    "variables": {"height_baseline_1": {
+                        "type": "continuous", "bdc_label": "Height", "n_valid": 100,
+                        "pct_missing": 0.0, "mean": mean, "sd": 10.0}}}
+        (self.md / "t.json").write_text(json.dumps(summary(170.0)), encoding="utf-8")
+        (self.md / "b.json").write_text(json.dumps(summary(169.5)), encoding="utf-8")
+        out_file = self.md / "mqt.txt"
+        self._quiet(mqt.run, str(self.md / "t.json"), str(self.md / "b.json"),
+                    str(out_file), True)
+        row = next(line for line in out_file.read_text(encoding="utf-8").splitlines()
+                   if line.startswith("Height"))
+        self.assertIn("-0.5000", row)
+        # 0.5 / 10 = 0.05 SD: the same tier a +0.5 gap gets.
+        self.assertIn(" T4 ", row)
+
 
 if __name__ == "__main__":
     unittest.main()
