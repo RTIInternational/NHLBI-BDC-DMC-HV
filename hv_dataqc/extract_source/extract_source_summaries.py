@@ -817,6 +817,60 @@ def main(argv: list[str] | None = None) -> None:
             sys.exit(1)
 
         # ------------------------------------------------------------------
+        # 1a. Optional PHV name map (resolved before any output is written)
+        # ------------------------------------------------------------------
+        phv_name_map: dict[str, str] = {}
+        source_type_map: dict[str, str] = {}
+        if args.cache_dir:
+            cache_path = Path(args.cache_dir)
+            if cache_path.is_dir():
+                phv_name_map = load_phv_name_map(cache_path)
+            source_type_map = load_source_type_map(cache_path)
+
+        # ------------------------------------------------------------------
+        # 1a'. Optional: pre-scan YAML for multi-PHV pairs (for --yaml-dir)
+        # ------------------------------------------------------------------
+        phv_pairs: list[tuple[str, str]] = []
+        yaml_phvs: set[str] = set()
+        if args.yaml_dir:
+            yaml_dir_path = Path(args.yaml_dir)
+            if yaml_dir_path.is_dir():
+                yaml_phvs = scan_yaml_for_phvs(yaml_dir_path)
+                # Crosstabs are skippable: S4 only needs variables_by_pht, and
+                # the pair set can be huge (FHS ~33k pairs), dominating memory.
+                phv_pairs = (
+                    [] if args.no_joint_distributions
+                    else scan_yaml_for_phv_pairs(yaml_dir_path)
+                )
+                log.info(
+                    "YAML pre-scan (%s): found %d PHV(s), %d multi-PHV pair(s) to crosstab%s",
+                    yaml_dir_path, len(yaml_phvs), len(phv_pairs),
+                    " (joint distributions disabled)" if args.no_joint_distributions else "",
+                )
+                if log.isEnabledFor(logging.DEBUG):
+                    for pa, pb in phv_pairs:
+                        log.debug("  Pair: %s + %s", pa, pb)
+            else:
+                log.warning("--yaml-dir does not exist: %s — skipping joint distribution pre-scan", yaml_dir_path)
+
+        # Crosstabs (phv_pairs) and --scope-to-yaml both resolve PHV accessions
+        # to TSV column names through the name map. With an empty map (no
+        # --cache-dir, or an empty cache) crosstabs are skipped by compare and a
+        # scoped extract comes out nearly empty, and the staleness check
+        # (extract_coverage) compares against the PHVs *attempted*, so every
+        # later run would reuse it. Fail hard, and before the run dir and the
+        # latest_source symlink below are created.
+        if (phv_pairs or args.scope_to_yaml) and not phv_name_map:
+            raise SystemExit(
+                "ERROR: --yaml-dir found multi-PHV pairs to crosstab, or "
+                "--scope-to-yaml was given, but --cache-dir was not provided "
+                "or resolved no PHV names.\n"
+                "Provide --cache-dir pointing to the cohort's dbGaP cache "
+                "(non-empty pheno_variable_summaries/) so PHV accessions can "
+                "be resolved to TSV column names."
+            )
+
+        # ------------------------------------------------------------------
         # 1b. Resolve output directory
         # ------------------------------------------------------------------
         output_dir = Path(args.output_dir) if args.output_dir else (resolved_root / "dataqc-runs")
@@ -850,55 +904,6 @@ def main(argv: list[str] | None = None) -> None:
             log.error("No data loaded — check --source-root / --source-dirs.")
             sys.exit(1)
         loaded = itertools.chain([_first], _source_gen)
-
-        # ------------------------------------------------------------------
-        # 3. Optional PHV name map
-        # ------------------------------------------------------------------
-        phv_name_map: dict[str, str] = {}
-        source_type_map: dict[str, str] = {}
-        if args.cache_dir:
-            cache_path = Path(args.cache_dir)
-            if cache_path.is_dir():
-                phv_name_map = load_phv_name_map(cache_path)
-            source_type_map = load_source_type_map(cache_path)
-
-        # ------------------------------------------------------------------
-        # 3b. Optional: pre-scan YAML for multi-PHV pairs (for --yaml-dir)
-        # ------------------------------------------------------------------
-        phv_pairs: list[tuple[str, str]] = []
-        yaml_phvs: set[str] = set()
-        if args.yaml_dir:
-            yaml_dir_path = Path(args.yaml_dir)
-            if yaml_dir_path.is_dir():
-                yaml_phvs = scan_yaml_for_phvs(yaml_dir_path)
-                # Crosstabs are skippable: S4 only needs variables_by_pht, and
-                # the pair set can be huge (FHS ~33k pairs), dominating memory.
-                phv_pairs = (
-                    [] if args.no_joint_distributions
-                    else scan_yaml_for_phv_pairs(yaml_dir_path)
-                )
-                log.info(
-                    "YAML pre-scan (%s): found %d PHV(s), %d multi-PHV pair(s) to crosstab%s",
-                    yaml_dir_path, len(yaml_phvs), len(phv_pairs),
-                    " (joint distributions disabled)" if args.no_joint_distributions else "",
-                )
-                if log.isEnabledFor(logging.DEBUG):
-                    for pa, pb in phv_pairs:
-                        log.debug("  Pair: %s + %s", pa, pb)
-            else:
-                log.warning("--yaml-dir does not exist: %s — skipping joint distribution pre-scan", yaml_dir_path)
-
-        # If YAML pre-scan found pairs to crosstab but the PHV name map is
-        # empty (--cache-dir missing or cache empty), joint distributions
-        # cannot be computed and the compare step will SKIP those checks.
-        # Fail hard here rather than silently producing incomplete output.
-        if phv_pairs and not phv_name_map:
-            raise SystemExit(
-                "ERROR: --yaml-dir found multi-PHV pairs to crosstab but "
-                "--cache-dir was not provided or resolved no PHV names.\n"
-                "Provide --cache-dir pointing to the cohort's dbGaP cache so "
-                "PHV accessions can be resolved to TSV column names."
-            )
 
         # ------------------------------------------------------------------
         # 4. Optional column filter

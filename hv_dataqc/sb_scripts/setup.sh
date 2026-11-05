@@ -26,6 +26,8 @@ cat <<'BANNER'
   Table S5 (post-harmonization summary stats):
     hv_dataqc/sb_scripts/run_s5_report.sh                  # latest DataRun
     hv_dataqc/sb_scripts/run_s5_report.sh --list-dataruns  # pick a DataRun
+    (currently broken: finds harmonized data only under _QC_STAGING/DataRun_*;
+     no --harmonized-root yet, see issue #929)
 
   Output lands in /sbgenomics/workspace/{S4,S5}-output-files/ (download the
   .xlsx). Re-running resumes from completed cohorts; --force redoes them.

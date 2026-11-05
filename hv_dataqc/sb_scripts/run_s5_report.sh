@@ -7,7 +7,8 @@
 # TSV, a formatted .xlsx, and a coverage report.
 #
 # Resumable: each cohort's harmonized extract is cached per DataRun under
-# QC-output-files/<COHORT>/harmonized_<DataRun>/ and reused on re-run.
+# QC-output-files/<COHORT>/harmonized_<DataRun>/ and reused on re-run, unless
+# Table S1 (the label map) is newer than the cached extract.
 #
 # Usage:
 #   ./run_s5_report.sh                              # latest DataRun, all cohorts
@@ -29,7 +30,7 @@ while [ $# -gt 0 ]; do
         --list-dataruns) LIST_ONLY=true; shift ;;
         --cohorts)       COHORT_FILTER="${2:?--cohorts requires a value}"; shift 2 ;;
         --force)         FORCE=true; shift ;;
-        -h|--help)       sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        -h|--help)       sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
         -*)              echo "Unknown flag: $1" >&2; exit 1 ;;
         *)               echo "Unknown arg: $1" >&2; exit 1 ;;
     esac
@@ -164,6 +165,13 @@ S5_OUTPUT_DIR="/sbgenomics/workspace/S5-output-files/$RUN_TS"
 mkdir -p "$S5_OUTPUT_DIR"
 QC_BASE="/sbgenomics/workspace/QC-output-files"
 COHORT_JSONS=()
+# Label map the extractor reads by default (label_map.DEFAULT_PATH). Without it
+# every bdc_label is blank, and that extract would be cached.
+S1="$HV/hv_dataqc/extract_harmonized/config/TableS1.tsv"
+if [ ! -f "$S1" ]; then
+    echo "ERROR: Table S1 label map not found: $S1" >&2
+    exit 1
+fi
 
 TOTAL=${#COHORT_MAPPED_DIRS[@]}
 i=0
@@ -172,10 +180,16 @@ for cohort in "${!COHORT_MAPPED_DIRS[@]}"; do
     cohort_lower=$(echo "$cohort" | tr '[:upper:]' '[:lower:]')
     cohort_out="$QC_BASE/$cohort/harmonized_$CHOSEN_DATARUN"
 
-    # Reuse an existing same-DataRun extract unless --force.
+    # Reuse an existing same-DataRun extract unless --force, or unless Table S1
+    # is newer than it: bdc_label is written into the extract when it is made,
+    # so an extract older than S1 carries stale (blank) labels.
     existing=""
     if ! $FORCE; then
         existing=$(find "$cohort_out" -name "${cohort_lower}_harmonized_*.json" -type f 2>/dev/null | sort | tail -1 || true)
+        if [ -n "$existing" ] && [ "$S1" -nt "$existing" ]; then
+            echo "[$i/$TOTAL] $cohort — Table S1 is newer than the cached extract; re-extracting"
+            existing=""
+        fi
     fi
     if [ -n "$existing" ]; then
         echo "[$i/$TOTAL] $cohort — reusing harmonized extract ($CHOSEN_DATARUN)"
