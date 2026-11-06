@@ -1,3 +1,4 @@
+# Recalled weight: "WHAT WAS YOUR USUAL WEIGHT AT AGE 50" (phv00099153); age at observation is 50 years.
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001450
@@ -12,10 +13,9 @@
         observation_type:
           value: OBA:VT0001259
           range: string
-        body_position:
-          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
-          value: "anthropometry"
+          value: "self-report questionnaire"
+          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -28,7 +28,7 @@
                     target_unit: kg
                 unit:
                   value: kg
-                  range: string                    
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001452
@@ -59,6 +59,7 @@
                 unit:
                   value: kg
                   range: string
+# Recalled weight: "WHAT WAS YOUR USUAL WEIGHT AT AGE 50" (phv00100355); age at observation is 50 years.
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001452
@@ -73,10 +74,9 @@
         observation_type:
           value: OBA:VT0001259
           range: string
-        body_position:
-          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
-          value: "anthropometry"
+          value: "self-report questionnaire"
+          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -89,7 +89,7 @@
                     target_unit: kg
                 unit:
                   value: kg
-                  range: string                    
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001475
@@ -120,6 +120,7 @@
                 unit:
                   value: kg
                   range: string
+# Recalled weight: "WHAT WAS YOUR USUAL WEIGHT AT AGE 50" (phv00106140); age at observation is 50 years.
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001490
@@ -129,14 +130,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         age_at_observation:
-          expr: '{phv00105622} * 365'
+          value: 18250
+          range: integer
         observation_type:
           value: OBA:VT0001259
           range: string
-        body_position:
-          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
-          value: "anthropometry"
+          value: "self-report questionnaire"
+          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -149,7 +150,7 @@
                     target_unit: kg
                 unit:
                   value: kg
-                  range: string                    
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001491
@@ -210,6 +211,7 @@
                 unit:
                   value: kg
                   range: string
+# Recalled weight: "Age 50 weight" (AG50WT59, phv00101671); age at observation is 50 years.
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001474
@@ -224,10 +226,9 @@
         observation_type:
           value: OBA:VT0001259
           range: string
-        body_position:
-          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
-          value: "anthropometry"
+          value: "self-report questionnaire"
+          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -240,4 +241,4 @@
                     target_unit: kg
                 unit:
                   value: kg
-                  range: string 
+                  range: string

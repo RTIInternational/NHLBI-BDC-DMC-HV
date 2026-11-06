@@ -7,69 +7,21 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023198}) + ":FHS GENERATION 3 EXAM 1")'
         age_at_observation:
-          expr: '{pht003099.phv00177930} * 365'
+          expr: 'case((is_numeric({phv00023197}), ({pht003099.phv00177930} * 365) + {phv00023197}))'
         observation_type:
           value: OMOP:42872742
           range: string
         method_type:
           value: 'Computed Tomography-Thoracic'
+        qualifier:
+          value: AVERAGE
         value_quantity:
           class_derivations:
           - Quantity:
               populated_from: pht000144
               slot_derivations:
                 value_decimal:
-                  populated_from: phv00023194
-                unit:
-                  value: '{score}'
-                  range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000144
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023198}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023198}) + ":FHS GENERATION 3 EXAM 1")'
-        age_at_observation:
-          expr: '{pht003099.phv00177930} * 365'
-        observation_type:
-          value: OMOP:42872742
-          range: string
-        method_type:
-          value: 'Computed Tomography-Thoracic'
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht000144
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00023195
-                unit:
-                  value: '{score}'
-                  range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000144
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023198}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023198}) + ":FHS GENERATION 3 EXAM 1")'
-        age_at_observation:
-          expr: '{pht003099.phv00177930} * 365'
-        observation_type:
-          value: OMOP:42872742
-          range: string
-        method_type:
-          value: 'Computed Tomography-Thoracic'
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht000144
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00023196
+                  expr: 'case((is_numeric({phv00023194}) and is_numeric({phv00023195}), (0.0 + {phv00023194} + {phv00023195}) / 2), (is_numeric({phv00023194}), 0.0 + {phv00023194}), (is_numeric({phv00023195}), 0.0 + {phv00023195}))'
                 unit:
                   value: '{score}'
                   range: string
@@ -82,69 +34,21 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023204}) + ":FHS OFFSPRING EXAM 7")'
         age_at_observation:
-          expr: '{pht003099.phv00177942} * 365'
+          expr: 'case((is_numeric({phv00023203}), ({pht003099.phv00177930} * 365) + {phv00023203}))'
         observation_type:
           value: OMOP:42872742
           range: string
         method_type:
           value: 'Computed Tomography-Thoracic'
+        qualifier:
+          value: AVERAGE
         value_quantity:
           class_derivations:
           - Quantity:
               populated_from: pht000145
               slot_derivations:
                 value_decimal:
-                  populated_from: phv00023200
-                unit:
-                  value: '{score}'
-                  range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000145
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023204}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023204}) + ":FHS OFFSPRING EXAM 7")'
-        age_at_observation:
-          expr: '{pht003099.phv00177942} * 365'
-        observation_type:
-          value: OMOP:42872742
-          range: string
-        method_type:
-          value: 'Computed Tomography-Thoracic'
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht000145
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00023201
-                unit:
-                  value: '{score}'
-                  range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000145
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023204}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023204}) + ":FHS OFFSPRING EXAM 7")'
-        age_at_observation:
-          expr: '{pht003099.phv00177942} * 365'
-        observation_type:
-          value: OMOP:42872742
-          range: string
-        method_type:
-          value: 'Computed Tomography-Thoracic'
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht000145
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00023202
+                  expr: 'case((is_numeric({phv00023200}) and is_numeric({phv00023201}), (0.0 + {phv00023200} + {phv00023201}) / 2), (is_numeric({phv00023200}), 0.0 + {phv00023200}), (is_numeric({phv00023201}), 0.0 + {phv00023201}))'
                 unit:
                   value: '{score}'
                   range: string
