@@ -149,8 +149,7 @@
           value: ONESELF
           range: string
         associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Questionnaire", "Rose Questionnaire")'
 - class_derivations:
     Condition:
       populated_from: pht001475
@@ -223,8 +222,7 @@
           value: ONESELF
           range: string
         associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Questionnaire", "Rose Questionnaire")'
 - class_derivations:
     Condition:
       populated_from: pht001489
@@ -273,8 +271,7 @@
           value: ONESELF
           range: string
         associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Questionnaire", "Rose Questionnaire")'
 - class_derivations:
     Condition:
       populated_from: pht001489
@@ -746,3 +743,20 @@
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
+- class_derivations:
+    Questionnaire:
+      populated_from: pht001475
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Questionnaire", "Rose Questionnaire")'
+        name:
+          value: "Rose Questionnaire"
+        title:
+          value: "Rose Angina Questionnaire"
+        items:
+          class_derivations:
+          - QuestionnaireItem:
+              populated_from: pht001475
+              slot_derivations:
+                text:
+                  value: "Placeholder item; Rose Questionnaire item content is not modeled in this pipeline (#802)"
