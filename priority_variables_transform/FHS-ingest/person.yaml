@@ -13,7 +13,7 @@
         species:
           value: NCBITaxon:9606
         vital_status:
-          expr: 'case(({pht003317.phv00190831} is not None, "OMOP:434489"))'
+          expr: 'case(({pht003317.phv00190831} is not None, "OMOP:434489"), ({pht003317.phv00190833} is not None, "OMOP:4230556"))'
         age_at_death:
           expr: 'case(({pht003317.phv00190831} is not None, ({phv00177930} * 365) + {pht003317.phv00190831}))'
         # excluded: cause_of_death - pht000094 (UCOD phv00021941, COD1-COD9 phv00021942-phv00021950) carries

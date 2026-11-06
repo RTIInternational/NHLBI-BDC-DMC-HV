@@ -110,7 +110,7 @@ CACHE_DIR="$HV/hv_dataqc/local_output/dbgap-cache/$CACHE_COHORT"
 # comparisons would be silently skipped in the compare step.
 if [ ! -d "$CACHE_DIR" ]; then
     echo "ERROR: dbGaP cache not found for $COHORT: $CACHE_DIR" >&2
-    echo "  Run: cd hv_dataqc/local_scripts && ./fetch_cache.sh $CACHE_COHORT" >&2
+    echo "  Run: hv_dataqc/sb_scripts/fetch_cache.sh $CACHE_COHORT" >&2
     exit 1
 fi
 

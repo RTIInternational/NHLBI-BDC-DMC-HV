@@ -168,10 +168,10 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: STUDY_RECORD
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -193,10 +193,10 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: STUDY_RECORD
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -231,12 +231,15 @@
 - class_derivations:
     Condition:
       populated_from: pht002770
+      joins:
+        pht000998:
+          source_key: phv00170648
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00170648}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170648}) + ":WHI SCREENING")'
-          range: string
+        age_at_condition_start:
+          expr: 'case(({phv00202375} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00202376}))'
         condition_concept:
           value: MONDO:0005009
           range: string
@@ -334,7 +337,6 @@
         condition_status:
           populated_from: phv00283495
           value_mappings:
-            '0': ABSENT
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:

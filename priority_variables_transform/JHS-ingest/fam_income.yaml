@@ -1,40 +1,5 @@
 - class_derivations:
     SdohObservation:
-      populated_from: pht001966
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128026}) + ":JHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128026}) + ":JHS Exam 1")'
-          range: string
-        observation_type:
-          value: OMOP:4076114
-          range: string
-        category:
-          value: FINANCIAL_INSECURITY
-          range: string
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht001966
-              slot_derivations:
-                value_concept:
-                  populated_from: phv00128078
-                  value_mappings:
-                    I. $50,000 - 74,999: $50,000 - $74,999
-                    H. $35,000 - 49,999: $35,000 - $49,999
-                    G. $25,000 - 34,999: $25,000 - $34,999
-                    F. $20,000 - 24,999: $20,000 - $24,999
-                    J. $75,000 - 99,999: $75,000 - $99,999
-                    K. $100,000 or more: '> $100,000'
-                    D. $12,000 - 15,999: $12,000 - $15,999
-                    E. $16,000 - 19,999: $16,000 - $19,999
-                    C. $8,000 - 11,999: $8,000 - $11,999
-                unit:
-                  value: USD
-                  range: string
-- class_derivations:
-    SdohObservation:
       populated_from: pht008729
       slot_derivations:
         associated_participant:

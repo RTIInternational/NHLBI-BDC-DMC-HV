@@ -37,11 +37,15 @@
 - class_derivations:
     DrugExposure:
       populated_from: pht003298
+      joins:
+        pht001559:
+          source_key: dbGaP_Subject_ID
+          lookup_key: dbGaP_Subject_ID
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({pht001559.phv00112417}) + ":CARDIA")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({pht001559.phv00112417}) + ":CARDIA YEAR 0")'
         drug_concept:
           value: ATC:C10A
         exposure_provenance:

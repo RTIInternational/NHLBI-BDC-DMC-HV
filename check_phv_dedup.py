@@ -32,18 +32,7 @@ def iter_nested_class_derivs(slot_def):
 
 
 # Known duplicates tracked in #455. Remove entries as they are fixed.
-#
-# Re-triaged in #735 once this check could see MeasurementObservationSet.
-# Seven entries were dropped as genuinely resolved; the two below are still
-# live and were only invisible because they sit inside a Set.
-KNOWN_ISSUES = {
-    # ARIC blood_pressure.yaml emits the same random-zero "zero reading"
-    # (SBPA17 / SBPA20) twice, typed as both OMOP:4152194 (systolic) and
-    # OMOP:4154790 (diastolic), distinguished only by method_type. Whether
-    # a calibration offset should carry a BP concept at all is open in #735.
-    "phv00210286",
-    "phv00210289",
-}
+KNOWN_ISSUES: set[str] = set()
 
 
 def _measurement_value_phvs(slots, block_index):

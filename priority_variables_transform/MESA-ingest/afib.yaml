@@ -139,12 +139,11 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00090301}) + ":MESA")'
         age_at_condition_start:
-          expr: 'case(({phv00090303} == 1, ({pht001116.phv00084442} * 365) + {phv00090304}))'
+          expr: 'case(({phv00090305} == 427.32, ({pht001116.phv00084442} * 365) + {phv00090304}))'
         condition_concept:
-          expr: 'case(({phv00090305} == 427.31, "MONDO:0004981"), ({phv00090305} == 427.32, "MONDO:0005310"))'
+          expr: 'case(({phv00090305} == 427.32, "MONDO:0005310"))'
         condition_status:
-          value: PRESENT
-          range: string
+          expr: 'case(({phv00090305} == 427.32, "PRESENT"))'
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
           range: string

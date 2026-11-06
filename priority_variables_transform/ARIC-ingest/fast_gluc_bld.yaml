@@ -42,52 +42,6 @@
                   value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht012814
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
-        age_at_observation:
-          expr: "{phv00512050} * 365"
-        observation_type:
-          value: OMOP:4156660
-        method_type:
-          value: "blood assay"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht012814
-              slot_derivations:
-                value_decimal:
-                  expr: "{phv00512077} * 18"
-                unit:
-                  value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht012813
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
-        age_at_observation:
-          expr: "{phv00511996} * 365"
-        observation_type:
-          value: OMOP:4156660
-        method_type:
-          value: "blood assay"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht012813
-              slot_derivations:
-                value_decimal:
-                  expr: "{phv00511990} * 18"
-                unit:
-                  value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht012504
       slot_derivations:
         associated_participant:
@@ -106,7 +60,7 @@
               populated_from: pht012504
               slot_derivations:
                 value_decimal:
-                  expr: "{phv00507387} * 18"
+                  expr: "{phv00507387} * 18.016"
                 unit:
                   value: "mg/dL"
 - class_derivations:
@@ -129,6 +83,6 @@
               populated_from: pht012815
               slot_derivations:
                 value_decimal:
-                  expr: "{phv00512301} * 18"
+                  expr: "{phv00512301} * 18.016"
                 unit:
                   value: "mg/dL"
