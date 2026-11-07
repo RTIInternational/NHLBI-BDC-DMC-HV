@@ -1,0 +1,25 @@
+# jhs_afib_label_keyed: copied verbatim from HV main 731984f5 as a fixed test case for #885.
+class_derivations:
+  Condition:
+    populated_from: pht008729
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")
+      associated_visit:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")
+      condition_concept:
+        value: MONDO:0004981
+        range: string
+      condition_status:
+        populated_from: phv00401193
+        value_mappings:
+          'Yes': PRESENT
+          'No': ABSENT
+      condition_provenance:
+        value: STUDY_RECORD
+        range: string
+      associated_evidence:
+        value: Analysis derived
+      relationship_to_participant:
+        value: ONESELF
+        range: string

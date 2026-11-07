@@ -8,7 +8,9 @@ that the original block had.
 
 Checks:
     1.6  Cross-block slot consistency -- slots in the union but absent
-         from a block are flagged as WARNING.
+         from a block are reported at INFO: no slot it compares is required, and most
+         differences are legitimate (a sub-question without a severity, a sibling without
+         a method_type).
 
 Usage:
     python hv-lint/phase-1/check_cross_block_consistency.py
@@ -27,6 +29,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _known_issues  # noqa: E402
 
 TRANSFORM_DIR = find_transform_dir()
 
@@ -35,6 +38,10 @@ EXCLUDED_SLOTS = {
     "id",
     "associated_participant",
     "associated_visit",
+    # descriptor / provenance slots that legitimately differ between sibling blocks
+    "associated_evidence",
+    "method_type",
+    "range_high",
 }
 
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
@@ -156,7 +163,7 @@ def check_cross_block_consistency(
                         file=rel_path,
                         block=block_idx,
                         check="1.6",
-                        severity="WARNING",
+                        severity="INFO",
                         message=(
                             f"{cls_name} block {block_idx} ({pht_label}) "
                             f"missing slot '{slot}' -- present in block(s) "
@@ -204,7 +211,7 @@ def main() -> int:
         try:
             with file_path.open(encoding="utf-8") as f:
                 data = yaml.safe_load(f)
-        except (OSError, yaml.YAMLError):
+        except (OSError, UnicodeDecodeError, yaml.YAMLError):
             continue
 
         if data is None:
@@ -219,6 +226,10 @@ def main() -> int:
         )
 
     # Report
+    # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
+    all_findings.extend(_known_issues.finalize(
+        all_findings, checks={"1.6"}, scanned_files=yaml_files, make_finding=Finding))
+
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
 
     counts: dict[str, int] = {}

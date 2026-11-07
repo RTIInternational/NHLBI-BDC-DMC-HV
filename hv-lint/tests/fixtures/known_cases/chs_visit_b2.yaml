@@ -1,0 +1,25 @@
+# chs_visit_b2: copied from HV main 731984f5 as a fixed test case for #885 (CHS BASELINE 2 from two tables: a 5.1 WARNING with age expressions).
+class_derivations:
+  Visit:
+    populated_from: pht001451
+    joins:
+      pht001450:
+        source_key: phv00099663
+        lookup_key: phv00098771
+    slot_derivations:
+      id:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00099663}) + ":CHS BASELINE 2")
+      name:
+        value: CHS BASELINE 2
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00099663}) + ":CHS")
+      age_at_visit_start:
+        expr: '{pht001450.phv00098799} * 365'
+      age_at_visit_end:
+        expr: '{pht001450.phv00098799} * 365'
+      visit_provenance:
+        value: STUDY_RECORD
+        range: string
+      visit_category:
+        value: STUDY_SITE_VISIT
+        range: string

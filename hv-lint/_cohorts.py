@@ -585,7 +585,11 @@ def load_cache_artifact(cache_dir: Path | str, cache_key: str, suffix: str = "")
         if not path.is_file():
             raise FileNotFoundError(
                 f"no cache artifact '{cache_key}{suffix}.json.gz' (or .json) in {base}")
-    remedy = f"Rebuild it with: {rebuild_command(base, cache_key)}"
+    # `update_data.py` builds only the PHV and detail indexes; the value-count and table-name
+    # indexes have their own builder, so their remedy must name it.
+    remedy = "Rebuild it with: " + (
+        stats_rebuild_command(cache_key, tables=suffix == "_tables")
+        if suffix in ("_stats", "_tables") else rebuild_command(base, cache_key))
     # A truncated, non-gzip or non-JSON file is an integrity failure like a digest mismatch:
     # every phase catches CacheIntegrityError and reports it, while a raw decode error escapes
     # as a traceback. ValueError covers JSONDecodeError and UnicodeDecodeError; OSError covers
@@ -694,16 +698,42 @@ def study_mismatch(cache_dir: Path | str, cache_key: str, expect: str) -> str | 
     return None
 
 
+def release_check_error(cohort: str, cache_dir: Path | str, cache_key: str,
+                        expect_study: str | None = None) -> str | None:
+    """The Phase 3 release check's ERROR line for one cohort's cache, or ``None`` when it passes.
+
+    ``expect_study`` overrides the cohort's declaration; a cohort that declares nothing fails,
+    because linting against whichever cache is present is how a superseded release goes unseen.
+    """
+    expected = expect_study or declared_study(cohort, cache_dir=cache_dir)
+    if not expected:
+        return (f"ERROR: cohort '{cohort}' declares no dbGaP release, so the cache cannot be "
+                f"checked. Add hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml with "
+                f"current_version.study_id and data_version. (--expect-study phs######.v# "
+                f"overrides it for a one-off Phase 3 run on one named --cohort; Phase 5 has no "
+                f"override and still fails.)")
+    mismatch = study_mismatch(cache_dir, cache_key, expected)
+    if mismatch:
+        source = "--expect-study" if expect_study else "declared release"
+        return f"ERROR: study version check ({source} {expected}): {mismatch}"
+    return None
+
+
 def discover_cache_keys(cache_dir: Path | str) -> list[str]:
     """Every cache key present in ``cache_dir``, from the ``*.json.gz`` files themselves.
 
-    Detail indexes (``<key>_detail.json.gz``) are folded onto their base key, so a cohort with
-    both files appears once.
+    Detail, value-count and table-name indexes (``<key>_detail.json.gz``,
+    ``<key>_stats.json.gz``, ``<key>_tables.json.gz``) are folded onto their base key, so a
+    release with several files appears once.
     """
     keys: set[str] = set()
     for path in Path(cache_dir).glob("*.json.gz"):
         stem = path.name[: -len(".json.gz")]
-        keys.add(stem[: -len("_detail")] if stem.endswith("_detail") else stem)
+        for suffix in ("_detail", "_stats", "_tables"):
+            if stem.endswith(suffix):
+                stem = stem[: -len(suffix)]
+                break
+        keys.add(stem)
     return sorted(keys)
 
 
@@ -721,3 +751,31 @@ def ingest_cohorts(transform_dir: Path | str) -> list[str]:
         d.name[: -len("-ingest")] for d in base.iterdir()
         if d.is_dir() and d.name.endswith("-ingest")
     )
+
+
+def stats_rebuild_command(cache_key: str, tables: bool = False) -> str:
+    """The command that rebuilds ``<cache_key>_stats.json.gz`` (or ``_tables`` with ``tables``).
+
+    ``--source-dir`` is required in practice: the hv-lint cache holds no var_report or data_dict
+    files, so the builder's default source directory does not exist. Every refusal that names
+    the builder prints this, so none names a command that cannot run.
+    """
+    kind = "data_dict" if tables else "var_report"
+    flag = " --tables" if tables else ""
+    return (f"python hv-lint/build_phv_stats_index.py{flag} --cohort {cache_key} "
+            f"--source-dir <dir of the release's *.{kind}.xml> --study-prefix {cache_key}.")
+
+
+def load_table_names(cache_dir: Path | str, cache_key: str) -> dict[str, dict[str, str]]:
+    """``{pht: {"name", "description"}}`` from ``<cache_key>_tables.json.gz``; ``{}`` when absent.
+
+    Built by ``build_phv_stats_index.py --tables`` from the release's data dictionaries (the
+    short name in each filename and the table's own description). FHS's and MESA's are
+    committed: rule 1.8 reads FHS's ``ex<cohort>_<exam>s`` names, rule 1.14 MESA's ``ExamN``.
+    Raises :class:`CacheIntegrityError` when the file does not match its manifest record.
+    """
+    try:
+        payload = load_cache_artifact(cache_dir, cache_key, "_tables")
+    except FileNotFoundError:
+        return {}
+    return dict(payload) if isinstance(payload, dict) else {}

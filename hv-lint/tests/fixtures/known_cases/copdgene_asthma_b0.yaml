@@ -1,0 +1,24 @@
+# copdgene_asthma_b0: copied verbatim from HV main 731984f5 as a fixed test case for #885.
+class_derivations:
+  Condition:
+    populated_from: pht002239
+    slot_derivations:
+      associated_visit:
+        expr: case(({phv00568798} == 'P1', uuid5('https://w3id.org/bdchm/Visit', str({phv00159568}) + ':COPDGene P1')), ({phv00568798} == 'P2', uuid5('https://w3id.org/bdchm/Visit', str({phv00159568}) +
+          ':COPDGene P2')), (True, None))
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00159568}) + ":COPDGene")
+      age_at_condition_start:
+        expr: case(({phv00159701} == 1, {phv00159702} * 365))
+      condition_concept:
+        value: MONDO:0004979
+      condition_status:
+        populated_from: phv00159701
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+          '3': UNKNOWN
+      condition_provenance:
+        value: PATIENT_SELF_REPORT
+      relationship_to_participant:
+        value: ONESELF

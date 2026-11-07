@@ -13,6 +13,7 @@ Usage:
     python hv-lint/phase-1/run_phase1.py                    # all cohorts
     python hv-lint/phase-1/run_phase1.py --cohort FHS       # single cohort
     python hv-lint/phase-1/run_phase1.py --skip yamllint    # skip a step
+    python hv-lint/phase-1/run_phase1.py --cache-dir <dir>  # dbGaP indexes for 1.8 / 1.14
 """
 
 from __future__ import annotations
@@ -35,6 +36,7 @@ COMPONENTS = {
         "cohort_flag": "--cohort",
         "extra_args": ["--summary"],
         "supports_fail_on": False,
+        "supports_cache_dir": False,
     },
     "quoting": {
         "script": SCRIPT_DIR / "check_quoting_rules.py",
@@ -42,6 +44,7 @@ COMPONENTS = {
         "cohort_flag": "--cohort",
         "extra_args": ["--summary"],
         "supports_fail_on": False,
+        "supports_cache_dir": False,
     },
     "structure": {
         "script": SCRIPT_DIR / "validate_yaml_structure.py",
@@ -49,6 +52,7 @@ COMPONENTS = {
         "cohort_flag": "--cohort",
         "extra_args": [],
         "supports_fail_on": True,
+        "supports_cache_dir": False,
     },
     "cross-block": {
         "script": SCRIPT_DIR / "check_cross_block_consistency.py",
@@ -56,13 +60,23 @@ COMPONENTS = {
         "cohort_flag": "--cohort",
         "extra_args": [],
         "supports_fail_on": True,
+        "supports_cache_dir": False,
     },
     "cross-file-pht": {
         "script": SCRIPT_DIR / "check_cross_file_pht_consistency.py",
-        "label": "Cross-File PHT Visit Label Consistency (1.8)",
+        "label": "Cross-File PHT Visit Label Consistency (1.8, 1.14)",
         "cohort_flag": "--cohort",
         "extra_args": [],
         "supports_fail_on": True,
+        "supports_cache_dir": True,
+    },
+    "cross-file-dup": {
+        "script": SCRIPT_DIR / "check_cross_file_duplicates.py",
+        "label": "Cross-File Identical Blocks (1.12)",
+        "cohort_flag": "--cohort",
+        "extra_args": [],
+        "supports_fail_on": True,
+        "supports_cache_dir": False,
     },
 }
 
@@ -86,13 +100,18 @@ def parse_args() -> argparse.Namespace:
         help="Passed to validate_yaml_structure.py (default: error)"
     )
     p.add_argument(
+        "--cache-dir", default=None,
+        help="dbGaP index directory for the components that read one (1.8 / 1.14); "
+             "default: each component's own (hv-lint/dbgap-cache)"
+    )
+    p.add_argument(
         "--hv-root",
         help="Path to an HV repo clone (overrides auto-detection)"
     )
     return p.parse_args()
 
 
-def run_component(name: str, cohort: str, fail_on: str) -> int:
+def run_component(name: str, cohort: str, fail_on: str, cache_dir: str | None = None) -> int:
     """Run a single Phase 1 component and return its exit code."""
     comp = COMPONENTS[name]
     script = comp["script"]
@@ -112,6 +131,10 @@ def run_component(name: str, cohort: str, fail_on: str) -> int:
 
     if comp.get("supports_fail_on"):
         cmd.extend(["--fail-on", fail_on])
+
+    # Only a component that reads the cache accepts the flag; any other would exit 2 on it.
+    if cache_dir and comp.get("supports_cache_dir"):
+        cmd.extend(["--cache-dir", cache_dir])
 
     result = subprocess.run(cmd)
     return result.returncode
@@ -136,6 +159,8 @@ def main() -> int:
     print(f"Cohort: {args.cohort}")
     if args.hv_root:
         print(f"HV root: {os.environ['HV_ROOT']}")
+    if args.cache_dir:
+        print(f"Cache: {args.cache_dir}")
     print("=" * 70)
 
     results: dict[str, int] = {}
@@ -145,7 +170,7 @@ def main() -> int:
             print(f"\n--- {comp['label']} [SKIPPED] ---\n")
             continue
         print(f"\n--- {comp['label']} ---\n")
-        rc = run_component(name, args.cohort, args.fail_on)
+        rc = run_component(name, args.cohort, args.fail_on, args.cache_dir)
         results[name] = rc
 
     # Consolidated summary
