@@ -19,6 +19,8 @@
               populated_from: pht001116
               slot_derivations:
                 value_decimal:
-                  populated_from: phv00085029
+                  expr: 'case((is_numeric({phv00085029}) and {phv00085029} != -888 and {phv00085029} != -555, {phv00085029}), ({phv00085029} == -555, 5000.0))'
+                operator:
+                  expr: 'case(({phv00085029} == -555, "GREATER_THAN"))'
                 unit:
                   value: pg/mL

@@ -98,24 +98,6 @@
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
-          populated_from: phv00512281
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            T: UNKNOWN
-- class_derivations:
-    DrugExposure:
-      populated_from: pht012815
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
-        drug_concept:
-          value: VANDF:CV702
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-        exposure_status:
           populated_from: phv00512282
           value_mappings:
             '0': ABSENT
