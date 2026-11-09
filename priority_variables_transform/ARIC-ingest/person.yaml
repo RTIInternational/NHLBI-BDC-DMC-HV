@@ -28,7 +28,7 @@
                 cause:
                   expr: 'case(({pht004049.phv00420047} is not None, "ICD10CM:" + str({pht004049.phv00420047})))'
                 order:
-                  value: 1
+                  expr: 'case(({pht004049.phv00420047} is not None, 1))'
           - CauseOfDeath:
               populated_from: pht001440
               joins:
@@ -39,7 +39,7 @@
                 cause:
                   expr: 'case(({pht004049.phv00203820} is not None, "ICD10CM:" + str({pht004049.phv00203820})))'
                 order:
-                  value: 2
+                  expr: 'case(({pht004049.phv00203820} is not None, 2))'
           - CauseOfDeath:
               populated_from: pht001440
               joins:
@@ -50,7 +50,7 @@
                 cause:
                   expr: 'case(({pht004049.phv00203822} is not None, "ICD10CM:" + str({pht004049.phv00203822})))'
                 order:
-                  value: 3
+                  expr: 'case(({pht004049.phv00203822} is not None, 3))'
           - CauseOfDeath:
               populated_from: pht001440
               joins:
@@ -61,7 +61,7 @@
                 cause:
                   expr: 'case(({pht004049.phv00203824} is not None, "ICD10CM:" + str({pht004049.phv00203824})))'
                 order:
-                  value: 4
+                  expr: 'case(({pht004049.phv00203824} is not None, 4))'
           - CauseOfDeath:
               populated_from: pht001440
               joins:
@@ -72,7 +72,7 @@
                 cause:
                   expr: 'case(({pht004049.phv00203826} is not None, "ICD10CM:" + str({pht004049.phv00203826})))'
                 order:
-                  value: 5
+                  expr: 'case(({pht004049.phv00203826} is not None, 5))'
           - CauseOfDeath:
               populated_from: pht001440
               joins:
@@ -83,7 +83,7 @@
                 cause:
                   expr: 'case(({pht004049.phv00203828} is not None, "ICD10CM:" + str({pht004049.phv00203828})))'
                 order:
-                  value: 6
+                  expr: 'case(({pht004049.phv00203828} is not None, 6))'
           - CauseOfDeath:
               populated_from: pht001440
               joins:
@@ -94,7 +94,7 @@
                 cause:
                   expr: 'case(({pht004049.phv00203829} is not None, "ICD10CM:" + str({pht004049.phv00203829})))'
                 order:
-                  value: 7
+                  expr: 'case(({pht004049.phv00203829} is not None, 7))'
           - CauseOfDeath:
               populated_from: pht001440
               joins:
@@ -105,7 +105,7 @@
                 cause:
                   expr: 'case(({pht004049.phv00203821} is not None, "ICD10CM:" + str({pht004049.phv00203821})))'
                 order:
-                  value: 8
+                  expr: 'case(({pht004049.phv00203821} is not None, 8))'
           - CauseOfDeath:
               populated_from: pht001440
               joins:
@@ -116,7 +116,7 @@
                 cause:
                   expr: 'case(({pht004049.phv00203823} is not None, "ICD10CM:" + str({pht004049.phv00203823})))'
                 order:
-                  value: 9
+                  expr: 'case(({pht004049.phv00203823} is not None, 9))'
           - CauseOfDeath:
               populated_from: pht001440
               joins:
@@ -127,7 +127,7 @@
                 cause:
                   expr: 'case(({pht004049.phv00203825} is not None, "ICD10CM:" + str({pht004049.phv00203825})))'
                 order:
-                  value: 10
+                  expr: 'case(({pht004049.phv00203825} is not None, 10))'
           - CauseOfDeath:
               populated_from: pht001440
               joins:
@@ -138,4 +138,4 @@
                 cause:
                   expr: 'case(({pht004049.phv00203827} is not None, "ICD10CM:" + str({pht004049.phv00203827})))'
                 order:
-                  value: 11
+                  expr: 'case(({pht004049.phv00203827} is not None, 11))'
