@@ -6,7 +6,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078506}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
-          range: string
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -224,7 +223,6 @@
           expr: 'case(({phv00283704} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
-          range: string
         condition_concept:
           value: MONDO:0005386
         condition_status:
