@@ -729,7 +729,6 @@
           value: ATC:C02
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
         exposure_status:
           expr: 'case(({phv00423869} == 1 and {phv00423953} == 1, "PRESENT"), ({phv00423869} == 1 and {phv00423953} == 0, "ABSENT"))'
 - class_derivations:

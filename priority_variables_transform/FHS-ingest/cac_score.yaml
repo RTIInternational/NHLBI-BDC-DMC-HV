@@ -10,7 +10,6 @@
           expr: 'case((is_numeric({phv00023197}), ({pht003099.phv00177930} * 365) + {phv00023197}))'
         observation_type:
           value: OMOP:42872742
-          range: string
         method_type:
           value: 'Computed Tomography-Thoracic'
         qualifier:
@@ -24,7 +23,6 @@
                   expr: 'case((is_numeric({phv00023194}) and is_numeric({phv00023195}), (0.0 + {phv00023194} + {phv00023195}) / 2), (is_numeric({phv00023194}), 0.0 + {phv00023194}), (is_numeric({phv00023195}), 0.0 + {phv00023195}))'
                 unit:
                   value: '{score}'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000145
@@ -37,7 +35,6 @@
           expr: 'case((is_numeric({phv00023203}), ({pht003099.phv00177930} * 365) + {phv00023203}))'
         observation_type:
           value: OMOP:42872742
-          range: string
         method_type:
           value: 'Computed Tomography-Thoracic'
         qualifier:
@@ -51,7 +48,6 @@
                   expr: 'case((is_numeric({phv00023200}) and is_numeric({phv00023201}), (0.0 + {phv00023200} + {phv00023201}) / 2), (is_numeric({phv00023200}), 0.0 + {phv00023200}), (is_numeric({phv00023201}), 0.0 + {phv00023201}))'
                 unit:
                   value: '{score}'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000147
@@ -62,7 +58,6 @@
           expr: '({pht003099.phv00177930} * 365) + {phv00023246}'
         observation_type:
           value: OMOP:42872742
-          range: string
         method_type:
           value: 'Computed Tomography-Thoracic'
         value_quantity:
@@ -74,7 +69,6 @@
                   populated_from: phv00023235
                 unit:
                   value: '{score}'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht005161
@@ -85,7 +79,6 @@
           expr: '({pht003099.phv00177930} * 365) + {phv00257672}'
         observation_type:
           value: OMOP:42872742
-          range: string
         method_type:
           value: 'Computed Tomography-Thoracic'
         value_quantity:
@@ -97,4 +90,3 @@
                   populated_from: phv00257670
                 unit:
                   value: '{score}'
-                  range: string
