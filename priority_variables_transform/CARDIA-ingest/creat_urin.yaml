@@ -19,6 +19,7 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00120675
+                  missing_values: ['M']
                 unit:
                   value: "mg/dL"
 - class_derivations:
@@ -42,6 +43,7 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00119619
+                  missing_values: ['M']
                 unit:
                   value: "mg/dL"
 - class_derivations:
@@ -65,6 +67,7 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00120751
+                  missing_values: ['M']
                   expr: "None if str({phv00120751}) in ('M', 'L', 'H', '') else float({phv00120751}) * 100"
                 unit:
                   value: "mg/dL"
