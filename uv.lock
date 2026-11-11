@@ -751,8 +751,8 @@ wheels = [
 
 [[package]]
 name = "linkml-map"
-version = "0.6.0rc1.post1.dev0+09667a6"
-source = { git = "https://github.com/linkml/linkml-map.git?rev=main#09667a69c636b634334041bd33524b0783efa8ee" }
+version = "0.6.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asteval" },
     { name = "click" },
@@ -775,6 +775,10 @@ dependencies = [
     { name = "simplejson" },
     { name = "typing-extensions" },
     { name = "ucumvert" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/da/16/1db2e05b38bb8d818d38f502048fbd5b0eff67ca9a31bd2e2dee962295ad/linkml_map-0.6.0.tar.gz", hash = "sha256:1d4eb33fc01f9503e02b2e046d8d16910b21d75b3bb1e0324496c92702673b68", size = 712835, upload-time = "2026-11-10T21:13:07.697Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/86/f5/52e9b50b66adb051227581b6e9ed35599c1eaaf35ca72efd872b768f5029/linkml_map-0.6.0-py3-none-any.whl", hash = "sha256:b492f4875272784e2a3ca37017e3f96226c1e6b366fa7e3427bc12c079138e85", size = 166503, upload-time = "2026-11-10T21:13:06.105Z" },
 ]
 
 [[package]]
@@ -1102,7 +1106,7 @@ dev = [
 requires-dist = [
     { name = "gspread", specifier = ">=6.2.1,<7.0.0" },
     { name = "gspread-dataframe", specifier = ">=4.0.0,<5.0.0" },
-    { name = "linkml-map", git = "https://github.com/linkml/linkml-map.git?rev=main" },
+    { name = "linkml-map", specifier = ">=0.6.0,<0.7.0" },
     { name = "pandas", specifier = ">=2.3.0,<3.0.0" },
     { name = "pyyaml", specifier = ">=6.0.2,<7.0.0" },
     { name = "streamlit", specifier = ">=1.58.0,<2.0.0" },
