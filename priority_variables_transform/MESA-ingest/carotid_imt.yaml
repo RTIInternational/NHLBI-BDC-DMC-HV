@@ -10,7 +10,6 @@
           expr: '{phv00174588} * 365'
         observation_type:
           value: OMOP:4138462
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -20,11 +19,9 @@
                   expr: '(0.0 + {phv00175623} + {phv00175683}) / 2'
                 unit:
                   value: mm
-                  range: string
         method_type:
           value: LT DISTAL CCA MAX CIMT (mm) AVG and RT DISTAL CCA MAX CIMT (mm) AVG
             averaged
-          range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
@@ -37,7 +34,6 @@
           expr: '{phv00084442} * 365'
         observation_type:
           value: OMOP:4138462
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -47,10 +43,8 @@
                   populated_from: phv00084966
                 unit:
                   value: mm
-                  range: string
         method_type:
           value: MEAN OF MEAN FAR WALL IMT FOR COMMON CAROTID ARTERY
-          range: string
         qualifier:
           value: AVERAGE
 - class_derivations:
@@ -65,7 +59,6 @@
           expr: '{phv00087071} * 365'
         observation_type:
           value: OMOP:4138462
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -75,10 +68,8 @@
                   populated_from: phv00128698
                 unit:
                   value: mm
-                  range: string
         method_type:
           value: RIGHT COMMON CAROTID FAR WALL MEAN
-          range: string
         qualifier:
           value: AVERAGE
 - class_derivations:
@@ -97,7 +88,6 @@
           expr: '{pht001111.phv00082639} * 365'
         observation_type:
           value: OMOP:4138462
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -107,9 +97,7 @@
                   expr: 'case((len(float([x for x in [{phv00111973}, {phv00112049}] if is_numeric(x)])) > 0, sum(float([x for x in [{phv00111973}, {phv00112049}] if is_numeric(x)]))/max([len(float([x for x in [{phv00111973}, {phv00112049}] if is_numeric(x)])), 1])))'
                 unit:
                   value: mm
-                  range: string
         method_type:
           value: MEAN OF RIGHT AND LEFT COMMON CAROTID FAR WALL MEAN
-          range: string
         qualifier:
           value: AVERAGE

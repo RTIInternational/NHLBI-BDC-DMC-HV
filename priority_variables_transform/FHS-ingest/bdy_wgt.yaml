@@ -10,7 +10,6 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -24,7 +23,6 @@
                   populated_from: phv00007676
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -37,7 +35,6 @@
           expr: '{pht003099.phv00177930} * 365'  
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -51,7 +48,6 @@
                   expr: '{phv00277055} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -64,7 +60,6 @@
           expr: '{pht003099.phv00177932} * 365'  
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -78,7 +73,6 @@
                   expr: '{phv00277056} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -91,7 +85,6 @@
           expr: '{pht003099.phv00177934} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         body_position:
           value: 'ORTHOSTATIC_BODY_POSITION'
         value_quantity:
@@ -103,7 +96,6 @@
                   expr: '{phv00520310} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -116,7 +108,6 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -130,7 +121,6 @@
                   expr: '{phv00370126} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -143,7 +133,6 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -154,10 +143,11 @@
               populated_from: pht007777
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00370127} < 300, {phv00370127} * 0.453592), (True, "'ULOD'"))
+                  expr: case(({phv00370127} < 300, {phv00370127} * 0.453592), ({phv00370127} >= 300, 136.0776))
+                operator:
+                  expr: 'case(({phv00370127} >= 300, "GREATER_THAN_OR_EQUAL_TO"))'
                 unit:
                   value: kg
-                  range: string
         range_high:
           class_derivations:
           - Quantity:
@@ -167,7 +157,6 @@
                   expr: 300 * 0.453592
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -180,7 +169,6 @@
           expr: '{pht003099.phv00177934} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -194,7 +182,6 @@
                   expr: '{phv00370128} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -207,7 +194,6 @@
           expr: '{pht003099.phv00177936} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -221,7 +207,6 @@
                   expr: '{phv00370129} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -234,7 +219,6 @@
           expr: '{pht003099.phv00177938} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -248,7 +232,6 @@
                   expr: '{phv00370130} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -261,7 +244,6 @@
           expr: '{pht003099.phv00177940} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -275,7 +257,6 @@
                   expr: '{phv00370131} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -288,7 +269,6 @@
           expr: '{pht003099.phv00177942} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -302,7 +282,6 @@
                   expr: '{phv00370132} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -315,7 +294,6 @@
           expr: '{pht003099.phv00177944} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -329,7 +307,6 @@
                   expr: '{phv00370133} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -342,7 +319,6 @@
           expr: '{pht003099.phv00177946} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -356,7 +332,6 @@
                   expr: '{phv00370134} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -369,7 +344,6 @@
           expr: '{pht003099.phv00177948} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -383,7 +357,6 @@
                   expr: '{phv00370135} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -396,7 +369,6 @@
           expr: '{pht003099.phv00177950} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -410,7 +382,6 @@
                   expr: '{phv00370136} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -423,7 +394,6 @@
           expr: '{pht003099.phv00177952} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -437,7 +407,6 @@
                   expr: '{phv00370137} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -450,7 +419,6 @@
           expr: '{pht003099.phv00177954} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -464,7 +432,6 @@
                   expr: '{phv00370138} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -477,7 +444,6 @@
           expr: '{pht003099.phv00177956} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -491,7 +457,6 @@
                   expr: '{phv00370139} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -504,7 +469,6 @@
           expr: '{pht003099.phv00177958} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -518,7 +482,6 @@
                   expr: '{phv00370140} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -531,7 +494,6 @@
           expr: '{pht003099.phv00177960} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -545,7 +507,6 @@
                   expr: '{phv00370141} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -558,7 +519,6 @@
           expr: '{pht003099.phv00177962} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -572,7 +532,6 @@
                   expr: '{phv00370142} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -585,7 +544,6 @@
           expr: '{pht003099.phv00177964} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -599,7 +557,6 @@
                   expr: '{phv00370143} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -612,7 +569,6 @@
           expr: '{pht003099.phv00177966} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -623,10 +579,11 @@
               populated_from: pht007777
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00370144} < 300, {phv00370144} * 0.453592), (True, "'ULOD'"))
+                  expr: case(({phv00370144} < 300, {phv00370144} * 0.453592), ({phv00370144} >= 300, 136.0776))
+                operator:
+                  expr: 'case(({phv00370144} >= 300, "GREATER_THAN_OR_EQUAL_TO"))'
                 unit:
                   value: kg
-                  range: string
         range_high:
           class_derivations:
           - Quantity:
@@ -636,7 +593,6 @@
                   expr: 300 * 0.453592
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -649,7 +605,6 @@
           expr: '{pht003099.phv00177968} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -660,10 +615,11 @@
               populated_from: pht007777
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00370145} < 300, {phv00370145} * 0.453592), (True, "'ULOD'"))
+                  expr: case(({phv00370145} < 300, {phv00370145} * 0.453592), ({phv00370145} >= 300, 136.0776))
+                operator:
+                  expr: 'case(({phv00370145} >= 300, "GREATER_THAN_OR_EQUAL_TO"))'
                 unit:
                   value: kg
-                  range: string
         range_high:
           class_derivations:
           - Quantity:
@@ -673,7 +629,6 @@
                   expr: 300 * 0.453592
                 unit:
                   value: kg
-                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -686,7 +641,6 @@
           expr: '{pht003099.phv00177970} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -697,10 +651,11 @@
               populated_from: pht007777
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00370146} < 300, {phv00370146} * 0.453592), (True, "'ULOD'"))
+                  expr: case(({phv00370146} < 300, {phv00370146} * 0.453592), ({phv00370146} >= 300, 136.0776))
+                operator:
+                  expr: 'case(({phv00370146} >= 300, "GREATER_THAN_OR_EQUAL_TO"))'
                 unit:
                   value: kg
-                  range: string
         range_high:
           class_derivations:
           - Quantity:
@@ -710,7 +665,6 @@
                   expr: 300 * 0.453592
                 unit:
                   value: kg
-                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -723,7 +677,6 @@
           expr: '{pht003099.phv00177972} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -734,10 +687,11 @@
               populated_from: pht007777
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00370147} < 300, {phv00370147} * 0.453592), (True, "'ULOD'"))
+                  expr: case(({phv00370147} < 300, {phv00370147} * 0.453592), ({phv00370147} >= 300, 136.0776))
+                operator:
+                  expr: 'case(({phv00370147} >= 300, "GREATER_THAN_OR_EQUAL_TO"))'
                 unit:
                   value: kg
-                  range: string
         range_high:
           class_derivations:
           - Quantity:
@@ -747,7 +701,6 @@
                   expr: 300 * 0.453592
                 unit:
                   value: kg
-                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -760,7 +713,6 @@
           expr: '{pht003099.phv00177974} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -771,10 +723,11 @@
               populated_from: pht007777
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00370148} < 300, {phv00370148} * 0.453592), (True, "'ULOD'"))
+                  expr: case(({phv00370148} < 300, {phv00370148} * 0.453592), ({phv00370148} >= 300, 136.0776))
+                operator:
+                  expr: 'case(({phv00370148} >= 300, "GREATER_THAN_OR_EQUAL_TO"))'
                 unit:
                   value: kg
-                  range: string
         range_high:
           class_derivations:
           - Quantity:
@@ -784,7 +737,6 @@
                   expr: 300 * 0.453592
                 unit:
                   value: kg
-                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -797,7 +749,6 @@
           expr: '{pht003099.phv00177976} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -811,7 +762,6 @@
                   expr: '{phv00370149} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -824,7 +774,6 @@
           expr: '{pht003099.phv00177978} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -838,7 +787,6 @@
                   expr: '{phv00370150} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -851,7 +799,6 @@
           expr: '{pht003099.phv00177980} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -865,7 +812,6 @@
                   expr: '{phv00370151} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -878,7 +824,6 @@
           expr: '{pht003099.phv00177982} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -892,7 +837,6 @@
                   expr: '{phv00370152} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -905,7 +849,6 @@
           expr: '{pht003099.phv00177984} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -919,7 +862,6 @@
                   expr: '{phv00370153} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -932,7 +874,6 @@
           expr: '{pht003099.phv00226999} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -946,7 +887,6 @@
                   expr: '{phv00370154} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -959,7 +899,6 @@
           expr: '{pht003099.phv00227002} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -973,7 +912,6 @@
                   expr: '{phv00370155} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -986,7 +924,6 @@
           expr: '{pht003099.phv00227005} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -1000,7 +937,6 @@
                   expr: '{phv00370156} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -1013,7 +949,6 @@
           expr: '{pht003099.phv00227008} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -1027,7 +962,6 @@
                   expr: '{phv00370157} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1040,7 +974,6 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -1054,7 +987,6 @@
                   expr: '{phv00423945} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1067,7 +999,6 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -1081,7 +1012,6 @@
                   expr: '{phv00423946} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1094,7 +1024,6 @@
           expr: '{pht003099.phv00177934} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -1108,7 +1037,6 @@
                   expr: '{phv00423947} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1121,7 +1049,6 @@
           expr: '{pht003099.phv00177936} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         method_type:
           value: 'anthropometry'
         body_position:
@@ -1135,7 +1062,6 @@
                   expr: '{phv00423948} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1148,7 +1074,6 @@
           expr: '{pht003099.phv00177938} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         body_position:
           value: 'ORTHOSTATIC_BODY_POSITION'
         value_quantity:
@@ -1160,7 +1085,6 @@
                   expr: '{phv00544874} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1173,7 +1097,6 @@
           expr: '{pht003099.phv00177940} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         body_position:
           value: 'ORTHOSTATIC_BODY_POSITION'
         value_quantity:
@@ -1185,7 +1108,6 @@
                   expr: '{phv00544875} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1198,7 +1120,6 @@
           expr: '{pht003099.phv00177942} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         body_position:
           value: 'ORTHOSTATIC_BODY_POSITION'
         value_quantity:
@@ -1210,7 +1131,6 @@
                   expr: '{phv00544876} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1223,7 +1143,6 @@
           expr: '{pht003099.phv00177944} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         body_position:
           value: 'ORTHOSTATIC_BODY_POSITION'
         value_quantity:
@@ -1235,7 +1154,6 @@
                   expr: '{phv00544877} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1248,7 +1166,6 @@
           expr: '{pht003099.phv00177946} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         body_position:
           value: 'ORTHOSTATIC_BODY_POSITION'
         value_quantity:
@@ -1260,7 +1177,6 @@
                   expr: '{phv00544878} * 0.453592'
                 unit:
                   value: kg
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1273,7 +1189,6 @@
           expr: '{pht003099.phv00177948} * 365'
         observation_type:
           value: OBA:VT0001259
-          range: string
         body_position:
           value: 'ORTHOSTATIC_BODY_POSITION'
         value_quantity:
@@ -1285,4 +1200,3 @@
                   expr: '{phv00544879} * 0.453592'
                 unit:
                   value: kg
-                  range: string

@@ -15,20 +15,16 @@
                   expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
                 observation_type:
                   value: OMOP:4152194
-                  range: string
                 age_at_observation:
                   expr: '{phv00226251} * 365'
                 method_type:
                   value: "oscillometric average"
-                  range: string
                 qualifier:
                   value: AVERAGE
                 body_position:
                   value: "SITTING_POSITION"
-                  range: string
                 body_site:
                   value: "Right arm"
-                  range: string
                 value_quantity:
                   class_derivations:
                   - Quantity:
@@ -38,7 +34,6 @@
                           populated_from: phv00226390
                         unit:
                           value: mm[Hg]
-                          range: string
           - MeasurementObservation:
               populated_from: pht004715
               slot_derivations:
@@ -46,20 +41,16 @@
                   expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
                 observation_type:
                   value: OMOP:4154790
-                  range: string
                 age_at_observation:
                   expr: '{phv00226251} * 365'
                 method_type:
                   value: "oscillometric average"
-                  range: string
                 qualifier:
                   value: AVERAGE
                 body_position:
                   value: "SITTING_POSITION"
-                  range: string
                 body_site:
                   value: "Right arm"
-                  range: string
                 value_quantity:
                   class_derivations:
                   - Quantity:
@@ -69,4 +60,3 @@
                           populated_from: phv00226391
                         unit:
                           value: mm[Hg]
-                          range: string

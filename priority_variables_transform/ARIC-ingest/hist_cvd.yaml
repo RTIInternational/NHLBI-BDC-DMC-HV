@@ -98,7 +98,6 @@
           value: STUDY_RECORD
         associated_evidence:
           value: "Definition 3"
-          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -254,10 +253,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
-          range: string
         condition_concept:
           value: MONDO:0005010
-          range: string
         condition_status:
           populated_from: phv00206801
           value_mappings:
@@ -265,13 +262,11 @@
             Y: PRESENT
         condition_provenance:
           value: HEALTH_RECORD
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht004102
@@ -280,10 +275,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
-          range: string
         condition_concept:
           value: MONDO:0005010
-          range: string
         condition_status:
           populated_from: phv00206802
           value_mappings:
@@ -291,13 +284,11 @@
             Y: PRESENT
         condition_provenance:
           value: HEALTH_RECORD
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht004102
@@ -306,10 +297,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
-          range: string
         condition_concept:
           value: MONDO:0005294
-          range: string
         condition_status:
           populated_from: phv00206807
           value_mappings:
@@ -317,13 +306,11 @@
             Y: PRESENT
         condition_provenance:
           value: HEALTH_RECORD
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht012813
@@ -332,10 +319,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
-          range: string
         condition_concept:
           value: MONDO:0005010
-          range: string
         condition_status:
           populated_from: phv00512028
           value_mappings:
@@ -343,13 +328,11 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "Definition 3"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht012814
@@ -358,10 +341,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
-          range: string
         condition_concept:
           value: MONDO:0005010
-          range: string
         condition_status:
           populated_from: phv00512123
           value_mappings:
@@ -369,10 +350,8 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht012815
@@ -381,10 +360,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
-          range: string
         condition_concept:
           value: MONDO:0005010
-          range: string
         condition_status:
           populated_from: phv00512297
           value_mappings:
@@ -392,7 +369,5 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string

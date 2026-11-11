@@ -8,7 +8,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         condition_concept:
           value: MONDO:0004981
-          range: string
         condition_status:
           populated_from: phv00082701
           value_mappings:
@@ -17,13 +16,10 @@
             '2': PRESENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         associated_evidence:
           value: "Electrocardiogram"
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001111
@@ -34,7 +30,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         condition_concept:
           value: MONDO:0004981
-          range: string
         condition_status:
           populated_from: phv00082843
           value_mappings:
@@ -42,13 +37,10 @@
             '1': PRESENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         associated_evidence:
           value: "Electrocardiogram"
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001116
@@ -59,7 +51,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         condition_concept:
           value: MONDO:0004981
-          range: string
         condition_status:
           populated_from: phv00084553
           value_mappings:
@@ -67,13 +58,10 @@
             '1': PRESENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         associated_evidence:
           value: "Electrocardiogram"
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001121
@@ -84,7 +72,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         condition_concept:
           value: MONDO:0004981
-          range: string
         condition_status:
           populated_from: phv00087141
           value_mappings:
@@ -92,10 +79,8 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
@@ -113,7 +98,6 @@
           expr: 'case(({phv00090303} == 1, ({pht001116.phv00084442} * 365) + {phv00090304}))'
         condition_concept:
           value: MONDO:0004981
-          range: string
         condition_status:
           populated_from: phv00090303
           value_mappings:
@@ -121,10 +105,8 @@
             '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "event adjudication"
         #   range: string
@@ -146,10 +128,8 @@
           expr: 'case(({phv00090305} == 427.32, "PRESENT"))'
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         # associated_evidence:
         #   value: "event adjudication"
         #   range: string
@@ -163,7 +143,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         condition_concept:
           value: MONDO:0004981
-          range: string
         condition_status:
           populated_from: phv00176281
           value_mappings:
@@ -171,13 +150,10 @@
             '1': PRESENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         associated_evidence:
           value: "Electrocardiogram"
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht003091
@@ -188,7 +164,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         condition_concept:
           value: MONDO:0004981
-          range: string
         condition_status:
           populated_from: phv00176292
           value_mappings:
@@ -197,10 +172,7 @@
             '2': PRESENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
         associated_evidence:
           value: "Electrocardiogram"
-          range: string

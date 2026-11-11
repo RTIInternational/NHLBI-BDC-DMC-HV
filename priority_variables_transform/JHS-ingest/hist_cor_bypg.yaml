@@ -6,7 +6,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00400849}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
-          range: string
         procedure_concept:
           value: OMOP:4336464
         procedure_status:
@@ -16,7 +15,6 @@
             N: ABSENT
         procedure_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
 - class_derivations:
     Procedure:
       populated_from: pht001948
@@ -25,7 +23,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00126001}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00126001}) + ":JHS Exam 2")'
-          range: string
         procedure_concept:
           value: OMOP:4336464
         procedure_status:
@@ -35,7 +32,6 @@
             N: ABSENT
         procedure_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
 - class_derivations:
     Procedure:
       populated_from: pht008764
@@ -44,7 +40,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00403058}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403058}) + ":JHS Exam 2")'
-          range: string
         procedure_concept:
           value: OMOP:4336464
         procedure_status:
@@ -55,7 +50,6 @@
             "Don't Know": UNKNOWN
         procedure_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
 - class_derivations:
     Procedure:
       populated_from: pht008765
@@ -64,7 +58,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00403140}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403140}) + ":JHS Exam 3")'
-          range: string
         procedure_concept:
           value: OMOP:4336464
         procedure_status:
@@ -75,4 +68,3 @@
             "Don't Know": UNKNOWN
         procedure_provenance:
           value: PATIENT_SELF_REPORT
-          range: string

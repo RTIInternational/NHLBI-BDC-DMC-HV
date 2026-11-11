@@ -10,7 +10,6 @@
           expr: '{pht003099.phv00177942} * 365'
         observation_type:
           value: OBA:VT2000000
-          range: string
         method_type:
           value: 'Brachial Vascular Reactivity Test'
         value_quantity:
@@ -20,9 +19,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00024481
+                  missing_values: ['.']
                 unit:
                   value: mm[Hg]
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000194
@@ -35,7 +34,6 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OBA:VT2000000
-          range: string
         method_type:
           value: 'Brachial Vascular Reactivity Test'
         value_quantity:
@@ -45,9 +43,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00024414
+                  missing_values: ['.']
                 unit:
                   value: mm[Hg]
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000211
@@ -60,7 +58,6 @@
           expr: '{pht003099.phv00177980} * 365'
         observation_type:
           value: OBA:VT2000000
-          range: string
         method_type:
           value: 'Arterial Tonometry'
         value_quantity:
@@ -70,9 +67,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00024867
+                  missing_values: ['.']
                 unit:
                   value: mm[Hg]
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000209
@@ -85,7 +82,6 @@
           expr: case(({phv00024759} == 1, {pht003099.phv00177942} * 365), ({phv00024759} == 7, {pht003099.phv00177932} * 365))
         observation_type:
           value: OBA:VT2000000
-          range: string
         method_type:
           value: 'Arterial Tonometry'
         value_quantity:
@@ -95,9 +91,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00024780
+                  missing_values: ['.']
                 unit:
                   value: mm[Hg]
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000210
@@ -110,7 +106,6 @@
           expr: '{pht003099.phv00177930} * 365'  
         observation_type:
           value: OBA:VT2000000
-          range: string
         method_type:
           value: 'Arterial Tonometry'
         value_quantity:
@@ -120,6 +115,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00024826
+                  missing_values: ['.']
                 unit:
                   value: mm[Hg]
-                  range: string

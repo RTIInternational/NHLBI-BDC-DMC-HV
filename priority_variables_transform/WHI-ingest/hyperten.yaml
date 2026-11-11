@@ -6,10 +6,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078506}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00078556
           value_mappings:
@@ -17,12 +15,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -37,22 +33,18 @@
           expr: 'case(({phv00283528} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
-          range: string
         condition_concept:
           value: MONDO:0005149
-          range: string
         condition_status:
           populated_from: phv00283528
           value_mappings:
             '1': PRESENT
         condition_provenance:
           value: HEALTH_RECORD
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht000999
@@ -61,10 +53,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078506}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00078602
           value_mappings:
@@ -73,12 +63,10 @@
             '2': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -93,22 +81,18 @@
           expr: 'case(({phv00283526} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00283526
           value_mappings:
             '1': PRESENT
         condition_provenance:
           value: HEALTH_RECORD
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -123,10 +107,8 @@
           expr: 'case(({phv00283592} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
-          range: string
         condition_concept:
           value: MONDO:0005149
-          range: string
         condition_status:
           populated_from: phv00283592
           value_mappings:
@@ -138,15 +120,13 @@
             '6': UNKNOWN
         condition_provenance:
           value: HEALTH_RECORD
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         condition_severity:
           populated_from: phv00283592
           value_mappings:
             '1': OMOP:4116992
-            '2': OMOP:3272197
+            '2': OMOP:4285732
             '3': OMOP:4087703
         relationship_to_participant:
           value: ONESELF
-          range: string

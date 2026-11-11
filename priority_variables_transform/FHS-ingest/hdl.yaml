@@ -10,10 +10,8 @@
           expr: '{pht003099.phv00177930} * 365'  
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -23,7 +21,6 @@
                   populated_from: phv00055263
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -36,10 +33,8 @@
           expr: '{pht003099.phv00177932} * 365'  
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -52,7 +47,6 @@
                         )'
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004801
@@ -65,10 +59,8 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -76,9 +68,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00227018
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -91,10 +83,8 @@
           expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -105,7 +95,6 @@
                     == 1, None))
                 unit:
                   value: mg/dL
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -113,10 +102,8 @@
               slot_derivations:
                 value_decimal:
                   value: '16'
-                  range: string
                 unit:
                   value: mg/dL
-                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht005143
@@ -129,10 +116,8 @@
           expr: '{pht003099.phv00177930} * 365'  
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -140,9 +125,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00255345
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006010
@@ -155,10 +140,8 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -166,9 +149,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00275405
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006011
@@ -181,10 +164,8 @@
           expr: '{pht003099.phv00177934} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -192,9 +173,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00275414
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -207,10 +188,8 @@
           expr: '{pht003099.phv00177930} * 365'  
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -218,9 +197,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00277040
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -233,10 +212,8 @@
           expr: '{pht003099.phv00177932} * 365'  
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -244,9 +221,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00277041
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -259,10 +236,8 @@
           expr: '{pht003099.phv00177938} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -270,9 +245,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00544810
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -285,10 +260,8 @@
           expr: '{pht003099.phv00177940} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -296,9 +269,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00544811
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -311,10 +284,8 @@
           expr: '{pht003099.phv00177942} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -322,9 +293,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00544812
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -337,10 +308,8 @@
           expr: '{pht003099.phv00177944} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -348,9 +317,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00544813
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -363,10 +332,8 @@
           expr: '{pht003099.phv00177946} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -374,9 +341,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00544814
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -389,10 +356,8 @@
           expr: '{pht003099.phv00177958} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -400,9 +365,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00369935
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -415,10 +380,8 @@
           expr: '{pht003099.phv00177968} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -426,9 +389,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00369936
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -441,10 +404,8 @@
           expr: '{pht003099.phv00177972} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -452,9 +413,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00369937
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -467,10 +428,8 @@
           expr: '{pht003099.phv00177974} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -478,9 +437,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00369938
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -493,10 +452,8 @@
           expr: '{pht003099.phv00177976} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -504,9 +461,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00369939
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -519,10 +476,8 @@
           expr: '{pht003099.phv00177978} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -530,9 +485,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00369940
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -545,10 +500,8 @@
           expr: '{pht003099.phv00177980} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -556,9 +509,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00369941
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -571,10 +524,8 @@
           expr: '{pht003099.phv00177982} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -582,9 +533,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00369942
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -597,10 +548,8 @@
           expr: '{pht003099.phv00177984} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -608,9 +557,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00369943
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009755
@@ -623,10 +572,8 @@
           expr: case(({phv00423780} == 10, {pht003099.phv00177948} * 365), ({phv00423780} == 11, {pht003099.phv00177950} * 365), ({phv00423780} == 12, {pht003099.phv00177952} * 365))
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -634,9 +581,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00423781
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -649,10 +596,8 @@
           expr: '{pht003099.phv00177930} * 365' 
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -660,9 +605,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00423914
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -675,10 +620,8 @@
           expr: '{pht003099.phv00177932} * 365' 
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -686,9 +629,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00423915
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -701,10 +644,8 @@
           expr: '{pht003099.phv00177934} * 365' 
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -712,9 +653,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00423916
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -727,10 +668,8 @@
           expr: '{pht003099.phv00177936} * 365' 
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -738,9 +677,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00423917
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000031
@@ -753,10 +692,8 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OMOP:4041720
-          range: string
         method_type:
           value: fasted for minimum 12 hrs - electrophoresis
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -764,9 +701,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00007973
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000013
@@ -785,7 +722,6 @@
                 )'
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -795,7 +731,6 @@
                   populated_from: phv00001582
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000013
@@ -810,7 +745,6 @@
           expr: case(({phv00001592} == 1, "OMOP:4041557"), ({phv00001592} == 2, "OMOP:4041720"), (True, "OBA:VT0000184"))
         method_type:
           value: fasted for minimum 12 hrs
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -820,4 +754,3 @@
                   populated_from: phv00001589
                 unit:
                   value: mg/dL
-                  range: string                    

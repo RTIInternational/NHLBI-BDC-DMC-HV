@@ -8,21 +8,17 @@
           expr: case(({phv00113020} == 2, {phv00113021} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113019}) + ":CARDIA YEAR 0")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           expr: case(({phv00113022} == 5, 'HISTORICAL'), ({phv00113020} == 2, 'PRESENT'))
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001606
@@ -33,21 +29,17 @@
           expr: case(({phv00114385} == 2, {phv00114386} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00114384}) + ":CARDIA YEAR 2")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           expr: case(({phv00114387} == 5, 'HISTORICAL'), ({phv00114385} == 2, 'PRESENT'))
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001656
@@ -58,10 +50,8 @@
           expr: case(({phv00115424} == 2, {phv00115425} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115423}) + ":CARDIA YEAR 5")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00115424
           value_mappings:
@@ -71,13 +61,11 @@
             'M': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001715
@@ -88,10 +76,8 @@
           expr: case(({phv00116954} == 2, {phv00116956} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116953}) + ":CARDIA YEAR 7")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00116954
           value_mappings:
@@ -101,13 +87,11 @@
             'M': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001749
@@ -118,10 +102,8 @@
           expr: case(({phv00117935} == 2, {phv00117936} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117898}) + ":CARDIA YEAR 7")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00117935
           value_mappings:
@@ -131,13 +113,11 @@
             'M': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001761
@@ -148,10 +128,8 @@
           expr: case(({phv00118428} == 2, {phv00118430} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118426}) + ":CARDIA YEAR 10")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00118428
           value_mappings:
@@ -160,13 +138,11 @@
             '8': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001811
@@ -177,10 +153,8 @@
           expr: case(({phv00119802} == 2, {phv00119807} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00119802
           value_mappings:
@@ -189,13 +163,11 @@
             '8': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001869
@@ -204,21 +176,17 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121257}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121257}) + ":CARDIA MEDICAL HISTORY")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           expr: 'case(({phv00121369} == 2 or {phv00121371} == 2 or {phv00121372} == 2, "PRESENT"))'
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001869
@@ -227,23 +195,19 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121257}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121257}) + ":CARDIA MEDICAL HISTORY")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00121370
           value_mappings:
             '2': PRESENT
         condition_provenance:
           value: PATIENT_MEDICATION_REPORT
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001871
@@ -252,21 +216,17 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121473}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121473}) + ":CARDIA MEDICAL HISTORY")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           expr: 'case(({phv00121588} == 2 or {phv00121590} == 2 or {phv00121591} == 2 or {phv00121592} == 2, "PRESENT"))'
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001871
@@ -275,20 +235,16 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121473}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121473}) + ":CARDIA MEDICAL HISTORY")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00121589
           value_mappings:
             '2': PRESENT
         condition_provenance:
           value: PATIENT_MEDICATION_REPORT
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         #   range: string
         relationship_to_participant:
           value: ONESELF
-          range: string

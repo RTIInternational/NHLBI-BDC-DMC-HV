@@ -8,18 +8,15 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           expr: case(({phv00400917} == "N", "ABSENT"),({phv00400917} == "U", "UNKNOWN"),({phv00400918}
             == "Y", "PRESENT"),({phv00400918} == "N", "HISTORICAL"),({phv00400918} == "U", "HISTORICAL"))
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008768
@@ -30,7 +27,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403315}) + ":JHS Exam 2")'
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00403322
           value_mappings:
@@ -39,12 +35,10 @@
             '7': UNKNOWN
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         associated_evidence:
           value: "Self-Report Questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008769
@@ -55,7 +49,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403369}) + ":JHS Exam 3")'
         condition_concept:
           value: HP:0001681
-          range: string
         condition_status:
           populated_from: phv00403376
           value_mappings:
@@ -64,9 +57,7 @@
             '7': UNKNOWN
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         associated_evidence:
           value: "Self-Report Questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string

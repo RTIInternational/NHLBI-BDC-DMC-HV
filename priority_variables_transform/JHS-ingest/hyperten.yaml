@@ -8,10 +8,8 @@
           expr: case(({phv00128087} == 'Yes', {phv00128088} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128084}) + ":JHS Exam 1")'
-          range: string
         condition_concept:
           value: MONDO:0005044
-          range: string
         condition_status:
           populated_from: phv00128087
           value_mappings:
@@ -20,12 +18,10 @@
             'Dont know': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "Personal and Family History Questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008729

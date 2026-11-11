@@ -6,20 +6,16 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078435}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078435}) + ":WHI SCREENING")'
-          range: string
         condition_concept:
           value: MONDO:0005015
-          range: string
         condition_status:
           expr: 'case(({phv00078464} == 0, "ABSENT"), ({phv00078471} == 0, "HISTORICAL"), (True, "PRESENT"))'
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001514
@@ -28,10 +24,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00111539}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00111539}) + ":WHI MH 134")'
-          range: string
         condition_concept:
           value: MONDO:0005015
-          range: string
         condition_status:
           populated_from: phv00111545
           value_mappings:
@@ -39,12 +33,10 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -59,19 +51,15 @@
           expr: 'case(({phv00283531} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
-          range: string
         condition_concept:
           value: MONDO:0005015
-          range: string
         condition_status:
           populated_from: phv00283531
           value_mappings:
             '1': PRESENT
         condition_provenance:
           value: HEALTH_RECORD
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
-          range: string

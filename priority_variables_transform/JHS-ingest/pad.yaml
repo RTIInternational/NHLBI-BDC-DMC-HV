@@ -22,10 +22,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00400849}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
-          range: string
         condition_concept:
           value: MONDO:0005294
-          range: string
         condition_status:
           populated_from: phv00400971
           value_mappings:
@@ -34,9 +32,7 @@
             U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
-          range: string

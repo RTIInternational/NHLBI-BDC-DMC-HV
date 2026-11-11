@@ -6,10 +6,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00154925}) + ":WHI")'
         associated_visit:
           expr: "case(({phv00154926} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI SCREENING')), ({phv00154926} == 2 and {phv00154927} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI SEMI-ANNUAL VISIT YEAR 1')), ({phv00154926} == 3 and {phv00154927} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 1')), ({phv00154926} == 3 and {phv00154927} == 2, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 2')), ({phv00154926} == 3 and {phv00154927} == 3, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 3')), ({phv00154926} == 3 and {phv00154927} == 4, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 4')), ({phv00154926} == 3 and {phv00154927} == 5, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 5')), ({phv00154926} == 3 and {phv00154927} == 6, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 6')), ({phv00154926} == 3 and {phv00154927} == 7, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 7')), ({phv00154926} == 3 and {phv00154927} == 8, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 8')), ({phv00154926} == 3 and {phv00154927} == 9, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 9')), ({phv00154926} == 3 and {phv00154927} == 10, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 10')), ({phv00154926} == 3 and {phv00154927} == 11, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 11')), (True, None))"
-          range: string
         condition_concept:
           value: HP:0001712
-          range: string
         condition_status:
           populated_from: phv00155172
           value_mappings:
@@ -17,12 +15,10 @@
             '1': PRESENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         associated_evidence:
           value: "Electrocardiogram"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -37,10 +33,8 @@
           expr: 'case(({phv00283580} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
-          range: string
         condition_concept:
           value: HP:0001712
-          range: string
         condition_status:
           populated_from: phv00283580
           value_mappings:
@@ -52,15 +46,13 @@
             '6': UNKNOWN
         condition_provenance:
           value: HEALTH_RECORD
-          range: string
         # associated_evidence:
         #   value: "hospital record abstraction"
         condition_severity:
           populated_from: phv00283580
           value_mappings:
             '1': OMOP:4116992
-            '2': OMOP:3272197
+            '2': OMOP:4285732
             '3': OMOP:4087703
         relationship_to_participant:
           value: ONESELF
-          range: string

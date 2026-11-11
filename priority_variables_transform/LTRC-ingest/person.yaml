@@ -2,8 +2,10 @@
     Person:
       populated_from: pht010057
       slot_derivations:
-        identity:
+        id:
           expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+        identity:
+          expr: 'str({dbGaP_Subject_ID})'
         species:
           value: NCBITaxon:9606
         # vital_status: not available — LTRC is a cross-sectional biobank; no mortality follow-up data in phs001662.v4

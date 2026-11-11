@@ -10,10 +10,8 @@
           expr: '{phv00082639} * 365'      
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: "blood assay"
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -23,7 +21,6 @@
                   populated_from: phv00082967
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
@@ -36,10 +33,8 @@
           expr: '{phv00084442} * 365'
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: "blood assay"
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -49,7 +44,6 @@
                   populated_from: phv00085015
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
@@ -62,10 +56,8 @@
           expr: '{phv00086727} * 365'
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: "blood assay"
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -75,7 +67,6 @@
                   populated_from: phv00086825
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
@@ -88,10 +79,8 @@
           expr: '{phv00087071} * 365'
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: "blood assay"
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -101,7 +90,6 @@
                   populated_from: phv00087661
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002198
@@ -112,10 +100,8 @@
           expr: 'case(({phv00160529} == 2, uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA CLASSIC EXAM 2")), ({phv00160529} == 3, uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA CLASSIC EXAM 3")))'
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: "blood assay"
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -125,4 +111,3 @@
                   populated_from: phv00160534
                 unit:
                   value: mg/L
-                  range: string

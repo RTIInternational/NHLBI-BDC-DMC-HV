@@ -6,7 +6,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078506}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
-          range: string
         procedure_concept:
           value: OMOP:4336464
         procedure_status:
@@ -16,7 +15,6 @@
             '0': ABSENT
         procedure_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
 - class_derivations:
     Procedure:
       populated_from: pht003407
@@ -38,7 +36,6 @@
             '0': ABSENT
         procedure_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
 - class_derivations:
     Procedure:
       populated_from: pht006223
@@ -53,7 +50,6 @@
           expr: 'case(({phv00283623} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
-          range: string
         procedure_concept:
           value: OMOP:4336464
         procedure_status:
@@ -62,4 +58,3 @@
             '1': PRESENT
         procedure_provenance:
           value: HEALTH_RECORD
-          range: string

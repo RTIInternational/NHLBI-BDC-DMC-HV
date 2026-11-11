@@ -19,10 +19,10 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00120678
+                  missing_values: ['M']
                   expr: "None if str({phv00120678}) in ('M', 'L', 'H', '') else float({phv00120678}) * 10"
                 unit:
                   value: "mg/L"
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001803
@@ -44,7 +44,7 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00119618
+                  missing_values: ['M']
                   expr: "None if str({phv00119618}) in ('M', 'L', 'H', '') else float({phv00119618}) * 10"
                 unit:
                   value: "mg/L"
-                  range: string

@@ -10,10 +10,8 @@
           expr: '{pht003099.phv00177938} * 365'
         observation_type:
           value: OBA:2041535
-          range: string
         method_type:
           value: ELISA
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -21,9 +19,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00024570
+                  missing_values: ['.']
                 unit:
                   value: '%{normal}'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004806
@@ -36,7 +34,6 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OBA:2041535
-          range: string
         method_type:
           value: 'platelet aggregation'
         value_quantity:
@@ -46,6 +43,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00227096
+                  missing_values: ['.']
                 unit:
                   value: '%{normal}'
-                  range: string

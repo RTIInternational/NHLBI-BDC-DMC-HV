@@ -19,7 +19,6 @@
                   populated_from: phv00082952
                 unit:
                   value: mg/dL
-                  range: string
         method_type:
           expr: case(({phv00083303} >= 12, 'Fasted minimum 12 hours'))
 - class_derivations:
@@ -43,7 +42,6 @@
                   populated_from: phv00084972
                 unit:
                   value: mg/dL
-                  range: string
         method_type:
           expr: case(({phv00084980} >= 12, 'Fasted minimum 12 hours'))
 - class_derivations:
@@ -71,7 +69,6 @@
                   populated_from: phv00160506
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
@@ -84,7 +81,6 @@
           expr: '{phv00085773} * 365'
         observation_type:
           value: OBA:VT0000184
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -94,7 +90,6 @@
                   populated_from: phv00085920
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
@@ -107,7 +102,6 @@
           expr: '{phv00086259} * 365'
         observation_type:
           value: OBA:VT0000184
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -117,7 +111,6 @@
                   populated_from: phv00086402
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
@@ -130,7 +123,6 @@
           expr: '{phv00086727} * 365'
         observation_type:
           value: OBA:VT0000184
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -140,7 +132,6 @@
                   populated_from: phv00086833
                 unit:
                   value: mg/dL
-                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
@@ -162,7 +153,6 @@
                   populated_from: phv00087099
                 unit:
                   value: mg/dL
-                  range: string
         method_type:
           expr: case(({phv00087524} >= 12, 'Fasted minimum 12 hours'))
 - class_derivations:
@@ -177,7 +167,6 @@
           expr: '{phv00174588} * 365'
         observation_type:
           value: OBA:VT0000184
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -187,7 +176,6 @@
                   populated_from: phv00175239
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003091
@@ -200,7 +188,6 @@
           expr: '{phv00176011} * 365'
         observation_type:
           value: OBA:VT0000184
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -210,4 +197,3 @@
                   populated_from: phv00176662
                 unit:
                   value: mg/dL
-                  range: string

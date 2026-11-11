@@ -10,7 +10,6 @@
           expr: 'case(({phv00023789} == 1, ({pht003099.phv00177930} * 365) + {phv00023793}))'
         observation_type:
           value: OMOP:36303297
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -18,9 +17,9 @@
               slot_derivations:
                 value_integer:
                   populated_from: phv00023792
+                  missing_values: ['.']
                 unit:
                   value: '{score}'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000172
@@ -33,7 +32,6 @@
           expr: 'case(({phv00023896} == 1, ({pht003099.phv00177930} * 365) + {phv00023900}))'
         observation_type:
           value: OMOP:36303297
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -41,6 +39,6 @@
               slot_derivations:
                 value_integer:
                   populated_from: phv00023899
+                  missing_values: ['.']
                 unit:
                   value: '{score}'
-                  range: string

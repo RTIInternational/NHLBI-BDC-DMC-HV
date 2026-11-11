@@ -8,7 +8,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
         condition_concept:
           value: MONDO:0004981
-          range: string
         condition_status:
           populated_from: phv00400967
           value_mappings:
@@ -17,12 +16,10 @@
             U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008729
@@ -33,7 +30,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
         condition_concept:
           value: MONDO:0004981
-          range: string
         condition_status:
           populated_from: phv00401193
           value_mappings:
@@ -41,12 +37,10 @@
             'No': ABSENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         associated_evidence:
           value: "Analysis derived"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008731
@@ -57,7 +51,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
         condition_concept:
           value: MONDO:0004981
-          range: string
         condition_status:
           populated_from: phv00401458
           value_mappings:
@@ -65,9 +58,7 @@
             'No': ABSENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         associated_evidence:
           value: "Analysis derived"
         relationship_to_participant:
           value: ONESELF
-          range: string

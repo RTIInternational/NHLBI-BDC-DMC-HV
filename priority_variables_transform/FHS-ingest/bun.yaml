@@ -10,7 +10,6 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OBA:VT0005265
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -20,9 +19,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00007559
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000031
@@ -35,7 +34,6 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OBA:VT0005265
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -45,9 +43,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00008085
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001045
@@ -60,7 +58,6 @@
           expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), ({phv00081047} == 21, {pht003099.phv00177970} * 365))
         observation_type:
           value: OBA:VT0005265
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -70,9 +67,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00081023
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006018
@@ -81,10 +78,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00276803}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276803}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT'')))'
-          range: string
         observation_type:
           value: OBA:VT0005265
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -94,6 +89,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00276861
+                  missing_values: ['.']
                 unit:
                   value: mg/dL
-                  range: string

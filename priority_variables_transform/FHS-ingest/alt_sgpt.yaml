@@ -10,7 +10,6 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OBA:2050062
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -18,9 +17,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00008098
+                  missing_values: ['.']
                 unit:
                   value: '[IU]/L'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -33,7 +32,6 @@
           expr: '{pht003099.phv00177932} * 365'      
         observation_type:
           value: OBA:2050062
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -44,11 +42,10 @@
                 value_decimal:
                   expr: 'case(({phv00172166} > 5.0, {phv00172166}), 
                           ({phv00172202} == 1, None), 
-                          (True, {phv00172166})
+                          (is_numeric({phv00172166}), {phv00172166})
                         )'
                 unit:
                   value: '[IU]/L'
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -56,10 +53,8 @@
               slot_derivations:
                 value_decimal:
                   value: '5.0'
-                  range: string
                 unit:
                   value: '[IU]/L'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -72,7 +67,6 @@
           expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OBA:2050062
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -84,11 +78,10 @@
                   expr: 'case(
                           ({phv00227050} > 5.0, {phv00227050}),
                           ({phv00227066} == 1, None), 
-                          (True, {phv00227050})
+                          (is_numeric({phv00227050}), {phv00227050})
                         )'
                 unit:
                   value: '[IU]/L'
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -96,10 +89,8 @@
               slot_derivations:
                 value_decimal:
                   value: '5.0'
-                  range: string
                 unit:
                   value: '[IU]/L'
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001045
@@ -112,7 +103,6 @@
           expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), ({phv00081047} == 21, {pht003099.phv00177970} * 365))            
         observation_type:
           value: OBA:2050062
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -122,6 +112,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00081020
+                  missing_values: ['.']
                 unit:
                   value: '[IU]/L'
-                  range: string

@@ -10,10 +10,8 @@
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: Particle Enhanced Immunonephelometry
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -23,7 +21,6 @@
                   populated_from: phv00021690
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -31,10 +28,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.16'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
         range_high:
           class_derivations:
           - Quantity:
@@ -42,10 +37,8 @@
               slot_derivations:
                 value_decimal:
                   value: '550'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string                     
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000081
@@ -58,10 +51,8 @@
           expr: '{pht003099.phv00177940} * 365'
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: Particle Enhanced Immunonephelometry
-          range: string          
         value_quantity:
           class_derivations:
           - Quantity:
@@ -71,7 +62,6 @@
                   populated_from: phv00021693
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -79,10 +69,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.16'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
         range_high:
           class_derivations:
           - Quantity:
@@ -90,10 +78,8 @@
               slot_derivations:
                 value_decimal:
                   value: '550'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string                     
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -106,7 +92,6 @@
           expr: '{pht003099.phv00177932} * 365'  
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -115,12 +100,11 @@
               populated_from: pht002889
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00172177} > 0.15, {phv00172177}), ({phv00172203} == 1, 0.15), (True, {phv00172177}))
+                  expr: case(({phv00172177} > 0.15, {phv00172177}), ({phv00172203} == 1, 0.15), (is_numeric({phv00172177}), {phv00172177}))
                 operator:
                   expr: 'case(({phv00172203} == 1, "LESS_THAN"))'
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -128,10 +112,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.15'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -144,7 +126,6 @@
           expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OMOP:4208414
-          range: string
         method_type:
           value: 'blood assay'
         value_quantity:
@@ -153,12 +134,11 @@
               populated_from: pht004802
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00227060} > 0.15, {phv00227060}), ({phv00227067} == 1, 0.15), (True, {phv00227060}))
+                  expr: case(({phv00227060} > 0.15, {phv00227060}), ({phv00227067} == 1, 0.15), (is_numeric({phv00227060}), {phv00227060}))
                 operator:
                   expr: 'case(({phv00227067} == 1, "LESS_THAN"))'
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -166,10 +146,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.15'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012880
@@ -182,7 +160,6 @@
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OMOP:4208414
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -190,9 +167,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00520365
+                  missing_values: ['.']
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -200,10 +177,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.15'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht010726
@@ -216,19 +191,17 @@
           expr: '{pht003099.phv00177934} * 365'
         observation_type:
           value: OMOP:4208414
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
               populated_from: pht010726
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00462196} > 0.15, {phv00462196}), ({phv00462201} == 1, 0.15), (True, {phv00462196}))
+                  expr: case(({phv00462196} > 0.15, {phv00462196}), ({phv00462201} == 1, 0.15), (is_numeric({phv00462196}), {phv00462196}))
                 operator:
                   expr: 'case(({phv00462201} == 1, "LESS_THAN"))'
                 unit:
                   value: mg/L
-                  range: string
         range_low:
           class_derivations:
           - Quantity:
@@ -236,10 +209,8 @@
               slot_derivations:
                 value_decimal:
                   value: '0.15'
-                  range: string
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012881
@@ -252,7 +223,6 @@
           expr: 'case(({phv00520377} == ''1'', {pht003099.phv00177942} * 365), ({phv00520377} == ''7'', {pht003099.phv00177932} * 365))'
         observation_type:
           value: OMOP:4208414
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -260,9 +230,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00520381
+                  missing_values: ['.']
                 unit:
                   value: mg/L
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012882
@@ -275,16 +245,14 @@
           expr: 'case(({phv00520396} == ''1'', {pht003099.phv00177944} * 365), ({phv00520396} == ''7'', {pht003099.phv00177934} * 365))'
         observation_type:
           value: OMOP:4208414
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
               populated_from: pht012882
               slot_derivations:
                 value_decimal:
-                  expr: 'case(({phv00520398} == 0.14, 0.15), (True, {phv00520398}))'
+                  expr: 'case(({phv00520398} == 0.14, 0.15), (is_numeric({phv00520398}), {phv00520398}))'
                 operator:
                   expr: 'case(({phv00520398} == 0.14, "LESS_THAN"))'
                 unit:
                   value: mg/L
-                  range: string

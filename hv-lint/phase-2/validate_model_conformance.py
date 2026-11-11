@@ -84,6 +84,8 @@ def _derive_valid_keys():
         "class_derivations", "comments", "description", "enum_derivations",
         "id", "implements", "prefixes", "slot_derivations", "source_schema",
         "target_schema", "title",
+        # Added in linkml-map 0.6 for id minting (_ids.yaml):
+        "mint_ids", "class_defaults",
     })
     _CD_FROZEN = frozenset({
         "comments", "copy_directives", "description",
@@ -100,6 +102,8 @@ def _derive_valid_keys():
         "mixins", "name", "overrides", "populated_from", "range", "sources",
         "stringification", "target_definition", "type_designator",
         "unit_conversion", "value_mappings",
+        # Added in linkml-map 0.6:
+        "missing_values",
         # HV extensions (not in base linkml-map model -- Assumption A3):
         "value",               # Static value assignment
         "class_derivations",   # Nested object structure, list-based (e.g., Quantity)

@@ -8,10 +8,8 @@
           expr: case(({phv00128093} == 'Yes', {phv00128094} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128084}) + ":JHS Exam 1")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00128093
           value_mappings:
@@ -20,12 +18,10 @@
             Dont know: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "Personal and Family History Questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001976
@@ -34,10 +30,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128393}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128393}) + ":JHS Exam 1")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00128395
           value_mappings:
@@ -45,12 +39,10 @@
             'Yes': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "Stroke Symptom Screening"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008725
@@ -59,10 +51,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00400849}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00400912
           value_mappings:
@@ -71,12 +61,10 @@
             U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008728
@@ -85,22 +73,18 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401067}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401067}) + ":JHS STROKE")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00401072
           value_mappings:
             'Yes': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "Event Adjudication"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008728
@@ -109,10 +93,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401067}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401067}) + ":JHS STROKE")'
-          range: string
         condition_concept:
           value: MONDO:0005394
-          range: string
         condition_status:
           populated_from: phv00401073
           value_mappings:
@@ -120,12 +102,10 @@
             'No': ABSENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "Event Adjudication"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008728
@@ -134,10 +114,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401067}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401067}) + ":JHS STROKE")'
-          range: string
         condition_concept:
           value: MONDO:0005394
-          range: string
         condition_status:
           populated_from: phv00401074
           value_mappings:
@@ -145,12 +123,10 @@
             'No': ABSENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "Event Adjudication"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008728
@@ -159,10 +135,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401067}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401067}) + ":JHS STROKE")'
-          range: string
         condition_concept:
           value: HP:0002170
-          range: string
         condition_status:
           populated_from: phv00401075
           value_mappings:
@@ -170,12 +144,10 @@
             'No': ABSENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "Event Adjudication"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008728
@@ -184,10 +156,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401067}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401067}) + ":JHS STROKE")'
-          range: string
         condition_concept:
           value: MONDO:0005099
-          range: string
         condition_status:
           populated_from: phv00401076
           value_mappings:
@@ -195,12 +165,10 @@
             'No': ABSENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
-          range: string
         # associated_evidence:
         #   value: "Event Adjudication"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008729
@@ -209,10 +177,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00401207
           value_mappings:
@@ -220,12 +186,10 @@
             'No': ABSENT
         condition_provenance:
           value: STUDY_RECORD
-          range: string
         associated_evidence:
           value: "Analysis derived"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008730
@@ -234,10 +198,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401273}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00401345
           value_mappings:
@@ -245,12 +207,10 @@
             'No': ABSENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "Analysis derived"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008731
@@ -259,10 +219,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401370}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00401472
           value_mappings:
@@ -270,12 +228,10 @@
             'No': ABSENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "Analysis derived"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008753
@@ -284,12 +240,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00402777}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402777}) + ":JHS Exam 2")'
-          range: string
         age_at_condition_start:
           expr: case(({phv00402801} == '1', {phv00402802} * 365))
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00402801
           value_mappings:
@@ -299,12 +253,10 @@
             '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "Health History Questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008756
@@ -313,10 +265,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00402848}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402848}) + ":JHS ISTROKE")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00402849
           value_mappings:
@@ -324,12 +274,10 @@
             'No': ABSENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "Event Adjudication"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008768
@@ -338,10 +286,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00403315}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403315}) + ":JHS Exam 2")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00403327
           value_mappings:
@@ -350,7 +296,6 @@
             '7': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "Self-Report Questionnaire"
         relationship_to_participant:
@@ -363,10 +308,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00403369}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403369}) + ":JHS Exam 3")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00403381
           value_mappings:
@@ -375,12 +318,10 @@
             '7': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "Self-Report Questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008778
@@ -389,12 +330,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00403624}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403624}) + ":JHS Exam 3")'
-          range: string
         age_at_condition_start:
           expr: case(({phv00403634} == 'Yes', {phv00403635} * 365))
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00403634
           value_mappings:
@@ -404,12 +343,10 @@
             "Don't Know": UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "Personal and Family History Questionnaire"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008785
@@ -418,10 +355,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00403885}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403885}) + ":JHS Exam 2")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00403887
           value_mappings:
@@ -431,12 +366,10 @@
             "Don't Know": UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "Stroke Symptom Screening"
         relationship_to_participant:
           value: ONESELF
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht008786
@@ -445,10 +378,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00403988}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403988}) + ":JHS Exam 3")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00403990
           value_mappings:
@@ -458,9 +389,7 @@
             "Don't Know": UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT_DR_CONFIRMED
-          range: string
         # associated_evidence:
         #   value: "Stroke Symptom Screening"
         relationship_to_participant:
           value: ONESELF
-          range: string

@@ -2,9 +2,11 @@
     Participant:
       populated_from: pht010057
       slot_derivations:
-        identity:
+        id:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429048}) + ":LTRC")'
+        identity:
+          expr: 'str({phv00429048})'
         member_of_research_study:
-          value: 'Lung Tissue Research Consortium (LTRC)'
+          value: phs001662
         associated_person:
           expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'

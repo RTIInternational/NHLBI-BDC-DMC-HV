@@ -23,7 +23,6 @@
                   expr: "{phv00516590} * 2.54"
                 unit:
                   value: "cm"
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004102
@@ -47,7 +46,6 @@
                   expr: 'case(({phv00206817} == "I", {phv00206855} * 2.54), ({phv00206817} == "C", {phv00206855}))'
                 unit:
                   value: "cm"
-                  range: string
 # COMMENTED OUT: ABI (Ankle Brachial Index) table — no unit metadata in dbGaP data dict.
 # Variable ABI5 (phv00294562) has empty unit field. Each exam already has proper cm height
 # from anthropometry/PFT forms. DCC used only pht004032 (ANTA01, confirmed cm) for ARIC height.

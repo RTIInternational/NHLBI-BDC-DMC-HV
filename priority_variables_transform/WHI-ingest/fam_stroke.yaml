@@ -6,10 +6,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078666}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078666}) + ":WHI SCREENING")'
-          range: string
         condition_concept:
           value: MONDO:0005098
-          range: string
         condition_status:
           populated_from: phv00078697
           value_mappings:
@@ -18,9 +16,7 @@
             '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
-          range: string
         # associated_evidence:
         #   value: "self-report questionnaire"
         relationship_to_participant:
           value: BLOOD_RELATIVE
-          range: string

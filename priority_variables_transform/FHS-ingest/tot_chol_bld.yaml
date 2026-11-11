@@ -4,10 +4,8 @@
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         age_at_observation:
@@ -21,16 +19,15 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00010135
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -46,16 +43,15 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00423929
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000013
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001803}) + ":FHS ORIGINAL EXAM 11")'
         age_at_observation:
@@ -73,17 +69,14 @@
                   populated_from: phv00001581
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000036
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010694}) + ":FHS OFFSPRING EXAM 7")'
         age_at_observation:
@@ -97,19 +90,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00010142
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000074
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
         age_at_observation:
@@ -123,19 +114,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00021391
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000742
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071899}) + ":FHS OFFSPRING EXAM 8")'
         age_at_observation:
@@ -149,19 +138,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00071890
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004801
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227012}) + ":FHS OMNI 1 EXAM 1")'
         age_at_observation:
@@ -177,17 +164,14 @@
                   populated_from: phv00227014
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006010
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275400}) + ":FHS OMNI 1 EXAM 2")'
         age_at_observation:
@@ -201,19 +185,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00275402
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006011
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275410}) + ":FHS OMNI 1 EXAM 3")'
         age_at_observation:
@@ -227,19 +209,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00275413
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277015}) + ":" + case(({phv00277016} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00277016} == ''3'', ''FHS GENERATION 3 EXAM 1''), ({phv00277016} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -253,19 +233,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00277047
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277015}) + ":" + case(({phv00277016} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00277016} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00277016} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -279,19 +257,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00277048
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 9''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -305,19 +281,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00544854
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 5''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 5''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -331,19 +305,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00544850
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 28")'
         age_at_observation:
@@ -357,9 +329,9 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370081
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 # REMOVED: Original Exam 4 (1954-56) total cholesterol — Abell-Kendall assay
 # reads systematically +10-15 mg/dL higher than enzymatic methods used by all
 # other cohorts. Not comparable cross-cohort without calibration adjustment.
@@ -401,10 +373,8 @@
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 25")'
         age_at_observation:
@@ -418,19 +388,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370078
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 3")'
         age_at_observation:
@@ -444,19 +412,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370065
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 7")'
         age_at_observation:
@@ -470,16 +436,15 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370069
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 14")'
         age_at_observation:
@@ -495,19 +460,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370072
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 8")'
         age_at_observation:
@@ -521,19 +484,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370070
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 6")'
         age_at_observation:
@@ -547,19 +508,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370068
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 20")'
         age_at_observation:
@@ -573,19 +532,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370074
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 24")'
         age_at_observation:
@@ -599,19 +556,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370077
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 15")'
         age_at_observation:
@@ -625,19 +580,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370073
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 2")'
         age_at_observation:
@@ -651,16 +604,15 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370064
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 13")'
         age_at_observation:
@@ -676,19 +628,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370071
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 23")'
         age_at_observation:
@@ -702,19 +652,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370076
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 22")'
         age_at_observation:
@@ -728,19 +676,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370075
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 1")'
         age_at_observation:
@@ -754,19 +700,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370063
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Abell-Kendall"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 5")'
         age_at_observation:
@@ -780,19 +724,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370067
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 26")'
         age_at_observation:
@@ -806,19 +748,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370079
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 27")'
         age_at_observation:
@@ -832,16 +772,15 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00370080
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009755
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423778}) + ":" + case(({phv00423780} == ''10'', ''FHS ORIGINAL EXAM 10''), ({phv00423780} == ''11'', ''FHS ORIGINAL EXAM 11''), ({phv00423780} == ''12'', ''FHS ORIGINAL EXAM 12''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -857,19 +796,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00423784
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 4''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -883,19 +820,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00423932
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 3''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 3''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -909,19 +844,17 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00423931
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
-          range: string
         method_type:
           value: "Enzymatic"
-          range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 2''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -935,6 +868,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00423930
+                  missing_values: ['.']
                 unit:
                   value: mg/dl
-                  range: string

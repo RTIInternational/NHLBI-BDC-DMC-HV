@@ -6,13 +6,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00115353}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115353}) + ":CARDIA YEAR 5")'
-          range: string
         observation_type:
           value: OMOP:4076114
-          range: string
         category:
           value: FINANCIAL_INSECURITY
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -34,7 +31,6 @@
                     '10': No response
                 unit:
                   value: USD
-                  range: string
 - class_derivations:
     SdohObservation:
       populated_from: pht001708
@@ -43,13 +39,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116576}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116576}) + ":CARDIA YEAR 7")'
-          range: string
         observation_type:
           value: OMOP:4076114
-          range: string
         category:
           value: FINANCIAL_INSECURITY
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -70,7 +63,6 @@
                     '9': Don't know
                 unit:
                   value: USD
-                  range: string
 - class_derivations:
     SdohObservation:
       populated_from: pht001758
@@ -79,13 +71,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118304}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118304}) + ":CARDIA YEAR 10")'
-          range: string
         observation_type:
           value: OMOP:4076114
-          range: string
         category:
           value: FINANCIAL_INSECURITY
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -106,7 +95,6 @@
                     '9': Don't know
                 unit:
                   value: USD
-                  range: string
 - class_derivations:
     SdohObservation:
       populated_from: pht001855
@@ -115,13 +103,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120930}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120930}) + ":CARDIA YEAR 15")'
-          range: string
         observation_type:
           value: OMOP:4076114
-          range: string
         category:
           value: FINANCIAL_INSECURITY
-          range: string
         value_quantity:
           class_derivations:
           - Quantity:
@@ -143,4 +128,3 @@
                     '11': $100,000 and greater
                 unit:
                   expr: "case(({phv00120947} != None, 'USD'))"
-                  range: string
