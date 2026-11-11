@@ -143,7 +143,9 @@
               populated_from: pht007777
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00370127} < 300, {phv00370127} * 0.453592), (True, "'ULOD'"))
+                  expr: case(({phv00370127} < 300, {phv00370127} * 0.453592), ({phv00370127} >= 300, 136.0776))
+                operator:
+                  expr: 'case(({phv00370127} >= 300, "GREATER_THAN_OR_EQUAL_TO"))'
                 unit:
                   value: kg
         range_high:
@@ -577,7 +579,9 @@
               populated_from: pht007777
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00370144} < 300, {phv00370144} * 0.453592), (True, "'ULOD'"))
+                  expr: case(({phv00370144} < 300, {phv00370144} * 0.453592), ({phv00370144} >= 300, 136.0776))
+                operator:
+                  expr: 'case(({phv00370144} >= 300, "GREATER_THAN_OR_EQUAL_TO"))'
                 unit:
                   value: kg
         range_high:
@@ -611,7 +615,9 @@
               populated_from: pht007777
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00370145} < 300, {phv00370145} * 0.453592), (True, "'ULOD'"))
+                  expr: case(({phv00370145} < 300, {phv00370145} * 0.453592), ({phv00370145} >= 300, 136.0776))
+                operator:
+                  expr: 'case(({phv00370145} >= 300, "GREATER_THAN_OR_EQUAL_TO"))'
                 unit:
                   value: kg
         range_high:
@@ -645,7 +651,9 @@
               populated_from: pht007777
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00370146} < 300, {phv00370146} * 0.453592), (True, "'ULOD'"))
+                  expr: case(({phv00370146} < 300, {phv00370146} * 0.453592), ({phv00370146} >= 300, 136.0776))
+                operator:
+                  expr: 'case(({phv00370146} >= 300, "GREATER_THAN_OR_EQUAL_TO"))'
                 unit:
                   value: kg
         range_high:
@@ -679,7 +687,9 @@
               populated_from: pht007777
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00370147} < 300, {phv00370147} * 0.453592), (True, "'ULOD'"))
+                  expr: case(({phv00370147} < 300, {phv00370147} * 0.453592), ({phv00370147} >= 300, 136.0776))
+                operator:
+                  expr: 'case(({phv00370147} >= 300, "GREATER_THAN_OR_EQUAL_TO"))'
                 unit:
                   value: kg
         range_high:
@@ -713,7 +723,9 @@
               populated_from: pht007777
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00370148} < 300, {phv00370148} * 0.453592), (True, "'ULOD'"))
+                  expr: case(({phv00370148} < 300, {phv00370148} * 0.453592), ({phv00370148} >= 300, 136.0776))
+                operator:
+                  expr: 'case(({phv00370148} >= 300, "GREATER_THAN_OR_EQUAL_TO"))'
                 unit:
                   value: kg
         range_high:
