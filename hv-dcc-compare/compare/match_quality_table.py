@@ -1163,13 +1163,20 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "v4) uses the questionnaire items rather than the study-derived "
             "variable and codes any positive indication as ever: SMOKE101 "
             "(phv00098844), SMOKE201 (phv00098845), SMKAGE (phv00099157) or "
-            "AMOUNT above 0 (phv00099159) across pht001450 and pht001490. BDC "
-            "reports fewer Ever Smoked than the DCC. In phs000287.v7 the "
-            "pht001450 dictionary gives AMOUNT08 a code 99 = UNKNOWN, and the "
-            "DCC code tests the row sum without recoding it, so a 99 counts as "
-            "ever; the number of participants affected is not given in the "
-            "variable report. The cause of the difference is not established; "
-            "participants were not matched."
+            "AMOUNT above 0 (phv00099159) across pht001450 and pht001490. The "
+            "BDC counts shown above equal SMOKE in the v7 var_reports: Never "
+            "2,250 + 309 = 2,559, Ever 2,966. The DCC read phs000287.v6, whose "
+            "counts for these variables equal v7. Only a SMOKE101 'No' with no "
+            "positive item is Never in the DCC code; 2,570 participants answered "
+            "SMOKE101 'No' (2,249 + 321) and the DCC reports 2,451 Never, so "
+            "107 to 119 of them are coded Ever from SMOKE201, SMKAGE or AMOUNT. "
+            "SMOKE has 11 fewer Never than SMOKE101 'No', which leaves the "
+            "108-participant Never difference shown above. The pht001450 "
+            "dictionary gives AMOUNT08 a code 99 = UNKNOWN, which the DCC row "
+            "sum counts as Ever; AMOUNT58 has a maximum of 60, so that code "
+            "affects only the original cohort. Which item moves each "
+            "participant is not given in the variable reports (inferred from "
+            "totals, not matched by participant)."
         ),
     },
     ("CHS", "carotid_plaque_1"): {
@@ -1307,7 +1314,7 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
         ),
     },
     ("JHS", "cac_score_1"): {
-        "code": "UNATTRIBUTED",
+        "code": "VERSION_MISMATCH",
         "no_override": True,
         "note": (
             "Both sides read CSTA24 (phv00126002, Agatston score all coronary). "
@@ -1315,10 +1322,14 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "VISIT = 6 (phv00401812); cac_score.yaml assigns that protocol "
             "visit to JHS Exam 2 and the comparison grades CAC there. The DCC "
             "reads pht001948.v1 of phs000286.v5, inner-joins it to AGE01 "
-            "(pht001949) and removes NA. The participant-universe difference "
-            "can account for part of the N difference shown above but not all "
-            "of it, and the v5 and v7 table contents were not compared, so the "
-            "cause of the N and mean differences is not established."
+            "(pht001949) and removes NA. The dbGaP var_reports give CSTA24 as "
+            "n = 1,664, mean 146.0, SD 426.4, max 5,498 in pht001948.v1 "
+            "(unchanged from phs000286.v1 through v5) and n = 2,144, mean "
+            "175.7, SD 532.9, max 10,801 in pht001948.v3 (v7). The DCC N and "
+            "mean shown above equal the v5 summary and the BDC N and mean equal "
+            "the v7 summary, so the N and mean differences are the 480 "
+            "participants added to the table in v7; every consent group grew "
+            "(c1 366 to 514, c2 75 to 97, c3 991 to 1,242, c4 232 to 291)."
         ),
     },
     # ── HCHS-SOL ──────────────────────────────────────────────────────────────
@@ -1514,12 +1525,18 @@ KNOWN_METHODOLOGICAL_DIFFS: dict[tuple[str, str], dict] = {
             "ATC:C10AA), which in phs000286.v7 has 3,802 values and 81 nulls; "
             "the comparison counts a blank drug status as missing, so BDC "
             "missing values equal the source nulls. The DCC reads LPM01 "
-            "(pht001949 phv00126053) and sets 'X' to missing; its documentation "
-            "states that the variable is not restricted to a single class of "
-            "medications and includes drugs such as statins and fibrates. The "
-            "two sides therefore differ in medication scope and in source "
-            "variable; the cause of the missingness difference is not "
-            "established."
+            "(phs000286.v5 pht001949 phv00126053) and sets 'X' to missing. "
+            "LPM01 counts any antihyperlipidemic medication (TCCODE 39) from "
+            "the medication inventory and is 'X' when medication accountability "
+            "is not reliable (JHS Analysis Manual phd003136, p. 472). In v5 it "
+            "has 2,802 Untreated, 432 Treated and 302 'X' among 3,536 DERIVE05 "
+            "rows, so the DCC N is the non-'X' count, and the DCC missing count "
+            "is those 302 plus the 66 consented participants (3,602 less 3,536) "
+            "with no DERIVE05 row. The missingness difference therefore comes "
+            "from the two source variables' missing rules plus the "
+            "participant-universe difference. The Yes share is 13.4% (DCC) and "
+            "13.2% (BDC), so the statin-only scope moves it little. Whether the "
+            "two missing sets are the same participants was not checked."
         ),
     },
     ("MESA", "angina_prior_1"): {
