@@ -840,5 +840,507 @@ class HvDccCompareSmokeTests(unittest.TestCase):
                     self.assertNotIn(fragment, text)
 
 
+def _tsv(path: Path, header: list[str], rows: list[list[str]]) -> None:
+    lines = [TAB.join(header)] + [TAB.join(r) for r in rows]
+    path.write_text(NL.join(lines) + NL, encoding="utf-8")
+
+
+class ExtractorAccuracyTests(unittest.TestCase):
+    """Each test drives the real process_* function on a synthetic mapped-data
+    directory and asserts on the graded statistic, not on a helper."""
+
+    def setUp(self) -> None:
+        self._sys_path = sys.path.copy()
+        sys.path.insert(0, str(ROOT / "extract-harmonized"))
+        sys.path.insert(0, str(ROOT))
+        import extract_harmonized_summaries as ex  # type: ignore  # noqa: PLC0415
+        self.ex = ex
+        self._tmp = tempfile.TemporaryDirectory()
+        self.md = Path(self._tmp.name) / "md"
+        self.md.mkdir()
+
+    def tearDown(self) -> None:
+        self._tmp.cleanup()
+        sys.path[:] = self._sys_path
+
+    def _visits(self, labels: dict[str, str]) -> dict[str, str]:
+        _tsv(self.md / "Visit.tsv", ["id", "name"], [[k, v] for k, v in labels.items()])
+        return self.ex.load_visit_mapping([str(self.md)])
+
+    def _quiet(self, fn, *args, **kwargs):
+        import contextlib  # noqa: PLC0415
+        import io  # noqa: PLC0415
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+            result = fn(*args, **kwargs)
+        return result, buf.getvalue()
+
+    def test_unknown_condition_status_is_missing_not_no(self) -> None:
+        vm = self._visits({"v1": "ARIC EXAM 1"})
+        rows = ([[f"P{i}", "MONDO:0005068", "PRESENT", "v1"] for i in range(10)]
+                + [[f"P{i}", "MONDO:0005068", "ABSENT", "v1"] for i in range(10, 30)]
+                # blank = skip-pattern follow-up not asked: still a respondent
+                + [[f"P{i}", "MONDO:0005068", "", "v1"] for i in range(30, 40)]
+                + [[f"P{i}", "MONDO:0005068", "UNKNOWN", "v1"] for i in range(40, 60)])
+        _tsv(self.md / "Condition.tsv",
+             ["associated_participant", "condition_concept", "condition_status",
+              "associated_visit"], rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_conditions, [str(self.md)], "ARIC", set(), 100,
+                    stats, visit_mapping=vm)
+        dist = stats["mi_prior_1"]["distribution"]
+        self.assertEqual(dist["Prior History"]["n"], 10)
+        self.assertEqual(dist["No Prior History"]["n"], 30)  # not 50
+        self.assertEqual(stats["mi_prior_1"]["n_missing"], 60)
+
+    def test_prior_history_never_falls_back_to_other_visits(self) -> None:
+        vm = self._visits({"v1": "ARIC EXAM 1", "h": "ARIC Hospital Form"})
+        # PAD answered only on a post-baseline hospital form; MI at baseline.
+        rows = ([[f"P{i}", "MONDO:0005294", "PRESENT", "h"] for i in range(20)]
+                + [[f"P{i}", "MONDO:0005068", "ABSENT", "v1"] for i in range(30)])
+        _tsv(self.md / "Condition.tsv",
+             ["associated_participant", "condition_concept", "condition_status",
+              "associated_visit"], rows)
+        stats: dict = {}
+        _, out = self._quiet(self.ex.process_conditions, [str(self.md)], "ARIC",
+                             set(), 100, stats, visit_mapping=vm)
+        self.assertEqual(stats["pad_prior_1"]["n_valid"], 0)  # gap, not prevalence
+        self.assertIn("not_comparable", stats["pad_prior_1"])
+        self.assertIn("mi_prior_1", stats)
+        self.assertIn("NOT COMPARABLE", out)
+
+        # No condition row at any baseline visit: nothing is graded.
+        stats = {}
+        rows = [[f"P{i}", "MONDO:0005068", "PRESENT", "h"] for i in range(20)]
+        _tsv(self.md / "Condition.tsv",
+             ["associated_participant", "condition_concept", "condition_status",
+              "associated_visit"], rows)
+        self._quiet(self.ex.process_conditions, [str(self.md)], "ARIC", set(), 100,
+                    stats, visit_mapping=vm)
+        self.assertEqual(stats["mi_prior_1"]["n_valid"], 0)
+
+    def _drugs(self, rows: list[list[str]], cohort: str = "HCHS_SOL",
+               visit: str = "HCHS EXAM") -> dict:
+        vm = self._visits({"v1": visit})
+        _tsv(self.md / "DrugExposure.tsv",
+             ["associated_participant", "drug_concept", "exposure_status",
+              "associated_visit"], rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_drugs, [str(self.md)], cohort, set(), 100,
+                    {f"P{i}" for i in range(100)}, stats, visit_mapping=vm)
+        return stats
+
+    def test_antihypertensive_uses_study_indicator_over_drug_classes(self) -> None:
+        rows = ([[f"P{i}", "ATC:C02", "PRESENT", "v1"] for i in range(10)]
+                + [[f"P{i}", "ATC:C02", "ABSENT", "v1"] for i in range(10, 95)]
+                + [[f"P{i}", "ATC:C02", "UNKNOWN", "v1"] for i in range(95, 100)]
+                # beta blocker taken by people who said "no" to BP medication
+                + [[f"P{i}", "ATC:C07A", "PRESENT", "v1"] for i in range(10, 20)])
+        s = self._drugs(rows)["antihypertensive_meds_1"]
+        self.assertEqual(s["distribution"]["Yes"]["n"], 10)
+        self.assertEqual(s["distribution"]["No"]["n"], 85)
+        self.assertEqual(s["n_missing"], 5)
+
+    def test_medication_list_source_keeps_attendee_denominator(self) -> None:
+        # CARDIA-style list: only the few participants who listed a BP drug
+        # have a row, so absence means "not taking", not missing.
+        rows = ([[f"P{i}", "ATC:C02", "PRESENT", "v1"] for i in range(6)]
+                + [[f"P{i}", "ATC:C02", "ABSENT", "v1"] for i in range(6, 8)])
+        s = self._drugs(rows)["antihypertensive_meds_1"]
+        self.assertEqual(s["distribution"]["Yes"]["n"], 6)
+        self.assertEqual(s["distribution"]["No"]["n"], 94)
+
+    def test_medication_list_source_counts_unknown_as_missing(self) -> None:
+        # List-style source (as CARDIA Year 0, where A09MDNOW 'M' maps to
+        # UNKNOWN): UNKNOWN-only participants are missing, not "not taking".
+        rows = ([[f"P{i}", "ATC:C02", "PRESENT", "v1"] for i in range(6)]
+                + [[f"P{i}", "ATC:C02", "ABSENT", "v1"] for i in range(6, 8)]
+                + [[f"P{i}", "ATC:C02", "UNKNOWN", "v1"] for i in range(8, 11)])
+        s = self._drugs(rows)["antihypertensive_meds_1"]
+        self.assertEqual(s["distribution"]["Yes"]["n"], 6)
+        self.assertEqual(s["distribution"]["No"]["n"], 91)
+        self.assertEqual(s["n_missing"], 3)
+
+    def test_lipid_meds_match_subclasses_and_mean_current_use(self) -> None:
+        rows = ([[f"P{i}", "ATC:C10AA", "PRESENT", "v1"] for i in range(8)]
+                + [[f"P{i}", "ATC:C10AB", "PRESENT", "v1"] for i in range(8, 12)]
+                + [[f"P{i}", "ATC:C10A", "HISTORICAL", "v1"] for i in range(12, 20)]
+                + [[f"P{i}", "ATC:C10A", "ABSENT", "v1"] for i in range(20, 90)])
+        s = self._drugs(rows)["lipid_lowering_medication_1"]
+        self.assertEqual(s["distribution"]["Yes"]["n"], 12)
+        self.assertEqual(s["distribution"]["No"]["n"], 78)
+
+    def test_unknown_race_is_its_own_category_not_other(self) -> None:
+        # Unknown (asked, no usable answer) is not Other (a selected response).
+        rows = ([[f"P{i}", "OMOP:8527"] for i in range(10)]
+                + [[f"P{i}", "OMOP:8552"] for i in range(10, 20)]
+                + [[f"P{i}", "UNKNOWN"] for i in range(20, 30)])
+        _tsv(self.md / "Demography.tsv", ["associated_participant", "race"], rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_demography, [str(self.md)], "MESA", stats)
+        s = stats["race_us_1"]
+        self.assertEqual(s["distribution"]["Unknown"]["n"], 20)
+        self.assertNotIn("Other", s["distribution"])
+        self.assertNotIn("UNMAPPED", s["distribution"])
+        self.assertEqual(s["n_missing"], 0)
+
+    def test_ethnicity_unknown_is_missing(self) -> None:
+        rows = ([[f"P{i}", "OMOP:38003563"] for i in range(10)]
+                + [[f"P{i}", "OMOP:38003564"] for i in range(10, 30)]
+                + [[f"P{i}", "OMOP:8552"] for i in range(30, 50)])
+        _tsv(self.md / "Demography.tsv", ["associated_participant", "ethnicity"], rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_demography, [str(self.md)], "FHS", stats)
+        dist = stats["hispanic_or_latino_1"]["distribution"]
+        self.assertNotIn("UNMAPPED", dist)
+        self.assertEqual(stats["hispanic_or_latino_1"]["n_missing"], 20)
+
+    def test_stenosis_band_labels_graded_as_worst_side(self) -> None:
+        vm = self._visits({"v1": "MESA CLASSIC EXAM 1"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_concept", "associated_visit"]
+        rows = []
+        for i in range(20):
+            rows.append([f"P{i}", "OMOP:43020498", "0", "v1"])          # left
+            rows.append([f"P{i}", "OMOP:43021859", "25-49" if i < 6 else "1-24", "v1"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_measurements, [str(self.md)], "MESA", set(), 20,
+                    stats, visit_mapping=vm)
+        dist = stats["carotid_stenosis_1"]["distribution"]
+        self.assertEqual(dist["2"]["n"], 6)
+        self.assertEqual(dist["1"]["n"], 14)
+
+    def test_visit_override_takes_first_listed_exam_with_a_value(self) -> None:
+        vm = self._visits({"e9": "FHS OFFSPRING EXAM 9", "e1": "FHS OFFSPRING EXAM 1",
+                           "o4": "FHS ORIGINAL EXAM 4"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "associated_visit"]
+        rows = []
+        for i in range(10):
+            # Exam 1 row first in file order; Exam 9 must still win.
+            rows.append([f"P{i}", "OBA:VT0000217", "5.0", "e1"])
+            rows.append([f"P{i}", "OBA:VT0000217", "7.0" if i < 6 else "", "e9"])
+            rows.append([f"P{i}", "OBA:VT0000217", "99.0", "o4"])  # not a DCC exam
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_measurements, [str(self.md)], "FHS", set(), 10,
+                    stats, visit_mapping=vm)
+        s = stats["wbc_ncnc_bld_1"]
+        self.assertEqual(s["n_valid"], 10)
+        # 6 at Exam 9 (7.0) and 4 falling back to Exam 1 (5.0); Original excluded.
+        self.assertAlmostEqual(s["mean"], (6 * 7.0 + 4 * 5.0) / 10, places=4)
+
+    def test_stenosis_override_keeps_both_sides(self) -> None:
+        vm = self._visits({"e6": "FHS OFFSPRING EXAM 6"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_concept", "associated_visit"]
+        rows = []
+        for i in range(10):
+            rows.append([f"P{i}", "OMOP:43020498", "1-24", "e6"])
+            rows.append([f"P{i}", "OMOP:43021859", "50-74", "e6"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_measurements, [str(self.md)], "FHS", set(), 10,
+                    stats, visit_mapping=vm)
+        self.assertEqual(stats["carotid_stenosis_1"]["distribution"]["3"]["n"], 10)
+
+    def test_most_nonmissing_first_reproduces_the_greedy_visit_rule(self) -> None:
+        vm = self._visits({"e3": "ARIC EXAM 3", "e4": "ARIC EXAM 4", "e5": "ARIC EXAM 5"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "associated_visit"]
+        rows = []
+        # Exam 5 has the most participants (P0-P7), so it wins everyone it has
+        # even though Exam 3 is listed first; P8/P9 then fall to Exam 3.
+        for i in range(8):
+            rows.append([f"P{i}", "OBA:2045301", "30.0", "e5"])
+        for i in range(4, 10):
+            rows.append([f"P{i}", "OBA:2045301", "20.0", "e3"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_measurements, [str(self.md)], "ARIC", set(), 10,
+                    stats, visit_mapping=vm)
+        s = stats["mch_entmass_rbc_1"]
+        self.assertEqual(s["n_valid"], 10)
+        self.assertAlmostEqual(s["mean"], (8 * 30.0 + 2 * 20.0) / 10, places=4)
+        self.assertTrue(s["visit_label"].startswith("ARIC EXAM 5 > ARIC EXAM 3"))
+
+    def test_drug_visit_override_excludes_unlisted_subcohorts(self) -> None:
+        vm = self._visits({"o4": "FHS ORIGINAL EXAM 4", "f1": "FHS OFFSPRING EXAM 1"})
+        rows = ([[f"P{i}", "ATC:C10A", "PRESENT", "o4"] for i in range(30)]
+                + [[f"P{i}", "ATC:C10A", "PRESENT", "f1"] for i in range(30, 35)]
+                + [[f"P{i}", "ATC:C10A", "ABSENT", "f1"] for i in range(35, 50)])
+        _tsv(self.md / "DrugExposure.tsv",
+             ["associated_participant", "drug_concept", "exposure_status",
+              "associated_visit"], rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_drugs, [str(self.md)], "FHS", set(), 50,
+                    {f"P{i}" for i in range(50)}, stats, visit_mapping=vm)
+        s = stats["lipid_lowering_medication_1"]
+        self.assertEqual(s["distribution"]["Yes"]["n"], 5)
+        self.assertEqual(s["distribution"]["No"]["n"], 15)
+
+    def test_override_keeps_one_whole_row_across_value_columns(self) -> None:
+        vm = self._visits({"e9": "FHS OFFSPRING EXAM 9", "e1": "FHS OFFSPRING EXAM 1"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "value_quantity__value_integer",
+                  "associated_visit"]
+        rows = []
+        for i in range(10):
+            rows.append([f"P{i}", "OBA:VT0000217", "5.0", "", "e1"])
+            rows.append([f"P{i}", "OBA:VT0000217", "", "7", "e9"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_measurements, [str(self.md)], "FHS", set(), 10,
+                    stats, visit_mapping=vm)
+        self.assertAlmostEqual(stats["wbc_ncnc_bld_1"]["mean"], 7.0, places=4)
+
+    def test_subcohort_without_indicator_is_a_gap_not_a_drug_class(self) -> None:
+        vm = self._visits({"g": "FHS GENERATION 3 EXAM 1", "f": "FHS OFFSPRING EXAM 1"})
+        rows = ([[f"P{i}", "ATC:C02", "PRESENT", "g"] for i in range(20)]
+                + [[f"P{i}", "ATC:C02", "ABSENT", "g"] for i in range(20, 70)]
+                # Offspring has only a diuretic flag: not the indicator.
+                + [[f"P{i}", "ATC:C03", "PRESENT", "f"] for i in range(70, 85)]
+                + [[f"P{i}", "ATC:C03", "ABSENT", "f"] for i in range(85, 100)])
+        _tsv(self.md / "DrugExposure.tsv",
+             ["associated_participant", "drug_concept", "exposure_status",
+              "associated_visit"], rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_drugs, [str(self.md)], "FHS", set(), 100,
+                    {f"P{i}" for i in range(100)}, stats, visit_mapping=vm)
+        s = stats["antihypertensive_meds_1"]
+        self.assertEqual(s["distribution"]["Yes"]["n"], 20)
+        self.assertEqual(s["distribution"]["No"]["n"], 50)
+        self.assertEqual(s["n_missing"], 30)
+
+    def test_unknown_ethnicity_row_does_not_hide_a_real_answer(self) -> None:
+        rows = ([[f"P{i}", "OMOP:8552"] for i in range(10)]
+                + [[f"P{i}", "OMOP:38003563"] for i in range(10)]
+                + [[f"P{i}", "Unknown"] for i in range(10, 15)])
+        _tsv(self.md / "Demography.tsv", ["associated_participant", "ethnicity"], rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_demography, [str(self.md)], "FHS", stats)
+        dist = stats["hispanic_or_latino_1"]["distribution"]
+        self.assertEqual(dist["Hispanic or Latino"]["n"], 10)
+        self.assertNotIn("UNMAPPED", dist)
+
+    def test_blank_drug_status_is_missing_not_no(self) -> None:
+        rows = ([[f"P{i}", "ATC:C10AA", "PRESENT", "v1"] for i in range(10)]
+                + [[f"P{i}", "ATC:C10AA", "ABSENT", "v1"] for i in range(10, 80)]
+                + [[f"P{i}", "ATC:C10AA", "", "v1"] for i in range(80, 90)])
+        s = self._drugs(rows)["lipid_lowering_medication_1"]
+        self.assertEqual(s["distribution"]["No"]["n"], 70)  # not 80
+        self.assertEqual(s["n_missing"], 20)
+
+    def test_heavily_skipped_question_stays_a_question(self) -> None:
+        # 60 of 100 blank: still a question (explicit negatives exist), so the
+        # denominator is who answered, not all attendees.
+        rows = ([[f"P{i}", "ATC:C10AA", "PRESENT", "v1"] for i in range(10)]
+                + [[f"P{i}", "ATC:C10AA", "ABSENT", "v1"] for i in range(10, 40)]
+                + [[f"P{i}", "ATC:C10AA", "", "v1"] for i in range(40, 100)])
+        s = self._drugs(rows)["lipid_lowering_medication_1"]
+        self.assertEqual(s["distribution"]["No"]["n"], 30)
+        self.assertEqual(s["n_missing"], 60)
+
+    def test_same_visit_tie_under_override_is_reported(self) -> None:
+        vm = self._visits({"y15": "CARDIA YEAR 15"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "associated_visit"]
+        rows = []
+        for i in range(10):
+            rows.append([f"P{i}", "OMOP:4208414", "2.0", "y15"])   # one assay
+            rows.append([f"P{i}", "OMOP:4208414", "3.3", "y15"])   # another assay
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "CARDIA",
+                             set(), 10, {}, visit_mapping=vm)
+        self.assertIn("10 participant(s) had CONFLICTING values", out)
+
+        # Different values at DIFFERENT listed visits are resolved by priority,
+        # not a conflict.
+        vm = self._visits({"e9": "FHS OFFSPRING EXAM 9", "e2": "FHS OFFSPRING EXAM 2"})
+        rows = []
+        for i in range(10):
+            rows.append([f"P{i}", "OBA:VT0000217", "6.0", "e9"])
+            rows.append([f"P{i}", "OBA:VT0000217", "7.0", "e2"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "FHS",
+                             set(), 10, {}, visit_mapping=vm)
+        self.assertNotIn("CONFLICTING", out)
+
+    def test_fhs_ldl_reads_the_calculated_value(self) -> None:
+        vm = self._visits({"f1": "FHS OFFSPRING EXAM 1"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
+        rows = []
+        for i in range(10):
+            rows.append([f"P{i}", "OBA:VT0001815", "125.0", "fasted for minimum 12 hrs", "f1"])
+            rows.append([f"P{i}", "OBA:VT0001815", "120.0",
+                         "fasted for minimum 12 hrs - calculated value", "f1"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_measurements, [str(self.md)], "FHS", set(), 10,
+                    stats, visit_mapping=vm)
+        self.assertAlmostEqual(stats["ldl_1"]["mean"], 120.0, places=4)
+
+    def test_preferred_method_override_selects_the_reference_source(self) -> None:
+        vm = self._visits({"v1": "JHS Exam 1"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
+        rows = []
+        for i in range(10):
+            rows.append([f"P{i}", "OBA:VT0000184", "40.0", "Analysis derived", "v1"])
+            rows.append([f"P{i}", "OBA:VT0000184", "50.0", "Fasting lab assay", "v1"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        self._quiet(self.ex.process_measurements, [str(self.md)], "JHS", set(), 10,
+                    stats, visit_mapping=vm)
+        self.assertAlmostEqual(stats["hdl_1"]["mean"], 50.0, places=4)
+        self.assertEqual(stats["hdl_1"]["bdc_method"], "Fasting lab assay")
+
+    def test_unmatched_preferred_method_is_not_reported_as_applied(self) -> None:
+        vm = self._visits({"v1": "CHS BASELINE BOTH"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
+        # SBP's global preferred method ("Analysis derived") has no CHS block.
+        rows = [[f"P{i}", "OMOP:4152194", "130.0", "Seated average", "v1"] for i in range(10)]
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "CHS",
+                             set(), 10, stats, visit_mapping=vm)
+        self.assertNotIn("bdc_method", stats["bp_systolic_1"])
+        self.assertIn("matched no rows", out)
+
+    def test_weight_filter_applies_only_to_cohorts_that_carry_recalled_weights(self) -> None:
+        """CHS recalled age-50 weights share the code and visit; measured is graded.
+        A cohort with no recalled weights is not filtered."""
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
+        vm = self._visits({"v1": "CHS BASELINE BOTH"})
+        rows = []
+        for i in range(10):
+            # Recalled row first: file order must not decide the result.
+            rows.append([f"P{i}", "OBA:VT0001259", "55.0", "self-report questionnaire", "v1"])
+            rows.append([f"P{i}", "OBA:VT0001259", "70.0", "anthropometry", "v1"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "CHS",
+                             set(), 10, stats, visit_mapping=vm)
+        self.assertAlmostEqual(stats["weight_baseline_1"]["mean"], 70.0, places=4)
+        self.assertNotIn("CONFLICTING", out)
+
+        vm = self._visits({"v1": "ARIC EXAM 1"})
+        rows = [[f"P{i}", "OBA:VT0001259", "70.0", "anthropometry", "v1"] for i in range(10)]
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats = {}
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "ARIC",
+                             set(), 10, stats, visit_mapping=vm)
+        self.assertAlmostEqual(stats["weight_baseline_1"]["mean"], 70.0, places=4)
+        self.assertNotIn("method filter", out)
+        self.assertEqual(self.ex.cohort_lookup(
+            self.ex.BDC_MEASUREMENT_MAP["OBA:VT0001259"]["preferred_method_override"], "MESA"),
+            "Current measured")
+
+    def test_aric_cimt_reads_the_mean_far_wall_not_the_maximum(self) -> None:
+        mean_method = ("Mean of the average common carotid IMT far wall both sides "
+                       "from optimal, anterior, and posterior angle")
+        max_method = ("Mean of the maximum common carotid IMT far and near walls both "
+                      "sides from optimal, posterior, and anterior angles")
+        vm = self._visits({"v1": "ARIC EXAM 1"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
+        rows = []
+        for i in range(10):
+            # Maximum row first: file order must not decide the result.
+            rows.append([f"P{i}", "OMOP:4138462", "0.95", max_method, "v1"])
+            rows.append([f"P{i}", "OMOP:4138462", "0.70", mean_method, "v1"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "ARIC",
+                             set(), 10, stats, visit_mapping=vm)
+        self.assertAlmostEqual(stats["cimt_1"]["mean"], 0.70, places=4)
+        self.assertEqual(stats["cimt_1"]["bdc_method"], mean_method)
+        self.assertNotIn("CONFLICTING", out)
+
+    def test_cardia_crp_reads_the_bnii_rerun(self) -> None:
+        vm = self._visits({"y15": "CARDIA YEAR 15"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
+        rows = []
+        for i in range(10):
+            # Original assay first: file order must not decide the result.
+            rows.append([f"P{i}", "OMOP:4208414", "2.0", "Original assay (FL6CRP)", "y15"])
+            rows.append([f"P{i}", "OMOP:4208414", "3.0", "BNII method rerun (FL6CRPBN)",
+                         "y15"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        stats: dict = {}
+        _, out = self._quiet(self.ex.process_measurements, [str(self.md)], "CARDIA",
+                             set(), 10, stats, visit_mapping=vm)
+        self.assertAlmostEqual(stats["crp_1"]["mean"], 3.0, places=4)
+        self.assertEqual(stats["crp_1"]["bdc_method"], "BNII method rerun (FL6CRPBN)")
+        self.assertNotIn("CONFLICTING", out)
+
+    def test_hchs_height_and_weight_grade_measured_not_recalled(self) -> None:
+        """Recalled height/weight share the code and visit; only measured is graded."""
+        vm = self._visits({"v1": "HCHS EXAM"})
+        header = ["associated_participant", "observation_type",
+                  "value_quantity__value_decimal", "method_type", "associated_visit"]
+        rows = []
+        for i in range(10):
+            # Recalled rows first: file order must not decide the result.
+            rows.append([f"P{i}", "OBA:VT0001253", "150.0", "height recalled at age 21", "v1"])
+            rows.append([f"P{i}", "OBA:VT0001253", "165.0", "anthropometry", "v1"])
+            rows.append([f"P{i}", "OBA:VT0001259", "55.0", "self-report questionnaire", "v1"])
+            rows.append([f"P{i}", "OBA:VT0001259", "80.0", "anthropometry", "v1"])
+        _tsv(self.md / "MeasurementObservation.tsv", header, rows)
+        for cohort in ("HCHS_SOL", "hchs_sol"):
+            stats: dict = {}
+            _, out = self._quiet(self.ex.process_measurements, [str(self.md)], cohort,
+                                 set(), 10, stats, visit_mapping=vm)
+            self.assertAlmostEqual(stats["height_baseline_1"]["mean"], 165.0, places=4)
+            self.assertAlmostEqual(stats["weight_baseline_1"]["mean"], 80.0, places=4)
+            self.assertEqual(stats["weight_baseline_1"]["bdc_method"], "anthropometry")
+            self.assertNotIn("CONFLICTING", out)
+
+    def test_categorical_rollup_reports_valid_n_not_cohort_total(self) -> None:
+        """Section 4 of the cross-cohort summary must show answered counts."""
+        for extra in (str(ROOT), str(ROOT / "compare")):
+            if extra not in sys.path:
+                sys.path.insert(0, extra)
+        import compare as cmp  # noqa: PLC0415
+
+        def side(n_valid: int) -> dict:
+            return {"cohort": {"name": "MESA"}, "total_participants": 100,
+                    "variables": {"cabg_prior_1": {
+                        "type": "categorical", "bdc_label": "CABG", "n_total": 100,
+                        "n_valid": n_valid, "pct_missing": 100 - n_valid,
+                        "distribution": {}}}}
+        summary, _ = self._quiet(cmp.run_comparison, side(80), side(0))
+        self.assertEqual(summary["variables"]["cabg_prior_1"]["topmed_n"], 80)
+        self.assertEqual(summary["variables"]["cabg_prior_1"]["bdc_n"], 0)
+
+    def test_match_quality_mean_delta_keeps_its_sign(self) -> None:
+        """MeanDelta prints BDC minus reference; the tier uses the magnitude."""
+        for extra in (str(ROOT), str(ROOT / "compare")):
+            if extra not in sys.path:
+                sys.path.insert(0, extra)
+        import match_quality_table as mqt  # noqa: PLC0415
+
+        def summary(mean: float) -> dict:
+            return {"metadata": {"cohort": "ARIC"}, "total_participants": 100,
+                    "variables": {"height_baseline_1": {
+                        "type": "continuous", "bdc_label": "Height", "n_valid": 100,
+                        "pct_missing": 0.0, "mean": mean, "sd": 10.0}}}
+        (self.md / "t.json").write_text(json.dumps(summary(170.0)), encoding="utf-8")
+        (self.md / "b.json").write_text(json.dumps(summary(169.5)), encoding="utf-8")
+        out_file = self.md / "mqt.txt"
+        self._quiet(mqt.run, str(self.md / "t.json"), str(self.md / "b.json"),
+                    str(out_file), True)
+        row = next(line for line in out_file.read_text(encoding="utf-8").splitlines()
+                   if line.startswith("Height"))
+        self.assertIn("-0.5000", row)
+        # 0.5 / 10 = 0.05 SD: the same tier a +0.5 gap gets.
+        self.assertIn(" T4 ", row)
+
+
 if __name__ == "__main__":
     unittest.main()

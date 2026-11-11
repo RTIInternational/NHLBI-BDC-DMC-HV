@@ -10,6 +10,7 @@
 #   1. extract-harmonized  (BDC dm-bip DMC_<COHORT>_<date>_<time> output -> bdc_*.json)
 #   2. compare/compare.py --batch          -> per-cohort + cross-cohort reports
 #   3. compare/batch_scorecard.py          -> letter-grade scorecards
+#      compare/match_quality_table.py      -> per-variable tiers + methodological notes
 #   4. compare/core_variable_coverage_table.py -> 19-core YAML coverage matrix
 #
 # All outputs are aggregate-only (safe to export from the enclave).
@@ -137,6 +138,20 @@ $PYTHON compare/batch_scorecard.py \
     --output-dir "$SCORECARDS_OUT" \
     ${ALL_VARS} \
     ${COHORT_ARGS[@]+"${COHORT_ARGS[@]}"}
+
+# --- 3b. Match-quality tables: the only report that prints the methodological notes
+banner "[3b/4] Building per-cohort match-quality tables"
+for c in $(ls "$BDC_OUT"/bdc_*_summary_*.json | sed -E 's#.*/bdc_(.+)_summary_[0-9]+_[0-9]+\.json$#\1#' | sort -u); do
+    b=$(ls "$BDC_OUT"/bdc_"$c"_summary_*.json | tail -1)
+    t=""
+    for cand in "$TOPMED_SUMMARIES/topmed_${c}_summary.json" "$TOPMED_SUMMARIES/topmed_${c%_sol}_summary.json"; do
+        [[ -f "$cand" ]] && { t="$cand"; break; }
+    done
+    if [[ -z "$t" ]]; then echo "  SKIP $c: no TOPMed summary"; continue; fi
+    $PYTHON compare/match_quality_table.py "$t" "$b" "$REPORTS_OUT/match_quality_${c}.txt" ${ALL_VARS} >/dev/null \
+        && echo "  wrote $REPORTS_OUT/match_quality_${c}.txt" \
+        || echo "  WARN: match-quality table failed for $c (non-fatal)"
+done
 
 # --- 4. Coverage matrix (needs HV YAML checkout; no participant data) --------
 if [[ -z "$SKIP_COVERAGE" && -d "$HV_REPO/priority_variables_transform" ]]; then

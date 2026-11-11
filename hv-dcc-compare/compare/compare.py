@@ -668,8 +668,10 @@ def run_comparison(topmed: dict, bdc: dict) -> dict:
                     ((b_mean - t_mean) / t_mean * 100) if t_mean != 0 else None
                 )
         else:
-            entry["topmed_n"] = t_stat.get("n_total", 0)
-            entry["bdc_n"] = b_stat.get("n_total", 0)
+            # Valid (answered) N, not the cohort total: a variable BDC never
+            # emits must read 0 here, not the participant count.
+            entry["topmed_n"] = t_stat.get("n_valid", 0)
+            entry["bdc_n"] = b_stat.get("n_valid", 0)
         per_var_summary[var] = entry
 
     return {
@@ -943,13 +945,13 @@ def _write_cross_cohort_summary(cohort_results: dict[str, dict]) -> None:
     categorical_vars = {k: v for k, v in all_vars.items() if v["type"] == "categorical"}
     if categorical_vars:
         print("\n" + "─" * 80)
-        print("  4. CATEGORICAL VARIABLE N-COUNTS: BDC vs TOPMed (per cohort)")
+        print("  4. CATEGORICAL VARIABLE VALID N: BDC vs TOPMed (per cohort)")
         print("─" * 80)
 
         for var in sorted(categorical_vars, key=lambda v: categorical_vars[v]["label"]):
             vi = categorical_vars[var]
             print(f"\n  {vi['label']} ({var})")
-            print(f"    {'Cohort':<15} {'TOPMed N':>12} {'BDC N':>12} {'Delta':>10}")
+            print(f"    {'Cohort':<15} {'TOPMed valid':>12} {'BDC valid':>12} {'Delta':>10}")
             print("    " + "-" * 52)
             for cohort in sorted(vi["cohorts"]):
                 cs = vi["cohorts"][cohort]
