@@ -2,9 +2,11 @@
     Participant:
       populated_from: pht013308
       slot_derivations:
-        identity:
+        id:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00528692}) + ":SPIROMICS")'
+        identity:
+          expr: 'str({phv00528692})'
         member_of_research_study:
-          value: 'Subpopulations and Intermediate Outcome Measures in COPD Study (SPIROMICS)'
+          value: phs001119
         associated_person:
           expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
