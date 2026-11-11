@@ -52,6 +52,7 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00002422
+                  missing_values: ['.']
                   value_mappings:
                     '0': 0
                     '10': 100
@@ -85,6 +86,7 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00007968
+                  missing_values: ['.']
                   value_mappings:
                     '10': 100
                     '0': 0
@@ -117,6 +119,7 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00008722
+                  missing_values: ['.']
                   value_mappings:
                     '10': 100
                     '0': 0
@@ -146,6 +149,7 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00002662
+                  missing_values: ['.']
                   value_mappings:
                     '0': 0
                     '10': 100
@@ -180,7 +184,7 @@
               populated_from: pht002889
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00172161} > 3.0, {phv00172161}), ({phv00172204} == 1, 3.0), (True, {phv00172161}))
+                  expr: case(({phv00172161} > 3.0, {phv00172161}), ({phv00172204} == 1, 3.0), (is_numeric({phv00172161}), {phv00172161}))
                 operator:
                   expr: 'case(({phv00172204} == 1, "LESS_THAN"))'
                 unit:
@@ -250,7 +254,7 @@
                   expr: 'case(
                           ({phv00227045} > 3.0, {phv00227045}),
                           ({phv00227069} == 1, None),
-                          (True, {phv00227045})
+                          (is_numeric({phv00227045}), {phv00227045})
                         )'                  
                 unit:
                   value: mg/L
@@ -274,7 +278,7 @@
               populated_from: pht004363
               slot_derivations:
                 value_decimal:
-                  expr: case(({phv00219547} > 3.0, {phv00219547}), ({phv00219549} == 1, 3.0), (True, {phv00219547}))
+                  expr: case(({phv00219547} > 3.0, {phv00219547}), ({phv00219549} == 1, 3.0), (is_numeric({phv00219547}), {phv00219547}))
                 operator:
                   expr: 'case(({phv00219549} == 1, "LESS_THAN"))'
                 unit:

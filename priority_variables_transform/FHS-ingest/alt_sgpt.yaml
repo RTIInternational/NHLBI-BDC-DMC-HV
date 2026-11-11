@@ -17,6 +17,7 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00008098
+                  missing_values: ['.']
                 unit:
                   value: '[IU]/L'
 - class_derivations:
@@ -41,7 +42,7 @@
                 value_decimal:
                   expr: 'case(({phv00172166} > 5.0, {phv00172166}), 
                           ({phv00172202} == 1, None), 
-                          (True, {phv00172166})
+                          (is_numeric({phv00172166}), {phv00172166})
                         )'
                 unit:
                   value: '[IU]/L'
@@ -77,7 +78,7 @@
                   expr: 'case(
                           ({phv00227050} > 5.0, {phv00227050}),
                           ({phv00227066} == 1, None), 
-                          (True, {phv00227050})
+                          (is_numeric({phv00227050}), {phv00227050})
                         )'
                 unit:
                   value: '[IU]/L'
@@ -111,5 +112,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00081020
+                  missing_values: ['.']
                 unit:
                   value: '[IU]/L'
