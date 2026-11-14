@@ -17,6 +17,7 @@ import pandas as pd
 from hv_dataqc.extract_source.extract_source_summaries import (
     _compute_joint_distributions,
     _parse_args,
+    main,
     apply_quasi_identifier_suppression,
     compute_variable_summary,
     count_rows_per_visit,
@@ -285,6 +286,72 @@ class ExtractSourceSummaryTests(unittest.TestCase):
     def test_scope_to_yaml_requires_yaml_dir(self) -> None:
         with self.assertRaises(SystemExit), redirect_stderr(io.StringIO()):
             _parse_args(["--cohort", "X", "--scope-to-yaml"])
+
+
+class ScopedExtractCacheGuardTests(unittest.TestCase):
+    """--scope-to-yaml with no resolvable PHV names must fail before any output.
+
+    An extract made against an empty cache is near-empty, and the staleness
+    check compares against the PHVs it *attempted*, so every later run would
+    reuse it. The source tree below is valid, so a missing guard shows up as a
+    run dir and a ``latest_source`` symlink under the output dir.
+    """
+
+    PHV = "phv00000001"
+
+    def _fixture(self, root: Path) -> tuple[Path, Path, Path, Path]:
+        src = root / "src"
+        consent = src / "synth_phs000001_c1"
+        consent.mkdir(parents=True)
+        (consent / "synthetic.pht000001.MULTI.txt").write_text(
+            "dbGaP_Subject_ID\tVALUE\nA\t1\nB\t2\n", encoding="utf-8"
+        )
+        specs = root / "specs"
+        specs.mkdir()
+        (specs / "synth.yaml").write_text(
+            f"slot: 'source.{self.PHV}.v1.p1'\n", encoding="utf-8"
+        )
+        return src, specs, root / "out", root / "cache"
+
+    def _run(self, src: Path, specs: Path, out: Path, cache: Path | None) -> None:
+        argv = [
+            "--cohort", "synth", "--source-root", str(src),
+            "--yaml-dir", str(specs), "--output-dir", str(out),
+            "--scope-to-yaml", "--no-joint-distributions",
+        ]
+        if cache is not None:
+            argv += ["--cache-dir", str(cache)]
+        main(argv)
+
+    def test_empty_cache_exits_and_writes_no_extract(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            src, specs, out, cache = self._fixture(Path(tmp))
+            (cache / "pheno_variable_summaries").mkdir(parents=True)
+            with self.assertRaises(SystemExit) as ctx:
+                self._run(src, specs, out, cache)
+            self.assertIn("resolved no PHV names", str(ctx.exception))
+            self.assertFalse(out.exists(), "guard must fire before the run dir exists")
+
+    def test_missing_cache_dir_exits_and_writes_no_extract(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            src, specs, out, cache = self._fixture(Path(tmp))
+            with self.assertRaises(SystemExit) as ctx:
+                self._run(src, specs, out, cache)
+            self.assertIn("resolved no PHV names", str(ctx.exception))
+            self.assertFalse(out.exists())
+
+    def test_populated_cache_passes_the_guard(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            src, specs, out, cache = self._fixture(Path(tmp))
+            pvs = cache / "pheno_variable_summaries"
+            pvs.mkdir(parents=True)
+            (pvs / "synth.pht000001.v1.data_dict.xml").write_text(
+                f'<data_table><variable id="{self.PHV}.v1"><name>VALUE</name>'
+                "</variable></data_table>",
+                encoding="utf-8",
+            )
+            self._run(src, specs, out, cache)
+            self.assertTrue((out / "latest_source").exists())
 
 
 if __name__ == "__main__":

@@ -134,6 +134,12 @@ hv_dataqc/sb_scripts/run_s5_report.sh
 Output tgz lands in `/sbgenomics/workspace/`; download via the JupyterLab
 file browser. The `table_s5_paste_*.tsv` inside is the paste-ready table.
 
+> **Currently broken: the S5 runner can only find harmonized data under
+> `/sbgenomics/project-files/_QC_STAGING/DataRun_*`.** It has no
+> `--harmonized-root` option to point it elsewhere yet (issue #929). A cached
+> per-cohort extract is re-made automatically when Table S1 is newer than it;
+> pass `--force` to re-extract for any other reason.
+
 > **S5 reflects the DataRun's harmonized data, not the specs directly.**
 > If a value looks wrong, confirm the DataRun was harmonized *after* the
 > relevant spec fix. Picking an older DataRun reproduces old values.
