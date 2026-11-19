@@ -23,9 +23,11 @@ One set of files per BDC-HM class, named with the exact BDC-HM class name:
 | `<Class> Variables.tsv` | one row per code: concept name, variable, CURIE, description (several rows per concept are fine) |
 | `<Class> Metadata.tsv` | one row per slot or slot value: how to fill each BDC-HM slot, with examples |
 
-Classes so far: `Condition`, `MeasurementObservation`. Others to follow use the same
-pattern (`DrugExposure`, `Procedure`, `Observation`, `MeasurementObservationSet`,
-`SdohObservation`). There is no `Diagnosis` class in BDC-HM; diagnoses are `Condition`.
+Classes so far: `Condition`, `Demography`, `DrugExposure`, `MeasurementObservation`,
+`Person`, `Procedure`, `SdohObservation`. Only `MeasurementObservation` has a Variables
+file so far. Others to follow use the same pattern (`Observation`,
+`MeasurementObservationSet`). There is no `Diagnosis` class in BDC-HM; diagnoses are
+`Condition`.
 
 ## Concept names are the key
 
@@ -52,12 +54,20 @@ The concept name joins the files to each other and to the harmonization pipeline
 
 ## Columns
 
-**Condition Concepts:** `concept`, `CURIE`, `description`, `Example source variable labels`,
-`Example source variable description`, `output file`.
+Every Concepts file names the concept in `Concept` and describes it in `Concept Description`.
+The other columns, and their order, differ by file:
 
-**MeasurementObservation Concepts:** `Concept`, `Concept Description`, `target unit`,
-`other units and conversion`, `output file`, and, for concepts that are easy to confuse,
-`Example source variable labels` and `Example source variable description`.
+| File | Columns |
+|---|---|
+| `Condition Concepts` | `Concept`, `CURIE`, `Concept Description`, `Example source variable labels`, `Example source variable description`, `output file`, `VT notes` |
+| `Demography Concepts` | `Concept`, `CURIE`, `Concept Description`, `output file`, `Example source variable labels`, `Example source variable description` |
+| `DrugExposure Concepts` | `Concept`, `CURIE`, `Concept Description`, `Example source variable labels`, `Example source variable description`, `output file`, `Notes`, and two empty trailing columns |
+| `MeasurementObservation Concepts` | `Concept`, `Concept Description`, `target unit`, `other units and conversion`, `output file`, and, for concepts that are easy to confuse, `Example source variable labels` and `Example source variable description`. Codes are in the Variables file. |
+| `MeasurementObservation Variables` | `Concept`, `Variable`, `CURIE`, `variable description`, `VT notes` |
+| `Person Concepts` | `Concept`, `CURIE`, `Concept Description`, `output file`, `Example source variable labels`, `Example source variable description` |
+| `Procedure Concepts` | `Concept`, `CURIE`, `Concept Description`, `output file`, `Example source variable labels`, `Example source variable description`, `Team notes` |
+| `SdohObservation Concepts` | `Concept`, `CURIE`, `Concept Description`, `data type`, `target unit`, `other units and conversion`, `conversion source`, `output file`, `Example source variable labels`, `Example source variable description` |
+| every `Metadata` file | `bdchm slot`, `bdchm value enum`, `description`, `Example source variable description` |
 
 - `target unit` -- the UCUM unit the harmonized data is delivered in.
 - `other units and conversion` -- the source units seen and the factor to the target unit
