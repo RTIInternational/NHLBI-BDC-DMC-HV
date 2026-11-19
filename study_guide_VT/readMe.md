@@ -20,7 +20,7 @@ One set of files per BDC-HM class, named with the exact BDC-HM class name:
 | File | Holds |
 |---|---|
 | `<Class> Concepts.tsv` | one row per concept: name, description, and the columns below |
-| `<Class> Variables.tsv` | one row per code: concept name, variable, CURIE, description (several rows per concept are fine) |
+| `<Class> Variables.tsv` | one row per code: concept name, variable, CURIE, description, optional `VT notes` (several rows per concept are fine) |
 | `<Class> Metadata.tsv` | one row per slot or slot value: how to fill each BDC-HM slot, with examples |
 
 Classes so far: `Condition`, `Demography`, `DrugExposure`, `MeasurementObservation`,
@@ -62,7 +62,7 @@ The other columns, and their order, differ by file:
 | `Condition Concepts` | `Concept`, `CURIE`, `Concept Description`, `Example source variable labels`, `Example source variable description`, `output file`, `VT notes` |
 | `Demography Concepts` | `Concept`, `CURIE`, `Concept Description`, `output file`, `Example source variable labels`, `Example source variable description` |
 | `DrugExposure Concepts` | `Concept`, `CURIE`, `Concept Description`, `Example source variable labels`, `Example source variable description`, `output file`, `Notes`, and two empty trailing columns |
-| `MeasurementObservation Concepts` | `Concept`, `Concept Description`, `target unit`, `other units and conversion`, `output file`, and, for concepts that are easy to confuse, `Example source variable labels` and `Example source variable description`. Codes are in the Variables file. |
+| `MeasurementObservation Concepts` | `Concept`, `Concept Description`, `target unit`, `other units and conversion`, `output file`, `Example source variable labels`, `Example source variable description` (the two example columns are filled only for concepts that are easy to confuse). Codes are in the Variables file. |
 | `MeasurementObservation Variables` | `Concept`, `Variable`, `CURIE`, `variable description`, `VT notes` |
 | `Person Concepts` | `Concept`, `CURIE`, `Concept Description`, `output file`, `Example source variable labels`, `Example source variable description` |
 | `Procedure Concepts` | `Concept`, `CURIE`, `Concept Description`, `output file`, `Example source variable labels`, `Example source variable description`, `Team notes` |
